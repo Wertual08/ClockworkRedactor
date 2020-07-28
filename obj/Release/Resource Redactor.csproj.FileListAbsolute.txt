@@ -1,0 +1,26 @@
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource_Redactor.Compiler.CompilerForm.resources
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource_Redactor.Descriptions.Redactors.AnimationControl.resources
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource_Redactor.Descriptions.Redactors.EntityControl.resources
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource_Redactor.Descriptions.Redactors.ExplorerControl.resources
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource_Redactor.Descriptions.Redactors.RagdollControl.resources
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource_Redactor.Descriptions.Redactors.SpriteControl.resources
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource_Redactor.Descriptions.Redactors.TextureControl.resources
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource_Redactor.Descriptions.Redactors.TileControl.resources
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource_Redactor.Descriptions.Redactors.ToolControl.resources
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource_Redactor.ExplorerForm.resources
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource_Redactor.NewDescriptionForm.resources
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource_Redactor.Properties.Resources.resources
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource_Redactor.RedactorForm.resources
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource Redactor.csproj.GenerateResource.cache
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource Redactor.csproj.CoreCompileInputs.cache
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\bin\Release\Resource Redactor.exe.config
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\bin\Release\Resource Redactor.exe
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\bin\Release\Resource Redactor.pdb
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\bin\Release\ExtraForms.dll
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\bin\Release\ExtraSharp.dll
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\bin\Release\ExtraForms.pdb
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\bin\Release\ExtraSharp.pdb
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource Redactor.csprojAssemblyReference.cache
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource Redactor.csproj.CopyComplete
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource Redactor.exe
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource Redactor.pdb

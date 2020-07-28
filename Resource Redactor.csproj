@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D21D5830-F422-4434-A513-555B70EE4A99}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Resource_Redactor</RootNamespace>
+    <AssemblyName>Resource Redactor</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Gear.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ExtraForms">
+      <HintPath>..\..\ExtraForms\ExtraForms\bin\Release\ExtraForms.dll</HintPath>
+    </Reference>
+    <Reference Include="ExtraSharp">
+      <HintPath>..\..\ExtraForms\ExtraSharp\bin\Release\ExtraSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Compiler\Compiled.cs" />
+    <Compile Include="Compiler\CompilerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Compiler\CompilerForm.Designer.cs">
+      <DependentUpon>CompilerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Compiler\IDTable.cs" />
+    <Compile Include="Compiler\MessageQueue.cs" />
+    <Compile Include="Descriptions\AnimationResource.cs" />
+    <Compile Include="Descriptions\Converter.cs" />
+    <Compile Include="Descriptions\Description.cs" />
+    <Compile Include="Descriptions\EventResource.cs" />
+    <Compile Include="Descriptions\Frame.cs" />
+    <Compile Include="Descriptions\OutfitResource.cs" />
+    <Compile Include="Descriptions\RagdollResource.cs" />
+    <Compile Include="Descriptions\Redactors\AnimationControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\AnimationControl.Designer.cs">
+      <DependentUpon>AnimationControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Descriptions\EntityResource.cs" />
+    <Compile Include="Descriptions\Redactors\EntityControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\EntityControl.Designer.cs">
+      <DependentUpon>EntityControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\EventControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\EventControl.Designer.cs">
+      <DependentUpon>EventControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\ExplorerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\ExplorerControl.Designer.cs">
+      <DependentUpon>ExplorerControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\IResourceControl.cs" />
+    <Compile Include="Descriptions\Redactors\OutfitControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\OutfitControl.Designer.cs">
+      <DependentUpon>OutfitControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\PreviewSurface.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\RagdollControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\RagdollControl.Designer.cs">
+      <DependentUpon>RagdollControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\SpriteControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\SpriteControl.Designer.cs">
+      <DependentUpon>SpriteControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\SubresourceTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\TextureControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\TextureControl.Designer.cs">
+      <DependentUpon>TextureControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\TileControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\TileControl.Designer.cs">
+      <DependentUpon>TileControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\ToolControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Descriptions\Redactors\ToolControl.Designer.cs">
+      <DependentUpon>ToolControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Descriptions\Resource.cs" />
+    <Compile Include="Descriptions\SpriteResource.cs" />
+    <Compile Include="Descriptions\Subresource.cs" />
+    <Compile Include="Descriptions\TextureResource.cs" />
+    <Compile Include="Descriptions\TileResource.cs" />
+    <Compile Include="Descriptions\ToolResource.cs" />
+    <Compile Include="DirectoryWalker.cs" />
+    <Compile Include="ExplorerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExplorerForm.Designer.cs">
+      <DependentUpon>ExplorerForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewDescriptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewDescriptionForm.Designer.cs">
+      <DependentUpon>NewDescriptionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RedactorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RedactorForm.Designer.cs">
+      <DependentUpon>RedactorForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Compiler\CompilerForm.resx">
+      <DependentUpon>CompilerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Descriptions\Redactors\AnimationControl.resx">
+      <DependentUpon>AnimationControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Descriptions\Redactors\EntityControl.resx">
+      <DependentUpon>EntityControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Descriptions\Redactors\ExplorerControl.resx">
+      <DependentUpon>ExplorerControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Descriptions\Redactors\OutfitControl.resx">
+      <DependentUpon>OutfitControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Descriptions\Redactors\RagdollControl.resx">
+      <DependentUpon>RagdollControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Descriptions\Redactors\SpriteControl.resx">
+      <DependentUpon>SpriteControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Descriptions\Redactors\TextureControl.resx">
+      <DependentUpon>TextureControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Descriptions\Redactors\TileControl.resx">
+      <DependentUpon>TileControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Descriptions\Redactors\ToolControl.resx">
+      <DependentUpon>ToolControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExplorerForm.resx">
+      <DependentUpon>ExplorerForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewDescriptionForm.resx">
+      <DependentUpon>NewDescriptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="RedactorForm.resx">
+      <DependentUpon>RedactorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Gear.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
