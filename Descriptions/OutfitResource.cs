@@ -14,7 +14,7 @@ namespace Resource_Redactor.Descriptions
         public static readonly ResourceType CurrentType = ResourceType.Outfit;
         public static readonly string CurrentVersion = "0.0.0.0";
 
-        public class Node
+        public class Node : IDisposable
         {
             public enum Clothe : int
             {
@@ -42,6 +42,28 @@ namespace Resource_Redactor.Descriptions
                 Sprite.Write(w);
                 w.Write(RagdollNode);
                 w.Write((int)ClotheType);
+            }
+
+            protected bool IsDisposed { get; private set; } = false;
+            public void Dispose()
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+            public virtual void Dispose(bool disposing)
+            {
+                if (IsDisposed) return;
+
+                if (disposing)
+                {
+                    Sprite.Dispose();
+                }
+
+                IsDisposed = true;
+            }
+            ~Node()
+            {
+                Dispose(false);
             }
         }
 

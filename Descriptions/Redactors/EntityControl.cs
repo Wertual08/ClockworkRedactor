@@ -846,6 +846,7 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
+                GLSurface.MakeCurrent();
                 if (ParamsTabControl.SelectedIndex == 1)
                 {
                     int index = AnimationsListBox.SelectedIndex + 1;
@@ -875,11 +876,13 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
+                GLSurface.MakeCurrent();
                 if (ParamsTabControl.SelectedIndex == 1)
                 {
                     int index = AnimationsListBox.SelectedIndex;
                     if (index < 0 || index >= LoadedResource.Triggers.Count) return;
 
+                    LoadedResource.Triggers[index].Dispose();
                     LoadedResource.Triggers.RemoveAt(index);
 
                     Story.Item = new Action(LoadedResource);
@@ -891,6 +894,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                     int index = HoldersListBox.SelectedIndex;
                     if (index < 0 || index >= LoadedResource.Holders.Count) return;
 
+                    LoadedResource.Holders[index].Dispose();
                     LoadedResource.Holders.RemoveAt(index);
 
                     Story.Item = new Action(LoadedResource);

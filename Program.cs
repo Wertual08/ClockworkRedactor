@@ -15,14 +15,19 @@ namespace Resource_Redactor
         {
             try
             {
-                for (int i = 0; i < args.Length; i++)
+                string path = null;
+#if DEBUG
+                path = "../TheTestEver/TheTestEver.ced";
+#endif
+                if (args.Length >= 1 && args[0] != null) path = args[0];
+                for (int i = 1; i < args.Length; i++)
                 {
 
                 }
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new RedactorForm("../TheTestEver/TheTestEver.ced"));
+                Application.Run(new RedactorForm(path));
             }
             catch (Exception ex)
             {

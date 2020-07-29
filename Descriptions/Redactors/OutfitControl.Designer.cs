@@ -97,6 +97,7 @@
             this.ClotheTypeComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ClotheTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ClotheTypeComboBox.Enabled = false;
             this.ClotheTypeComboBox.FormattingEnabled = true;
             this.ClotheTypeComboBox.Location = new System.Drawing.Point(3, 459);
             this.ClotheTypeComboBox.Name = "ClotheTypeComboBox";
@@ -118,6 +119,7 @@
             // 
             this.RagdollNodeNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.RagdollNodeNumeric.Enabled = false;
             this.RagdollNodeNumeric.Location = new System.Drawing.Point(3, 419);
             this.RagdollNodeNumeric.Minimum = new decimal(new int[] {
             1,
@@ -186,6 +188,7 @@
             this.SpriteLinkTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.SpriteLinkTextBox.BackColor = System.Drawing.Color.Red;
+            this.SpriteLinkTextBox.Enabled = false;
             this.SpriteLinkTextBox.Location = new System.Drawing.Point(3, 380);
             this.SpriteLinkTextBox.Name = "SpriteLinkTextBox";
             this.SpriteLinkTextBox.Size = new System.Drawing.Size(190, 20);

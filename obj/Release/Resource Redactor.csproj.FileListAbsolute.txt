@@ -24,3 +24,4 @@ D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor
 D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource Redactor.csproj.CopyComplete
 D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource Redactor.exe
 D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource Redactor.pdb
+D:\Documents\Visual Studio 2019\Projects\Distorted Lands DELTA\Resource Redactor\obj\Release\Resource_Redactor.Descriptions.Redactors.OutfitControl.resources

@@ -937,6 +937,7 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
+                GLSurface.MakeCurrent();
                 var index = NodesListBox.SelectedIndex + 1;
                 if (index < 0) index = 0;
                 if (index > LoadedResource.Count)
@@ -965,6 +966,8 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
+                GLSurface.MakeCurrent();
+
                 var index = NodesListBox.SelectedIndex;
                 if (index < 0 || index >= LoadedResource.Count) return;
 
@@ -990,6 +993,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                     }
                 }
 
+                LoadedResource[index].Dispose();
                 Story.RemoveAt(index);
             }
             catch (Exception ex)

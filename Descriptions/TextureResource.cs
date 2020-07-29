@@ -66,11 +66,17 @@ namespace Resource_Redactor.Descriptions
                 TextureStorage?.Dispose();
                 TextureStorage = null;
             }
+#if DEBUG
+            else if (GLTexture != 0) throw new Exception("TextureResource memory leak: TextureResource [" + GLTexture + "] must be explicitly disposed.");
+#endif
 
-            if (GLTexture != 0) gl.DeleteTexture(GLTexture);
-            uint error = gl.GetError();
-            if (error != 0) throw new Exception("TextureResource error: Can not delete OpenGL texture [" + GLTexture + "].");
-            GLTexture = 0;
+            if (GLTexture != 0)
+            {
+                gl.DeleteTexture(GLTexture);
+                uint error = gl.GetError();
+                if (error != 0) throw new Exception("TextureResource error: Can not delete OpenGL texture [" + GLTexture + "].");
+                GLTexture = 0;
+            }
 
             base.Dispose(disposing);
         }

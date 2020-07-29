@@ -554,37 +554,57 @@ namespace Resource_Redactor.Compiler
                 foreach (var e in CompiledEntities) w.Write(e);
             }
         }
-
-        private void CompilerWorker_DoWork(object sender, DoWorkEventArgs e)
+        private void CompileOutfits()
         {
-            CompileTiles();
-            LogQueue.Put("");
-            CompileEvents();
-            LogQueue.Put("");
-            CompileSprites();
-            LogQueue.Put("");
-            CompileRagdolls();
-            LogQueue.Put("");
-            CompileAnimations();
-            LogQueue.Put("");
-            CompileEntities();
-            LogQueue.Put("");
+            LogQueue.Put("Compiling outfits...");
 
-            LogQueue.Put("Updating ID table [" + TablePath + "]...");
-            using (var file = File.CreateText(TablePath))
+            int id = 0;
+            var CompiledOutfits = new Compiled.Outfit[EntitiesIDTable.LastID + 1];
+            var OutfitNodes = new List<Compiled.Outfit.Node>();
+            foreach (var e in OutfitsIDTable.Items)
             {
-                file.WriteLine("[Tiles]"); 
-                TilesIDTable.Write(file);
-                file.WriteLine("[Events]");
-                EventsIDTable.Write(file);
-                file.WriteLine("[Entities]"); 
-                EntitiesIDTable.Write(file);
-                file.WriteLine("[Outfits]");
-                OutfitsIDTable.Write(file);
-                file.WriteLine("[Items]"); 
-                ItemsIDTable.Write(file);
+                int dist = id;
+                while (id < e.ID) CompiledOutfits[id++] = new Compiled.Outfit();
+                dist = id - dist;
+                if (dist > 0) LogQueue.Put("IDs skipped: " + dist);
+
+                LogQueue.Put("Compiling [" + e.Path + "]...");
+                OutfitResource res = null;
+                try { res = new OutfitResource(e.Path); }
+                catch
+                {
+                    LogQueue.Put("Outfit [" + e.Path + "] not found. ID skipped.");
+                    CompiledOutfits[id++] = new Compiled.Outfit();
+                    continue;
+                }
+
+                CompiledOutfits[id].FirstNode = OutfitNodes.Count;
+                CompiledOutfits[id].NodesCount = res.Nodes.Count;
+
+                foreach (var node in res.Nodes)
+                {
+                    var cnode = new Compiled.Outfit.Node();
+
+                    cnode.SpriteID = SpritesIDTable[node.Sprite.Link];
+                    cnode.RagdollNodeIndex = node.RagdollNode;
+                    cnode.ClotheType = (int)node.ClotheType;
+
+                    OutfitNodes.Add(cnode);
+                }
+
+                LogQueue.Put("Outfit [" + e.Path + "] compiled with id [" + id + "].");
+                id++;
             }
-            LogQueue.Put("ID table updated.");
+            LogQueue.Put("Outfits compiled.");
+
+            Directory.CreateDirectory("../Compilation");
+            using (var w = new BinaryWriter(File.Create("../Compilation/Outfits")))
+            {
+                w.Write(OutfitNodes.Count);
+                foreach (var n in OutfitNodes) w.Write(n);
+                w.Write(CompiledOutfits.Length);
+                foreach (var o in CompiledOutfits) w.Write(o);
+            }
         }
 
         public CompilerForm(string table)
@@ -593,10 +613,30 @@ namespace Resource_Redactor.Compiler
             Text = "Clockwork engine resource compiler V" + Version;
             TablePath = table;
 
-            if (File.Exists(table))
+            MainSplitContainer.Panel1.Enabled = false;
+            LoaderWorker.RunWorkerAsync();
+        }
+
+        private static void InitResourcesListBox(ListBox list, IDTable table)
+        {
+            int id = 0;
+            list.BeginUpdate();
+            list.Items.Clear();
+            foreach (var i in table.Items)
+            {
+                while (id < i.ID - 1) list.Items.Add("[" + id++ + "]<:EMPTY:>");
+                list.Items.Add("[" + (id = i.ID) + "][" + (i.Valid ? "V" : "I") + "][" + (i.Old ? "old" : "new") + "]" + i.Path);
+            }
+            list.EndUpdate();
+        }
+        private void LoaderWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            LoaderWorker.ReportProgress(0);
+
+            if (File.Exists(TablePath))
             {
                 LogQueue.Put("Reading ID table...");
-                using (var r = File.OpenText(table))
+                using (var r = File.OpenText(TablePath))
                 {
                     while (!r.EndOfStream)
                     {
@@ -626,6 +666,8 @@ namespace Resource_Redactor.Compiler
             else LogQueue.Put("ID table not found.");
             LogQueue.Put("");
 
+            LoaderWorker.ReportProgress(5);
+
             LogQueue.Put("Indexing files...");
             string[] paths = Directory.GetFiles(Directory.GetCurrentDirectory(), "*", SearchOption.AllDirectories);
             for (int i = 0; i < paths.Length; i++) paths[i] = ExtraPath.MakeDirectoryRelated(Directory.GetCurrentDirectory(), paths[i]);
@@ -633,9 +675,20 @@ namespace Resource_Redactor.Compiler
             LogQueue.Put("Indexing files done.");
             LogQueue.Put("");
 
-            LogQueue.Put("Searching primal resources...");
-            foreach (var path in paths)
+            LoaderWorker.ReportProgress(10);
+
+            LogQueue.Put("Searching resources...");
+            int progress = 0;
+            for (int i = 0; i < paths.Length; i++)
             {
+                int current_progress = i * 90 / (paths.Length - 1);
+                if (progress != current_progress)
+                {
+                    progress = current_progress;
+                    LoaderWorker.ReportProgress(10 + progress);
+                }    
+
+                var path = paths[i];
                 switch (Resource.GetType(path))
                 {
                     case ResourceType.Tile: TilesIDTable.Add(path); break;
@@ -651,69 +704,79 @@ namespace Resource_Redactor.Compiler
             LogQueue.Put("Tiles found: " + TilesIDTable.Count);
             LogQueue.Put("Events found: " + EventsIDTable.Count);
             LogQueue.Put("Sprites found: " + SpritesIDTable.Count);
-            LogQueue.Put("Ragdolls found: " + SpritesIDTable.Count);
-            LogQueue.Put("Animations found: " + SpritesIDTable.Count);
+            LogQueue.Put("Ragdolls found: " + RagdollsIDTable.Count);
+            LogQueue.Put("Animations found: " + AnimationsIDTable.Count);
             LogQueue.Put("Entities found: " + EntitiesIDTable.Count);
             LogQueue.Put("Outfits found: " + OutfitsIDTable.Count);
             LogQueue.Put("Items found: " + ItemsIDTable.Count);
-            int primal_count = TilesIDTable.Count + EventsIDTable.Count + SpritesIDTable.Count + 
-                EntitiesIDTable.Count + OutfitsIDTable.Count + ItemsIDTable.Count;
-            LogQueue.Put("Total primal resources found: " + primal_count);
-            LogQueue.Put("Searching primal resources done.");
+            LogQueue.Put("Total resources found: " + (
+                TilesIDTable.Count + 
+                EventsIDTable.Count + 
+                SpritesIDTable.Count +
+                RagdollsIDTable.Count + 
+                AnimationsIDTable.Count + 
+                EntitiesIDTable.Count + 
+                OutfitsIDTable.Count + 
+                ItemsIDTable.Count));
+            LogQueue.Put("Searching resources done.");
             LogQueue.Put("");
+        }
+        private void LoaderWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            CompilerProgressBar.Value = e.ProgressPercentage;
+        }
+        private void LoaderWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            InitResourcesListBox(TilesListBox, TilesIDTable);
+            InitResourcesListBox(EventsListBox, EventsIDTable);
+            InitResourcesListBox(SpritesListBox, SpritesIDTable);
+            InitResourcesListBox(EntitiesListBox, EntitiesIDTable);
+            InitResourcesListBox(OutfitsListBox, OutfitsIDTable);
+            InitResourcesListBox(ItemsListBox, ItemsIDTable);
 
-            int id;
-
-            id = 0;
-            TilesListBox.BeginUpdate();
-            foreach (var i in TilesIDTable.Items)
-            {
-                while (id < i.ID - 1) TilesListBox.Items.Add("[" + id++ + "]<:EMPTY:>");
-                TilesListBox.Items.Add("[" + (id = i.ID) + "][" + (i.Valid ? "V" : "I") + "][" + (i.Old ? "old" : "new") + "]" + i.Path);
-            }
-            TilesListBox.EndUpdate();
-
-            id = 0;
-            EventsListBox.BeginUpdate();
-            foreach (var i in EventsIDTable.Items)
-            {
-                while (id < i.ID - 1) EventsListBox.Items.Add("[" + id++ + "]<:EMPTY:>");
-                EventsListBox.Items.Add("[" + (id = i.ID) + "][" + (i.Valid ? "V" : "I") + "][" + (i.Old ? "old" : "new") + "]" + i.Path);
-            }
-            EventsListBox.EndUpdate();
-
-            id = 0;
-            EntitiesListBox.BeginUpdate();
-            foreach (var i in EntitiesIDTable.Items)
-            {
-                while (id < i.ID - 1) EntitiesListBox.Items.Add("[" + id++ + "]<:EMPTY:>");
-                EntitiesListBox.Items.Add("[" + (id = i.ID) + "][" + (i.Valid ? "V" : "I") + "][" + (i.Old ? "old" : "new") + "]" + i.Path);
-            }
-            EntitiesListBox.EndUpdate();
-
-            id = 0;
-            OutfitsListBox.BeginUpdate();
-            foreach (var i in OutfitsIDTable.Items)
-            {
-                while (id < i.ID - 1) OutfitsListBox.Items.Add("[" + id++ + "]<:EMPTY:>");
-                OutfitsListBox.Items.Add("[" + (id = i.ID) + "][" + (i.Valid ? "V" : "I") + "][" + (i.Old ? "old" : "new") + "]" + i.Path);
-            }
-            OutfitsListBox.EndUpdate();
-
-            id = 0;
-            ItemsListBox.BeginUpdate();
-            foreach (var i in ItemsIDTable.Items)
-            {
-                while (id < i.ID - 1) ItemsListBox.Items.Add("[" + id++ + "]<:EMPTY:>");
-                ItemsListBox.Items.Add("[" + (id = i.ID) + "][" + (i.Valid ? "V" : "I") + "][" + (i.Old ? "old" : "new") + "]" + i.Path);
-            }
-            ItemsListBox.EndUpdate();
+            CompilerProgressBar.Value = 0;
+            MainSplitContainer.Panel1.Enabled = true;
         }
 
-        private void LogTimer_Tick(object sender, EventArgs e)
+        private void CompilerWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            string message;
-            while ((message = LogQueue.Get()) != null) LogTextBox.AppendText(message + Environment.NewLine);
+            CompileTiles();
+            LogQueue.Put("");
+            CompileEvents();
+            LogQueue.Put("");
+            CompileSprites();
+            LogQueue.Put("");
+            CompileRagdolls();
+            LogQueue.Put("");
+            CompileAnimations();
+            LogQueue.Put("");
+            CompileEntities();
+            LogQueue.Put("");
+            CompileOutfits();
+            LogQueue.Put("");
+
+            LogQueue.Put("Updating ID table [" + TablePath + "]...");
+            using (var file = File.CreateText(TablePath))
+            {
+                file.WriteLine("[Tiles]"); 
+                TilesIDTable.Write(file);
+                file.WriteLine("[Events]");
+                EventsIDTable.Write(file);
+                file.WriteLine("[Entities]"); 
+                EntitiesIDTable.Write(file);
+                file.WriteLine("[Outfits]");
+                OutfitsIDTable.Write(file);
+                file.WriteLine("[Items]"); 
+                ItemsIDTable.Write(file);
+            }
+            LogQueue.Put("ID table updated.");
+        }
+        private void CompilerWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (!e.Cancelled) LogQueue.Put("Compilation successful.");
+            else LogQueue.Put("Compilation terminated with error:" + Environment.NewLine + e.Error?.ToString());
+            LogQueue.Put(Environment.NewLine);
+            CompileButton.Enabled = true;
         }
 
         private void CompileButton_Click(object sender, EventArgs e)
@@ -724,12 +787,15 @@ namespace Resource_Redactor.Compiler
             LogQueue.Put("");
             CompilerWorker.RunWorkerAsync();
         }
-        private void CompilerWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void ExitButton_Click(object sender, EventArgs e)
         {
-            if (!e.Cancelled) LogQueue.Put("Compilation successful.");
-            else LogQueue.Put("Compilation terminated with error:" + Environment.NewLine + e.Error?.ToString());
-            LogQueue.Put(Environment.NewLine);
-            CompileButton.Enabled = true;
+            Close();
+        }
+
+        private void LogTimer_Tick(object sender, EventArgs e)
+        {
+            string message;
+            while ((message = LogQueue.Get()) != null) LogTextBox.AppendText(message + Environment.NewLine);
         }
     }
 }

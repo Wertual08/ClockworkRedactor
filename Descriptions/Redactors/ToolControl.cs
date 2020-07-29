@@ -749,12 +749,14 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
+                GLSurface.MakeCurrent();
                 int sind = PartsListBox.SelectedIndex;
                 if (sind < 0 || sind >= LoadedResource.Sprites.Count) return;
                 var sprites = LoadedResource.Sprites[sind];
                 int index = VariantsListBox.SelectedIndex;
                 if (index < 0 || index >= LoadedResource.Sprites[sind].Count) return;
 
+                sprites[index].Dispose();
                 sprites.RemoveAt(index);
                 VariantsListBox.Items.RemoveAt(index);
                 BackupChanges();
@@ -770,6 +772,7 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
+                GLSurface.MakeCurrent();
                 int index = PartsListBox.SelectedIndex + 1;
                 if (index < 0 || index > LoadedResource.Count) return;
                 LoadedResource.Sprites.Insert(index, new List<Subresource<SpriteResource>>());
@@ -789,8 +792,9 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
-                int index = PartsListBox.SelectedIndex + 1;
+                int index = PartsListBox.SelectedIndex;
                 if (index < 0 || index >= LoadedResource.Count) return;
+                LoadedResource.Sprites[index].ForEach((Subresource<SpriteResource> s) => s.Dispose());
                 LoadedResource.Sprites.RemoveAt(index);
                 LoadedResource.SelectedSprites.RemoveAt(index);
                 LoadedResource.SpriteLockedOnCycle.RemoveAt(index);

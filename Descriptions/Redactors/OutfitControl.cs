@@ -415,6 +415,7 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
+                GLSurface.MakeCurrent();
                 var index = NodesListBox.SelectedIndex + 1;
                 LoadedResource.Ragdoll.Resource?.Unclothe(LoadedResource);
                 LoadedResource.Nodes.Insert(index, new OutfitResource.Node());
@@ -432,10 +433,12 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
+                GLSurface.MakeCurrent();
                 var index = NodesListBox.SelectedIndex;
                 if (index >= 0 && index < LoadedResource.Count)
                 {
                     LoadedResource.Ragdoll.Resource?.Unclothe(LoadedResource);
+                    LoadedResource.Nodes[index].Dispose(); 
                     LoadedResource.Nodes.RemoveAt(index);
                     LoadedResource.Ragdoll.Resource?.Clothe(LoadedResource);
                     Story.Item = new StoryState(LoadedResource);

@@ -94,11 +94,14 @@ namespace Resource_Redactor.Descriptions
             }
             public virtual void Dispose(bool disposing)
             {
+                if (IsDisposed) return;
+
                 if (disposing)
                 {
                     SpritesBackup.ForEach((Subresource<SpriteResource> s) => s.Dispose());
                     Sprites.ForEach((Subresource<SpriteResource> s) => s.Dispose());
                 }
+
                 IsDisposed = true;
             }
             ~Node()

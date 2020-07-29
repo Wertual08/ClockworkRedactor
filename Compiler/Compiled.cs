@@ -175,5 +175,18 @@ namespace Resource_Redactor.Compiler
             public double MoveForceX;
             public double MoveForceY;
         }
+
+        public struct Outfit
+        {
+            public struct Node
+            {
+                public int SpriteID;
+                public int RagdollNodeIndex;
+                public int ClotheType;
+            }
+
+            public int FirstNode;
+            public int NodesCount;
+        }
     }
 }
