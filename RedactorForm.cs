@@ -231,6 +231,16 @@ namespace Resource_Redactor
         {
             try
             {
+                var version = Description.CheckVersion(path);
+                if (version != Description.CurrentVersion)
+                {
+                    var result = MessageBox.Show(this, "Would you like to convert it?", 
+                        "Description is outdated.", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (result != DialogResult.Yes) return;
+
+                    Converter.ConvertDescription(path);
+                }
+
                 path = Path.GetFullPath(path);
                 var desc = new Description(path);
                 path = Path.Combine(Path.GetDirectoryName(path), "Resources");

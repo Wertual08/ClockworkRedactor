@@ -55,6 +55,10 @@ namespace Resource_Redactor.Descriptions
         {
             return type >= ResourceType.Folder;
         }
+        public static bool ValidBinary(this ResourceType type)
+        {
+            return type > ResourceType.Folder;
+        }
     }
 
     public class ResourceEventArgs : EventArgs
@@ -82,6 +86,74 @@ namespace Resource_Redactor.Descriptions
             foreach (var c in astamp) if (c != r.ReadChar()) return false;
             if (r.ReadUInt32() != 0xff0ff000) return false;
             return true;
+        }
+    }
+    public class ResourceID : IComparable
+    {
+        private static Random Generator = new Random();
+        private long TimePart;
+        private long RandPart;
+
+        public override bool Equals(object obj)
+        {
+            var res = obj as ResourceID;
+            return res != null && TimePart == res.TimePart && RandPart == res.RandPart;
+        }
+        public int CompareTo(object obj)
+        {
+            if (!(obj is ResourceID)) throw new Exception("ResourceID error: ResourceID can be compared only with itself.");
+            var res = obj as ResourceID;
+
+            if (TimePart < res.TimePart) return 1;
+            if (TimePart > res.TimePart) return -1;
+            if (RandPart < res.RandPart) return 1;
+            if (RandPart > res.RandPart) return -1;
+            return 0;
+        }
+
+        private ResourceID(long time_part, long rand_part)
+        {
+            TimePart = time_part;
+            RandPart = rand_part;
+        }
+        public ResourceID()
+        {
+            TimePart = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            RandPart = ((long)Generator.Next(int.MinValue, int.MaxValue) << 32) | (long)Generator.Next(int.MinValue, int.MaxValue);
+        }
+        public ResourceID(BinaryReader reader)
+        {
+            TimePart = reader.ReadInt64();
+            RandPart = reader.ReadInt64();
+        }
+        public void Write(BinaryWriter writer)
+        {
+            writer.Write(TimePart);
+            writer.Write(RandPart);
+        }
+    }
+    public class ResourceLink
+    {
+        private string FilePath;
+        private ResourceType Type;
+        private ResourceID ID;
+
+        public ResourceLink()
+        {
+            FilePath = null;
+            Type = ResourceType.MissingFile;
+            ID = null;
+        }
+        public ResourceLink(string path)
+        {
+            FilePath = path;
+            Type = Resource.GetType(path);
+            ID = Resource.GetID(path);
+        }
+        public ResourceLink(BinaryReader reader)
+        {
+            FilePath = reader.ReadString();
+            Type = Resource.StringToType(reader.ReadString());
         }
     }
     public abstract class Resource : IDisposable
@@ -342,6 +414,19 @@ namespace Resource_Redactor.Descriptions
             if (type == typeof(OutfitResource)) return OutfitResource.CurrentType;
             return ResourceType.NotResource;
         }
+        public static ResourceID GetID(string path)
+        {
+            if (!File.Exists(path)) return null;
+
+            using (var r = new BinaryReader(File.OpenRead(path)))
+            {
+                if (!ResourceSignature.Read(r)) return null;
+                var type = r.ReadString();
+                var version = r.ReadString();
+                var timestamp = r.ReadString(); 
+                return null;
+            }
+        }
 
 
         protected abstract void ReadData(BinaryReader r);
@@ -350,12 +435,14 @@ namespace Resource_Redactor.Descriptions
         public ResourceType Type { get; private set; }
         public string Version { get; private set; }
         public string TimeStamp { get; private set; }
+        public ResourceID ID { get; private set; } 
 
         public Resource(ResourceType type, string version)
         {
             Type = type;
             Version = version;
             TimeStamp = ResourceSignature.TimeStamp;
+            ID = new ResourceID();
         }
         public Resource(string path)
         {
@@ -371,6 +458,7 @@ namespace Resource_Redactor.Descriptions
                 Type = StringToType(r.ReadString());
                 Version = r.ReadString();
                 TimeStamp = r.ReadString();
+                ID = new ResourceID(r);
                 ReadData(r);
             }
         }
@@ -382,6 +470,7 @@ namespace Resource_Redactor.Descriptions
                 w.Write(TypeToString(Type));
                 w.Write(Version);
                 w.Write(ResourceSignature.TimeStamp);
+                ID.Write(w);
                 WriteData(w);
             }
         }

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Resource_Redactor.Descriptions
@@ -244,7 +245,75 @@ namespace Resource_Redactor.Descriptions
             }
         }
 
+        private static void Description____to0000(string path)
+        {
+            string name = null;
+            using (var reader = new BinaryReader(File.OpenRead(path)))
+            {
+                if (!Description.ReadSignature(reader)) throw new Exception("Invalid description base file format.");
+                name = reader.ReadString();
+            }
+            using (var writer = new BinaryWriter(File.OpenWrite(path)))
+            {
+                Description.WriteSignature(writer);
+                writer.Write("0.0.0.0");
+                writer.Write(name);
+            }
+        }
+        private static void Description0000to0001(string path)
+        {
+            string name = null;
+            using (var reader = new BinaryReader(File.OpenRead(path)))
+            {
+                if (!Description.ReadSignature(reader)) throw new Exception("Invalid description base file format.");
+                reader.ReadString(); // do not care about current version
+                name = reader.ReadString();
+            }
 
+            var resources_path = Path.GetFullPath(path);
+            resources_path = Path.Combine(Path.GetDirectoryName(resources_path), "Resources");
+            var files = Directory.GetFiles(resources_path, "*", SearchOption.AllDirectories);
+            foreach (var file in files)
+            {
+                if (Resource.GetType(file).ValidBinary())
+                {
+                    var bytes = File.ReadAllBytes(file);
+                    using (var reader = new BinaryReader(new MemoryStream(bytes)))
+                    using (var writer = new BinaryWriter(File.OpenWrite(file)))
+                    {
+                        ResourceSignature.Read(reader);
+                        ResourceSignature.Write(writer);
+                        writer.Write(reader.ReadString());
+                        writer.Write(reader.ReadString());
+                        writer.Write(reader.ReadString());
+                        new ResourceID().Write(writer);
+                        writer.Write(reader.ReadBytes((int)(reader.BaseStream.Length - reader.BaseStream.Position)));
+                    }
+                }
+            }
+
+            using (var writer = new BinaryWriter(File.OpenWrite(path)))
+            {
+                Description.WriteSignature(writer);
+                writer.Write("0.0.0.1");
+                writer.Write(name);
+            }
+        }
+
+        public static void ConvertDescription(string path)
+        {
+            string version;
+            while ((version = Description.CheckVersion(path)) != Description.CurrentVersion)
+            {
+                switch (version)
+                {
+                    case "_._._._": Description____to0000(path); break;
+                    case "0.0.0.0": Description0000to0001(path); break;
+
+                    default: throw new Exception("Converter error: Failed to convert description. Final version: " + version);
+                }
+            }
+        }
     }
 
 }

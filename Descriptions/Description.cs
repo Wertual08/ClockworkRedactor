@@ -4,19 +4,20 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Resource_Redactor.Descriptions
 {
     public class Description
     {
         private static readonly string Stamp = "CLOCKWORK_ENGINE_REDACTOR_DESCRIPTION_BASE";
-        private static void WriteSignature(BinaryWriter w)
+        public static void WriteSignature(BinaryWriter w)
         {
             w.Write(0x00f00fff);
             w.Write(Stamp.ToCharArray());
             w.Write(0xff0ff000);
         }
-        private static bool ReadSignature(BinaryReader r)
+        public static bool ReadSignature(BinaryReader r)
         {
             var astamp = Stamp.ToCharArray();
             long length = astamp.Length + 8L + 4L;
@@ -28,7 +29,7 @@ namespace Resource_Redactor.Descriptions
         }
 
         public static readonly string RedactorVersion = "0.0.0.4";
-        public static readonly string CurrentVersion = "0.0.0.0";
+        public static readonly string CurrentVersion = "0.0.0.1";
         public static readonly string Extension = "ced";
 
         public string Name { get; private set; }
@@ -47,6 +48,18 @@ namespace Resource_Redactor.Descriptions
                 WriteSignature(writer);
                 writer.Write(CurrentVersion); 
                 writer.Write(name);
+            }
+        }
+        public static string CheckVersion(string path)
+        {
+            using (var reader = new BinaryReader(File.OpenRead(path)))
+            {
+                if (!ReadSignature(reader)) throw new Exception("Invalid description base file format.");
+                var version = reader.ReadString();
+                if (version.Length != "_._._._".Length) return "_._._._";
+                if (!char.IsDigit(version[0]) || version[1] != '.' || !char.IsDigit(version[2]) || version[3] != '.' || 
+                    !char.IsDigit(version[4]) || version[5] != '.' || !char.IsDigit(version[6])) return "_._._._";
+                return version;
             }
         }
 
