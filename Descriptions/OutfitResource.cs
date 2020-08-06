@@ -22,14 +22,11 @@ namespace Resource_Redactor.Descriptions
                 Under,
                 Replace,
             }
-            public Subresource<SpriteResource> Sprite;
-            public int RagdollNode;
-            public Clothe ClotheType;
+            public Subresource<SpriteResource> Sprite { get; set; } = new Subresource<SpriteResource>();
+            public int RagdollNode { get; set; } = -1;
+            public Clothe ClotheType { get; set; } = Clothe.Over;
             public Node()
             {
-                Sprite = new Subresource<SpriteResource>();
-                RagdollNode = -1;
-                ClotheType = Clothe.Over;
             }
             public Node(BinaryReader r)
             {
@@ -80,8 +77,9 @@ namespace Resource_Redactor.Descriptions
             for (int i = 0; i < Nodes.Capacity; i++) Nodes.Add(new Node(r));
 
 
-            BackColor = Color.FromArgb(r.ReadInt32());
-            PointBounds = r.ReadStruct<PointF>();
+            BackColor = r.ReadInt32();
+            PointBoundsX = r.ReadSingle();
+            PointBoundsY = r.ReadSingle();
             PixelPerfect = r.ReadBoolean();
             GridEnabled = r.ReadBoolean();
             Transparency = r.ReadBoolean();
@@ -92,8 +90,9 @@ namespace Resource_Redactor.Descriptions
             w.Write(Nodes.Count);
             foreach (var n in Nodes) n.Write(w);
 
-            w.Write(BackColor.ToArgb());
-            w.Write(PointBounds);
+            w.Write(BackColor);
+            w.Write(PointBoundsX);
+            w.Write(PointBoundsY);
             w.Write(PixelPerfect);
             w.Write(GridEnabled);
             w.Write(Transparency);
@@ -101,15 +100,16 @@ namespace Resource_Redactor.Descriptions
         }
 
         // Resource //
-        public List<Node> Nodes = new List<Node>();
+        public List<Node> Nodes { get; set; } = new List<Node>();
 
         // Redactor //
-        public Color BackColor = Color.Black;
-        public PointF PointBounds = new PointF(5f, 4f);
-        public bool PixelPerfect = false;
-        public bool GridEnabled = true;
-        public bool Transparency = true;
-        public WeakSubresource<RagdollResource> Ragdoll { get; private set; } = new WeakSubresource<RagdollResource>();
+        public int BackColor { get; set; } = Color.Black.ToArgb();
+        public float PointBoundsX { get; set; } = 5f;
+        public float PointBoundsY { get; set; } = 4f;
+        public bool PixelPerfect { get; set; } = false;
+        public bool GridEnabled { get; set; } = true;
+        public bool Transparency { get; set; } = true;
+        public WeakSubresource<RagdollResource> Ragdoll { get; set; } = new WeakSubresource<RagdollResource>();
 
         public OutfitResource() : base(CurrentType, CurrentVersion)
         {

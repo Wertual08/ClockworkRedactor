@@ -36,8 +36,9 @@ namespace Resource_Redactor.Descriptions
 
             Texture.Link = r.ReadString();
 
-            BackColor = Color.FromArgb(r.ReadInt32());
-            PointBounds = r.ReadStruct<PointF>();
+            BackColor = r.ReadInt32();
+            PointBoundsX = r.ReadSingle();
+            PointBoundsY = r.ReadSingle();
             PixelPerfect = r.ReadBoolean();
         }
         protected override void WriteData(BinaryWriter w)
@@ -53,26 +54,28 @@ namespace Resource_Redactor.Descriptions
 
             w.Write(Texture.Link);
 
-            w.Write(BackColor.ToArgb());
-            w.Write(PointBounds);
+            w.Write(BackColor);
+            w.Write(PointBoundsX);
+            w.Write(PointBoundsY);
             w.Write(PixelPerfect);
         }
 
         // Resource //
-        public int FramesCount = 1;
-        public int FrameDelay = 0;
-        public float ImgboxW = 1f;
-        public float ImgboxH = 1f;
-        public float AxisX = 0f;
-        public float AxisY = 0f;
-        public float Angle = 0f;
-        public bool VerticalFrames = false;
-        public Subresource<TextureResource> Texture = new Subresource<TextureResource>();
+        public int FramesCount { get; set; } = 1;
+        public int FrameDelay { get; set; } = 0;
+        public float ImgboxW { get; set; } = 1f;
+        public float ImgboxH { get; set; } = 1f;
+        public float AxisX { get; set; } = 0f;
+        public float AxisY { get; set; } = 0f; 
+        public float Angle { get; set; } = 0f; 
+        public bool VerticalFrames { get; set; } = false;
+        public Subresource<TextureResource> Texture { get; set; } = new Subresource<TextureResource>();
 
         // Redactor //
-        public Color BackColor = Color.Black;
-        public PointF PointBounds = new PointF(5f, 4f);
-        public bool PixelPerfect = true;
+        public int BackColor { get; set; } = Color.Black.ToArgb();
+        public float PointBoundsX { get; set; } = 5f;
+        public float PointBoundsY { get; set; } = 4f;
+        public bool PixelPerfect { get; set; } = true;
 
         public SpriteResource() : base(CurrentType, CurrentVersion)
         {

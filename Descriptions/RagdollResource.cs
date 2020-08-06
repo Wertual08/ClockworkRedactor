@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Resource_Redactor.Descriptions
@@ -18,12 +19,12 @@ namespace Resource_Redactor.Descriptions
 
         public class Node : IDisposable
         {
-            public List<Subresource<SpriteResource>> SpritesBackup { get; private set; } = new List<Subresource<SpriteResource>>();
-            public List<Subresource<SpriteResource>> Sprites { get; private set; } = new List<Subresource<SpriteResource>>();
+            public List<Subresource<SpriteResource>> SpritesBackup { get; set; } = new List<Subresource<SpriteResource>>();
+            public List<Subresource<SpriteResource>> Sprites { get; set; } = new List<Subresource<SpriteResource>>();
 
-            public float OffsetX = 0f;
-            public float OffsetY = 0f;
-            public int MainNode = -1;
+            public float OffsetX { get; set; } = 0f;
+            public float OffsetY { get; set; } = 0f;
+            public int MainNode { get; set; } = -1;
 
             public Node()
             {
@@ -74,6 +75,7 @@ namespace Resource_Redactor.Descriptions
                 return new PointF((OffsetX + ox) * cs - (OffsetY + oy) * sn, (OffsetX + ox) * sn + (OffsetY + oy) * cs);
             }
 
+            [JsonIgnore]
             public int Count { get { return Sprites.Count; } }
             public Subresource<SpriteResource> this[int i]
             {
@@ -125,8 +127,9 @@ namespace Resource_Redactor.Descriptions
             HitboxW = r.ReadDouble();
             HitboxH = r.ReadDouble();
             
-            BackColor = Color.FromArgb(r.ReadInt32());
-            PointBounds = r.ReadStruct<PointF>();
+            BackColor = r.ReadInt32();
+            PointBoundsX = r.ReadSingle();
+            PointBoundsY = r.ReadSingle();
             PixelPerfect = r.ReadBoolean();
             Transparency = r.ReadBoolean();
 
@@ -139,22 +142,26 @@ namespace Resource_Redactor.Descriptions
             w.Write(HitboxW);
             w.Write(HitboxH);
 
-            w.Write(BackColor.ToArgb());
-            w.Write(PointBounds);
+            w.Write(BackColor);
+            w.Write(PointBoundsX);
+            w.Write(PointBoundsY);
             w.Write(PixelPerfect);
             w.Write(Transparency);
         }
 
         // Resource //
-        public List<Node> Nodes { get; private set; } = new List<Node>();
+        public List<Node> Nodes { get; set; } = new List<Node>();
+        [JsonIgnore]
         public int Count { get { return Nodes.Count; } }
-        public double HitboxW, HitboxH;
+        public double HitboxW { get; set; }
+        public double HitboxH { get; set; }
 
         // Redactor //
-        public Color BackColor = Color.Black;
-        public PointF PointBounds = new PointF(5f, 4f);
-        public bool PixelPerfect = true;
-        public bool Transparency = true;
+        public int BackColor { get; set; } = Color.Black.ToArgb();
+        public float PointBoundsX { get; set; } = 5f;
+        public float PointBoundsY { get; set; } = 4f;
+        public bool PixelPerfect { get; set; } = true;
+        public bool Transparency { get; set; } = true;
 
 
         public RagdollResource() : base(CurrentType, CurrentVersion)

@@ -54,7 +54,7 @@ namespace Resource_Redactor.Descriptions.Redactors
             public string RecieveEvent;
             public string RemoveEvent;
 
-            public Color BackColor;
+            public int BackColor;
             public bool GridEnabled;
 
             public State(TileResource r)
@@ -212,36 +212,36 @@ namespace Resource_Redactor.Descriptions.Redactors
             GLSurface.MakeCurrent();
             LoadedResource = new TileResource(path);
 
-            SolidityNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, ref LoadedResource.Solidity);
+            SolidityNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.Solidity, v => LoadedResource.Solidity = v);
             LayerNumeric.ValueChanged += (object sender, EventArgs e) =>
             {
-                SyncNumericValue(sender, ref LoadedResource.Layer);
+                SyncNumericValue(sender, LoadedResource.Layer, v => LoadedResource.Layer = v);
                 GLSurface.ResortTiles();
             };
-            SizeNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, ref LoadedResource.PartSize);
-            FramesCountNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, ref LoadedResource.FramesCount);
-            FrameDelayNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, ref LoadedResource.FrameDelay);
-            OffsetXNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, ref LoadedResource.OffsetX);
-            OffsetYNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, ref LoadedResource.OffsetY);
+            SizeNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.PartSize, v => LoadedResource.PartSize = v);
+            FramesCountNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.FramesCount, v => LoadedResource.FramesCount = v);
+            FrameDelayNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.FrameDelay, v => LoadedResource.FrameDelay = v);
+            OffsetXNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.OffsetX, v => LoadedResource.OffsetX = v);
+            OffsetYNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.OffsetY, v => LoadedResource.OffsetY = v);
 
-            TReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, ref LoadedResource.Reactions, TileResource.Reaction.T);
-            TLReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, ref LoadedResource.Reactions, TileResource.Reaction.TL);
-            LReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, ref LoadedResource.Reactions, TileResource.Reaction.L);
-            LDReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, ref LoadedResource.Reactions, TileResource.Reaction.LD);
-            DReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, ref LoadedResource.Reactions, TileResource.Reaction.D);
-            DRReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, ref LoadedResource.Reactions, TileResource.Reaction.DR);
-            RReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, ref LoadedResource.Reactions, TileResource.Reaction.R);
-            RUReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, ref LoadedResource.Reactions, TileResource.Reaction.RT);
-            MReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, ref LoadedResource.Reactions, TileResource.Reaction.M);
+            TReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, LoadedResource.Reactions, v => LoadedResource.Reactions = v, TileResource.Reaction.T);
+            TLReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, LoadedResource.Reactions, v => LoadedResource.Reactions = v, TileResource.Reaction.TL);
+            LReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, LoadedResource.Reactions, v => LoadedResource.Reactions = v, TileResource.Reaction.L);
+            LDReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, LoadedResource.Reactions, v => LoadedResource.Reactions = v, TileResource.Reaction.LD);
+            DReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, LoadedResource.Reactions, v => LoadedResource.Reactions = v, TileResource.Reaction.D);
+            DRReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, LoadedResource.Reactions, v => LoadedResource.Reactions = v, TileResource.Reaction.DR);
+            RReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, LoadedResource.Reactions, v => LoadedResource.Reactions = v, TileResource.Reaction.R);
+            RUReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, LoadedResource.Reactions, v => LoadedResource.Reactions = v, TileResource.Reaction.RT);
+            MReactionBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxReaction(sender, LoadedResource.Reactions, v => LoadedResource.Reactions = v, TileResource.Reaction.M);
 
-            TAnchorBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxAnchor(sender, ref LoadedResource.Anchors, TileResource.Anchor.T);
-            LAnchorBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxAnchor(sender, ref LoadedResource.Anchors, TileResource.Anchor.L);
-            DAnchorBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxAnchor(sender, ref LoadedResource.Anchors, TileResource.Anchor.D);
-            RAnchorBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxAnchor(sender, ref LoadedResource.Anchors, TileResource.Anchor.R);
-            FAnchorBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxAnchor(sender, ref LoadedResource.Anchors, TileResource.Anchor.F);
-            BAnchorBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxAnchor(sender, ref LoadedResource.Anchors, TileResource.Anchor.B);
+            TAnchorBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxAnchor(sender, LoadedResource.Anchors, v =>LoadedResource.Anchors = v, TileResource.Anchor.T);
+            LAnchorBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxAnchor(sender, LoadedResource.Anchors, v =>LoadedResource.Anchors = v, TileResource.Anchor.L);
+            DAnchorBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxAnchor(sender, LoadedResource.Anchors, v =>LoadedResource.Anchors = v, TileResource.Anchor.D);
+            RAnchorBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxAnchor(sender, LoadedResource.Anchors, v =>LoadedResource.Anchors = v, TileResource.Anchor.R);
+            FAnchorBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxAnchor(sender, LoadedResource.Anchors, v =>LoadedResource.Anchors = v, TileResource.Anchor.F);
+            BAnchorBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxAnchor(sender, LoadedResource.Anchors, v =>LoadedResource.Anchors = v, TileResource.Anchor.B);
 
-            PropertiesListBox.ItemCheck += (object sender, ItemCheckEventArgs e) => SyncFlags(sender, e, ref LoadedResource.Properties);
+            PropertiesListBox.ItemCheck += (object sender, ItemCheckEventArgs e) => SyncFlags(sender, e, LoadedResource.Properties, v => LoadedResource.Properties = v);
 
             Story = new StoryItem<State>(new State(LoadedResource));
             Story.ValueChanged += Story_ValueChanged;
@@ -293,7 +293,7 @@ namespace Resource_Redactor.Descriptions.Redactors
             GLSurface.PlaceTile(TileName, ox + 1, oy + 0);
             GLSurface.PlaceTile(TileName, ox + 0, oy - 1);
             GLSurface.PlaceTile(TileName, ox + 0, oy + 1);
-            GLSurface.BackColor = LoadedResource.BackColor;
+            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
             GLSurface.GridEnabled = LoadedResource.GridEnabled;
             GetTab("Toggle grid").Checked = LoadedResource.GridEnabled;
         }
@@ -302,18 +302,18 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             return MenuTabs.First((ToolStripMenuItem item) => { return item.Text == title; });
         }
-        private void SyncNumericValue<T>(object sender, ref T value) where T : struct
+        private void SyncNumericValue<T>(object sender, T value, Action<T> set_value) where T : struct
         {
             var numeric = sender as NumericUpDown;
             var v = (T)Convert.ChangeType(numeric.Value, typeof(T));
             if (numeric != null && !value.Equals(v))
             {
-                value = v;
+                set_value(v);
                 BackupChanges();
                 MakeUnsaved();
             }
         }
-        private void SyncFlags(object sender, ItemCheckEventArgs e, ref TileResource.Property value)
+        private void SyncFlags(object sender, ItemCheckEventArgs e, TileResource.Property value, Action<TileResource.Property> set_value)
         {
             var box = sender as CheckedListBox;
             if (box != null)
@@ -321,31 +321,31 @@ namespace Resource_Redactor.Descriptions.Redactors
                 bool ch = e.NewValue == CheckState.Checked;
                 if (ch != (((int)value & (1 << e.Index)) != 0))
                 {
-                    if (ch) value |= (TileResource.Property)(1 << e.Index);
-                    else value &= (TileResource.Property)(~(1 << e.Index));
+                    if (ch) set_value(value | (TileResource.Property)(1 << e.Index));
+                    else set_value(value & (TileResource.Property)~(1 << e.Index));
                     BackupChanges();
                     MakeUnsaved();
                 }
             }
         }
-        private void SyncCheckBoxReaction(object sender, ref TileResource.Reaction value, TileResource.Reaction i)
+        private void SyncCheckBoxReaction(object sender, TileResource.Reaction value, Action<TileResource.Reaction> set_value, TileResource.Reaction i)
         {
             var box = sender as CheckBox;
             if (box != null && value.HasFlag(i) != box.Checked)
             {
-                if (box.Checked) value |= i;
-                else value &= ~i;
+                if (box.Checked) set_value(value | i);
+                else set_value(value & ~i);
                 BackupChanges();
                 MakeUnsaved();
             }
         }
-        private void SyncCheckBoxAnchor(object sender, ref TileResource.Anchor value, TileResource.Anchor i)
+        private void SyncCheckBoxAnchor(object sender, TileResource.Anchor value, Action<TileResource.Anchor> set_value, TileResource.Anchor i)
         {
             var box = sender as CheckBox;
             if (box != null && value.HasFlag(i) != box.Checked)
             {
-                if (box.Checked) value |= i;
-                else value &= ~i;
+                if (box.Checked) set_value(value | i);
+                else set_value(value & ~i);
                 BackupChanges();
                 MakeUnsaved();
             }
@@ -420,7 +420,7 @@ namespace Resource_Redactor.Descriptions.Redactors
             FAnchorBox.Checked = LoadedResource.Anchors.HasFlag(TileResource.Anchor.F);
             BAnchorBox.Checked = LoadedResource.Anchors.HasFlag(TileResource.Anchor.B);
 
-            GLSurface.BackColor = LoadedResource.BackColor;
+            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
             GLSurface.GridEnabled = LoadedResource.GridEnabled;
 
             MakeUnsaved();
@@ -753,11 +753,11 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = LoadedResource.BackColor;
+                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color;
+                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
                 BackupChanges();
             }
             catch (Exception ex)

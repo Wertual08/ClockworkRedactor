@@ -99,7 +99,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                 NodesListBox.Items.RemoveAt(NodesListBox.Items.Count - 1);
             NodesListBox.EndUpdate();
 
-            GLSurface.BackColor = LoadedResource.BackColor;
+            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
 
             ClotheTypeComboBox.Items.AddRange(Enum.GetNames(typeof(OutfitResource.Node.Clothe)));
 
@@ -190,8 +190,9 @@ namespace Resource_Redactor.Descriptions.Redactors
             private string[] Links;
             private int[] Nodes;
             private int[] Types;
-            private Color BackColor;
-            private PointF PointBounds;
+            private int BackColor;
+            private float PointBoundsX;
+            private float PointBoundsY;
             private bool PixelPerfect;
             private bool GridEnabled;
             private bool Transparency;
@@ -209,7 +210,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                     Types[i] = (int)r[i].ClotheType;
                 }
                 BackColor = r.BackColor;
-                PointBounds = r.PointBounds;
+                PointBoundsX = r.PointBoundsX;
+                PointBoundsY = r.PointBoundsY;
                 PixelPerfect = r.PixelPerfect;
                 GridEnabled = r.GridEnabled;
                 Transparency = r.Transparency;
@@ -225,7 +227,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                     r[i].ClotheType = (OutfitResource.Node.Clothe)Types[i];
                 }
                 r.BackColor = BackColor;
-                r.PointBounds = PointBounds;
+                r.PointBoundsX = PointBoundsX;
+                r.PointBoundsY = PointBoundsY;
                 r.PixelPerfect = PixelPerfect;
                 r.GridEnabled = GridEnabled;
                 r.Transparency = Transparency;
@@ -243,7 +246,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                     if (s.Types[i] != Types[i]) return false;
                 }
                 if (s.BackColor != BackColor) return false;
-                if (s.PointBounds != PointBounds) return false;
+                if (s.PointBoundsX != PointBoundsX) return false;
+                if (s.PointBoundsY != PointBoundsY) return false;
                 if (s.PixelPerfect != PixelPerfect) return false;
                 if (s.GridEnabled != GridEnabled) return false;
                 if (s.Transparency != Transparency) return false;
@@ -566,12 +570,12 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = LoadedResource.BackColor;
+                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color;
-                GLSurface.BackColor = LoadedResource.BackColor;
+                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
+                GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
                 MakeUnsaved();
             }
             catch (Exception ex)

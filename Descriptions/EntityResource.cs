@@ -5,6 +5,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Resource_Redactor.Descriptions
@@ -43,8 +45,9 @@ namespace Resource_Redactor.Descriptions
             MoveForceX = r.ReadDouble();
             MoveForceY = r.ReadDouble();
 
-            BackColor = Color.FromArgb(r.ReadInt32());
-            PointBounds = r.ReadStruct<PointF>();
+            BackColor = r.ReadInt32();
+            PointBoundsX = r.ReadSingle();
+            PointBoundsY = r.ReadSingle();
             GridEnabled = r.ReadBoolean();
             Transparency = r.ReadBoolean();
         }
@@ -70,36 +73,37 @@ namespace Resource_Redactor.Descriptions
             w.Write(MoveForceX);
             w.Write(MoveForceY);
 
-            w.Write(BackColor.ToArgb());
-            w.Write(PointBounds);
+            w.Write(BackColor);
+            w.Write(PointBoundsX);
+            w.Write(PointBoundsY);
             w.Write(GridEnabled);
             w.Write(Transparency);
         }
-        
+
         public class Trigger : IDisposable
         {
-            public string Name = "";
+            public string Name { get; set; } = "";
 
-            public string Action = "";
+            public string Action { get; set; } = "";
 
-            public double VelocityXLowBound = double.NegativeInfinity;
-            public double VelocityXHighBound = double.PositiveInfinity;
+            public double VelocityXLowBound { get; set; } = double.NegativeInfinity;
+            public double VelocityXHighBound { get; set; } = double.PositiveInfinity;
 
-            public double VelocityYLowBound = double.NegativeInfinity;
-            public double VelocityYHighBound = double.PositiveInfinity;
+            public double VelocityYLowBound { get; set; } = double.NegativeInfinity;
+            public double VelocityYHighBound { get; set; } = double.PositiveInfinity;
 
-            public double AccelerationXLowBound = double.NegativeInfinity;
-            public double AccelerationXHighBound = double.PositiveInfinity;
+            public double AccelerationXLowBound { get; set; } = double.NegativeInfinity;
+            public double AccelerationXHighBound { get; set; } = double.PositiveInfinity;
 
-            public double AccelerationYLowBound = double.NegativeInfinity;
-            public double AccelerationYHighBound = double.PositiveInfinity;
+            public double AccelerationYLowBound { get; set; } = double.NegativeInfinity;
+            public double AccelerationYHighBound { get; set; } = double.PositiveInfinity;
 
-            public int OnGround = DoNotCare;
-            public int OnRoof = DoNotCare;
-            public int OnWall = DoNotCare;
-            public int Direction = DoNotCare;
+            public int OnGround { get; set; } = DoNotCare;
+            public int OnRoof { get; set; } = DoNotCare;
+            public int OnWall { get; set; } = DoNotCare;
+            public int Direction { get; set; } = DoNotCare;
 
-            public Subresource<AnimationResource> Animation = new Subresource<AnimationResource>();
+            public Subresource<AnimationResource> Animation { get; set; } = new Subresource<AnimationResource>();
 
             public Trigger()
             {
@@ -153,21 +157,25 @@ namespace Resource_Redactor.Descriptions
                 Right = 1,
             }
             public readonly static int DoNotCare = int.MinValue;
+            [JsonIgnore]
             public BoolConditional IOnGround
             {
                 get { return (BoolConditional)OnGround; }
                 set { OnGround = (int)value; }
             }
+            [JsonIgnore]
             public BoolConditional IOnRoof
             {
                 get { return (BoolConditional)OnRoof; }
                 set { OnRoof = (int)value; }
             }
+            [JsonIgnore]
             public DirectionConditional IOnWall
             {
                 get { return (DirectionConditional)OnWall; }
                 set { OnWall = (int)value; }
             }
+            [JsonIgnore]
             public DirectionConditional IDirection
             {
                 get { return (DirectionConditional)Direction; }
@@ -195,10 +203,10 @@ namespace Resource_Redactor.Descriptions
         }
         public class Holder : IDisposable
         {
-            public string Name = "";
-            public string Action = "";
-            public int HolderPoint = -1;
-            public Subresource<AnimationResource> Animation = new Subresource<AnimationResource>();
+            public string Name { get; set; } = "";
+            public string Action { get; set; } = "";
+            public int HolderPoint { get; set; } = -1;
+            public Subresource<AnimationResource> Animation { get; set; } = new Subresource<AnimationResource>();
 
             public Holder()
             {
@@ -237,28 +245,29 @@ namespace Resource_Redactor.Descriptions
         }
 
         // Resource //
-        public Subresource<RagdollResource> Ragdoll = new Subresource<RagdollResource>();
-        public List<Holder> Holders { get; private set; } = new List<Holder>();
-        public List<Trigger> Triggers { get; private set; } = new List<Trigger>();
+        public Subresource<RagdollResource> Ragdoll { get; set; } = new Subresource<RagdollResource>();
+        public List<Holder> Holders { get; set; } = new List<Holder>();
+        public List<Trigger> Triggers { get; set; } = new List<Trigger>();
 
-        public ulong MaxHealth = 0;
-        public ulong MaxEnergy = 0;
-        public double Mass = 1d;
+        public ulong MaxHealth { get; set; } = 0;
+        public ulong MaxEnergy { get; set; } = 0;
+        public double Mass { get; set; } = 1d;
 
-        public double GravityAcceleration = 0d;
-        public double JumpVelocity = 0d;
-        public double DragX = 0d;
-        public double DragY = 0d;
-        public double SqrDragX = 0d;
-        public double SqrDragY = 0d;
-        public double MoveForceX = 0d;
-        public double MoveForceY = 0d;
+        public double GravityAcceleration { get; set; } = 0d;
+        public double JumpVelocity { get; set; } = 0d;
+        public double DragX { get; set; } = 0d;
+        public double DragY { get; set; } = 0d;
+        public double SqrDragX { get; set; } = 0d;
+        public double SqrDragY { get; set; } = 0d;
+        public double MoveForceX { get; set; } = 0d;
+        public double MoveForceY { get; set; } = 0d;
 
         // Redactor //
-        public Color BackColor = Color.Black;
-        public PointF PointBounds = new PointF(5f, 4f);
-        public bool GridEnabled = true;
-        public bool Transparency = false;
+        public int BackColor { get; set; } = Color.Black.ToArgb();
+        public float PointBoundsX { get; set; } = 5f;
+        public float PointBoundsY { get; set; } = 4f;
+        public bool GridEnabled { get; set; } = true;
+        public bool Transparency { get; set; } = false;
 
         public EntityResource() : base(CurrentType, CurrentVersion)
         {

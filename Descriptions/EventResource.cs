@@ -24,7 +24,7 @@ namespace Resource_Redactor.Descriptions
 
 
 
-            BackColor = Color.FromArgb(r.ReadInt32());
+            BackColor = r.ReadInt32();
             GridEnabled = r.ReadBoolean();
         }
         protected override void WriteData(BinaryWriter w)
@@ -32,7 +32,7 @@ namespace Resource_Redactor.Descriptions
 
 
 
-            w.Write(BackColor.ToArgb());
+            w.Write(BackColor);
             w.Write(GridEnabled);
         }
 
@@ -43,19 +43,19 @@ namespace Resource_Redactor.Descriptions
         }
         public class Action
         {
-            public ActionType Type;
-            public string Link;
-            public int OffsetX;
-            public int OffsetY;
+            public ActionType Type { get; set; }
+            public string Link { get; set; }
+            public int OffsetX { get; set; }
+            public int OffsetY { get; set; }
         }
 
-        public ulong MinDelay;
-        public ulong MaxDelay;
+        public ulong MinDelay { get; set; } = 0;
+        public ulong MaxDelay { get; set; } = 0;
 
-        public List<Action> Actions { get; private set; } = new List<Action>();
+        public List<Action> Actions { get; set; } = new List<Action>();
 
-        public Color BackColor = Color.Black;
-        public bool GridEnabled = false;
+        public int BackColor { get; set; } = Color.Black.ToArgb();
+        public bool GridEnabled { get; set; } = false;
 
         public EventResource() : base(CurrentType, CurrentVersion)
         {

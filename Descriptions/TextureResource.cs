@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using ExtraForms.OpenGL;
+using System.Text.Json.Serialization;
 
 namespace Resource_Redactor.Descriptions
 {
@@ -31,25 +32,31 @@ namespace Resource_Redactor.Descriptions
 
             Texture = r.ReadBitmap();
 
-            BackColor = Color.FromArgb(r.ReadInt32());
+            BackColor = r.ReadInt32();
         }
         protected override void WriteData(BinaryWriter w)
         {
             w.Write(Texture);
 
-            w.Write(BackColor.ToArgb());
+            w.Write(BackColor);
         }
 
 
         // Resource //
+        [JsonIgnore]
         public Bitmap Texture
         {
             get { return TextureStorage; }
             set { TextureStorage = value; Refresh(); }
         }
+        public byte[] TextureData
+        {
+            get => Texture.ToBytes();
+            set => Texture = BitmapStreamer.FromBytes(value);
+        }
 
         // Redactor //
-        public Color BackColor = Color.Black;
+        public int BackColor = Color.Black.ToArgb();
 
         public TextureResource() : base(CurrentType, CurrentVersion)
         {

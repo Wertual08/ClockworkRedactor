@@ -49,7 +49,7 @@ namespace Resource_Redactor.Descriptions
             RecieveEvent.Read(r);
             RemoveEvent.Read(r);
 
-            BackColor = Color.FromArgb(r.ReadInt32());
+            BackColor = r.ReadInt32();
             GridEnabled = r.ReadBoolean();
         }
         protected override void WriteData(BinaryWriter w)
@@ -78,7 +78,7 @@ namespace Resource_Redactor.Descriptions
             RecieveEvent.Write(w);
             RemoveEvent.Write(w);
 
-            w.Write(BackColor.ToArgb());
+            w.Write(BackColor);
             w.Write(GridEnabled);
         }
 
@@ -143,29 +143,32 @@ namespace Resource_Redactor.Descriptions
             M = RT * 2
         }
 
-        public Subresource<TextureResource> Texture = new Subresource<TextureResource>();
+        public Subresource<TextureResource> Texture { get; set; } = new Subresource<TextureResource>();
 
-        public Property Properties = Property.None;
-        public Shape Form = Shape.Quad;
-        public Anchor Anchors = Anchor.None;
-        public Reaction Reactions = Reaction.None;
-        public int Solidity = 0;
-        public uint Light = 0;
+        public Property Properties { get; set; } = Property.None;
+        public Shape Form { get; set; } = Shape.Quad;
+        public Anchor Anchors { get; set; } = Anchor.None;
+        public Reaction Reactions { get; set; } = Reaction.None;
+        public int Solidity { get; set; } = 0;
+        public uint Light { get; set; } = 0;
 
-        public int Layer = 0;
-        public int PartSize = 8;
-        public int FramesCount = 1;
-        public int FrameDelay = 0;
+        public int Layer { get; set; } = 0;
+        public int PartSize { get; set; } = 8;
+        public int FramesCount { get; set; } = 1;
+        public int FrameDelay { get; set; } = 0;
 
-        public int OffsetX = 0;
-        public int OffsetY = 0;
+        public int OffsetX { get; set; } = 0;
+        public int OffsetY { get; set; } = 0;
 
-        public Subresource<EventResource> SetupEvent = new Subresource<EventResource>(); 
-        public Subresource<EventResource> ReformEvent = new Subresource<EventResource>();
-        public Subresource<EventResource> TouchEvent = new Subresource<EventResource>(); 
-        public Subresource<EventResource> ActivateEvent = new Subresource<EventResource>(); // TODO: Sprit to 4 events: ActivateFromTop, FromLeft...
-        public Subresource<EventResource> RecieveEvent = new Subresource<EventResource>(); 
-        public Subresource<EventResource> RemoveEvent = new Subresource<EventResource>();  
+        public Subresource<EventResource> SetupEvent { get; set; } = new Subresource<EventResource>(); 
+        public Subresource<EventResource> ReformEvent { get; set; } = new Subresource<EventResource>();
+        public Subresource<EventResource> TouchEvent { get; set; } = new Subresource<EventResource>(); 
+        public Subresource<EventResource> ActivateEvent { get; set; } = new Subresource<EventResource>(); // TODO: Sprit to 4 events: ActivateFromTop, FromLeft...
+        public Subresource<EventResource> RecieveEvent { get; set; } = new Subresource<EventResource>(); 
+        public Subresource<EventResource> RemoveEvent { get; set; } = new Subresource<EventResource>();  
+
+        public int BackColor { get; set; } = Color.Black.ToArgb();
+        public bool GridEnabled { get; set; } = false;
 
         public void Render(float x, float y, long t, TileResource[] tiles = null)
         {
@@ -273,9 +276,6 @@ namespace Resource_Redactor.Descriptions
             }
 
         }
-
-        public Color BackColor = Color.Black;
-        public bool GridEnabled = false;
 
         public TileResource() : base(CurrentType, CurrentVersion)
         {

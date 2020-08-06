@@ -231,8 +231,9 @@ namespace Resource_Redactor.Descriptions.Redactors
             public double MoveForceX;
             public double MoveForceY;
 
-            public Color BackColor;
-            public PointF PointBounds;
+            public int BackColor;
+            public float PointBoundsX;
+            public float PointBoundsY;
             public bool GridEnabled;
             public bool Transparency;
 
@@ -260,7 +261,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                 MoveForceY = e.MoveForceY;
 
                 BackColor = e.BackColor;
-                PointBounds = e.PointBounds;
+                PointBoundsX = e.PointBoundsX;
+                PointBoundsY = e.PointBoundsY;
                 GridEnabled = e.GridEnabled;
                 Transparency = e.Transparency;
             }
@@ -294,7 +296,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                 e.MoveForceY = MoveForceY;
 
                 e.BackColor = BackColor;
-                e.PointBounds = PointBounds;
+                e.PointBoundsX = PointBoundsX;
+                e.PointBoundsY = PointBoundsY;
                 e.GridEnabled = GridEnabled;
                 e.Transparency = Transparency;
             }
@@ -324,7 +327,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                 if (Ragdoll != a.Ragdoll) return false;
 
                 if (BackColor != a.BackColor) return false;
-                if (PointBounds != a.PointBounds) return false;
+                if (PointBoundsX != a.PointBoundsX) return false;
+                if (PointBoundsY != a.PointBoundsY) return false;
                 if (GridEnabled != a.GridEnabled) return false;
                 if (Transparency != a.Transparency) return false;
 
@@ -419,7 +423,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                 HoldersListBox.Items.Add(LoadedResource.Holders[i].Name);
             HoldersListBox.EndUpdate();
 
-            GLSurface.BackColor = LoadedResource.BackColor;
+            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
 
             GetTab("Create").Enabled = false;
             GetTab("Toggle grid").Checked = LoadedResource.GridEnabled;
@@ -581,7 +585,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                 {
                     AnimationsListBox.Items.Add(LoadedResource.Triggers[i].Name);
                     LoadedResource.Triggers[i].Animation.SynchronizingObject = this;
-                    LoadedResource.Triggers[i].Animation.Updated = Animation_Reloaded;
+                    LoadedResource.Triggers[i].Animation.Updated += Animation_Reloaded;
                 }
                 AnimationsListBox.EndUpdate();
                 AnimationsListBox.SelectedIndex = Math.Min(AnimationsListBox.Items.Count - 1, aind);
@@ -593,7 +597,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                 {
                     HoldersListBox.Items.Add(LoadedResource.Holders[i].Name);
                     LoadedResource.Holders[i].Animation.SynchronizingObject = this;
-                    LoadedResource.Holders[i].Animation.Updated = Holder_Reloaded;
+                    LoadedResource.Holders[i].Animation.Updated += Holder_Reloaded;
                 }
                 HoldersListBox.EndUpdate();
                 HoldersListBox.SelectedIndex = Math.Min(HoldersListBox.Items.Count - 1, hind);
@@ -602,7 +606,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                 GetTab("Toggle transparency").Checked = LoadedResource.Transparency;
 
                 GLSurface.GridEnabled = LoadedResource.GridEnabled;
-                GLSurface.BackColor = LoadedResource.BackColor;
+                GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
 
                 UpdateRedactor();
                 MakeUnsaved();
@@ -660,10 +664,10 @@ namespace Resource_Redactor.Descriptions.Redactors
             {
                 if (ModifierKeys == Keys.Control)
                 {
-                    if (LoadedResource.PointBounds.X + e.Delta > 1.0f)
+                    if (LoadedResource.PointBoundsX + e.Delta > 1.0f)
                     {
-                        LoadedResource.PointBounds.X += e.Delta;
-                        LoadedResource.PointBounds.Y += e.Delta;
+                        LoadedResource.PointBoundsX += e.Delta;
+                        LoadedResource.PointBoundsY += e.Delta;
                         MakeUnsaved();
                     }
                 }
@@ -1086,11 +1090,11 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = LoadedResource.BackColor;
+                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color;
+                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
                 Story.Item = new Action(LoadedResource);
             }
             catch (Exception ex)

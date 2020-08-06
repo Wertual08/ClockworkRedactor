@@ -33,8 +33,9 @@ namespace Resource_Redactor.Descriptions.Redactors
             public bool VerticalFrames;
             public string TextureLink;
 
-            public Color BackColor;
-            public PointF PointBounds;
+            public int BackColor;
+            public float PointBoundsX;
+            public float PointBoundsY;
 
             public State(SpriteResource r)
             {
@@ -49,7 +50,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                 TextureLink = r.Texture.Link;
 
                 BackColor = r.BackColor;
-                PointBounds = r.PointBounds;
+                PointBoundsX = r.PointBoundsX;
+                PointBoundsY = r.PointBoundsY;
             }
             public void ToResource(SpriteResource r)
             {
@@ -63,7 +65,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                 r.VerticalFrames = VerticalFrames;
                 if (r.Texture.Link != TextureLink) r.Texture.Link = TextureLink;
                 r.BackColor = BackColor;
-                r.PointBounds = PointBounds;
+                r.PointBoundsX = PointBoundsX;
+                r.PointBoundsY = PointBoundsY;
             }
         };
 
@@ -152,7 +155,7 @@ namespace Resource_Redactor.Descriptions.Redactors
             VFramesCheckBox.Checked = LoadedResource.VerticalFrames;
             LinkTextBox.Text = LoadedResource.Texture.Link;
 
-            GLSurface.BackColor = LoadedResource.BackColor;
+            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
 
             GLFrameTimer.Start();
         }
@@ -198,7 +201,7 @@ namespace Resource_Redactor.Descriptions.Redactors
 
                 RepairOffset();
 
-                GLSurface.BackColor = LoadedResource.BackColor;
+                GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
                 FramesNumeric.Value = LoadedResource.FramesCount;
                 DelayNumeric.Value = (decimal)LoadedResource.FrameDelay;
                 ImgboxWNumeric.Value = (decimal)LoadedResource.ImgboxW;
@@ -331,8 +334,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                 LoadedResource.Render(OffsetX, OffsetY, Angle,
                     DateTimeOffset.Now.ToUnixTimeMilliseconds());
 
-                float b = LoadedResource.PointBounds.X / GLSurface.Zoom;
-                float s = LoadedResource.PointBounds.Y / GLSurface.Zoom;
+                float b = LoadedResource.PointBoundsX / GLSurface.Zoom;
+                float s = LoadedResource.PointBoundsY / GLSurface.Zoom;
 
                 gl.Disable(GL.TEXTURE_2D);
 
@@ -383,10 +386,10 @@ namespace Resource_Redactor.Descriptions.Redactors
                 {
                     if (ModifierKeys == Keys.Control)
                     {
-                        if (LoadedResource.PointBounds.X + e.Delta > 1.0f)
+                        if (LoadedResource.PointBoundsX + e.Delta > 1.0f)
                         {
-                            LoadedResource.PointBounds.X += e.Delta;
-                            LoadedResource.PointBounds.Y += e.Delta;
+                            LoadedResource.PointBoundsX += e.Delta;
+                            LoadedResource.PointBoundsY += e.Delta;
                             Story.Item = new State(LoadedResource);
                         }
                     }
@@ -414,7 +417,7 @@ namespace Resource_Redactor.Descriptions.Redactors
             {
                 MouseManager.BeginDrag(e.Location);
 
-                float b = LoadedResource.PointBounds.X / GLSurface.Zoom;
+                float b = LoadedResource.PointBoundsX / GLSurface.Zoom;
                 if (MouseManager.CurrentLocation.X >= OffsetX - b &&
                     MouseManager.CurrentLocation.X <= OffsetX + b &&
                     MouseManager.CurrentLocation.Y >= OffsetY - b &&
@@ -553,11 +556,11 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = LoadedResource.BackColor;
+                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color;
+                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
                 Story.Item = new State(LoadedResource);
             }
             catch (Exception ex)

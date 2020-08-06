@@ -6,6 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
+using System.Windows.Forms;
+using System.Text.Json;
+using System.Globalization;
 
 namespace Resource_Redactor.Descriptions
 {
@@ -60,6 +64,354 @@ namespace Resource_Redactor.Descriptions
             return type > ResourceType.Folder;
         }
     }
+    public static class JsonElementExt
+    {
+        public static long TryFind(this JsonElement element, string name, long def)
+        {
+            JsonElement property;
+            long result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetInt64(out result)) return result;
+            else return def;
+        }
+        public static int TryFind(this JsonElement element, string name, int def)
+        {
+            JsonElement property;
+            int result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetInt32(out result)) return result;
+            else return def;
+        }
+        public static short TryFind(this JsonElement element, string name, short def)
+        {
+            JsonElement property;
+            short result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetInt16(out result)) return result;
+            else return def;
+        }
+        public static sbyte TryFind(this JsonElement element, string name, sbyte def)
+        {
+            JsonElement property;
+            sbyte result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetSByte(out result)) return result;
+            else return def;
+        }
+        public static ulong TryFind(this JsonElement element, string name, ulong def)
+        {
+            JsonElement property;
+            ulong result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetUInt64(out result)) return result;
+            else return def;
+        }
+        public static uint TryFind(this JsonElement element, string name, uint def)
+        {
+            JsonElement property;
+            uint result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetUInt32(out result)) return result;
+            else return def;
+        }
+        public static ushort TryFind(this JsonElement element, string name, ushort def)
+        {
+            JsonElement property;
+            ushort result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetUInt16(out result)) return result;
+            else return def;
+        }
+        public static byte TryFind(this JsonElement element, string name, byte def)
+        {
+            JsonElement property;
+            byte result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetByte(out result)) return result;
+            else return def;
+        }
+        public static float TryFind(this JsonElement element, string name, float def)
+        {
+            JsonElement property;
+            float result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetSingle(out result)) return result;
+            else return def;
+        }
+        public static double TryFind(this JsonElement element, string name, double def)
+        {
+            JsonElement property;
+            double result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetDouble(out result)) return result;
+            else return def;
+        }
+        public static DateTime TryFind(this JsonElement element, string name, DateTime def)
+        {
+            JsonElement property;
+            DateTime result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetDateTime(out result)) return result;
+            else return def;
+        }
+        public static DateTimeOffset TryFind(this JsonElement element, string name, DateTimeOffset def)
+        {
+            JsonElement property;
+            DateTimeOffset result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetDateTimeOffset(out result)) return result;
+            else return def;
+        }
+        public static decimal TryFind(this JsonElement element, string name, decimal def)
+        {
+            JsonElement property;
+            decimal result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetDecimal(out result)) return result;
+            else return def;
+        }
+        public static Guid TryFind(this JsonElement element, string name, Guid def)
+        {
+            JsonElement property;
+            Guid result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetGuid(out result)) return result;
+            else return def;
+        }
+        public static string TryFind(this JsonElement element, string name, string def)
+        {
+            JsonElement property;
+
+            if (element.TryGetProperty(name, out property)) return property.GetString();
+            else return def;
+        }
+        public static bool TryFind(this JsonElement element, string name, bool def)
+        {
+            JsonElement property;
+
+            if (element.TryGetProperty(name, out property)) return property.GetBoolean();
+            else return def;
+        }
+
+        public static bool TryFind(this JsonElement element, string name, ref long val)
+        {
+            JsonElement property;
+            long result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetInt64(out result))
+            {
+                val = result;
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref int val)
+        {
+            JsonElement property;
+            int result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetInt32(out result))
+            {
+                val = result;
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref short val)
+        {
+            JsonElement property;
+            short result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetInt16(out result))
+            {
+                val = result;
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref sbyte val)
+        {
+            JsonElement property;
+            sbyte result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetSByte(out result))
+            {
+                val = result;
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref ulong val)
+        {
+            JsonElement property;
+            ulong result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetUInt64(out result))
+            {
+                val = result;
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref uint val)
+        {
+            JsonElement property;
+            uint result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetUInt32(out result))
+            {
+                val = result;
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref ushort val)
+        {
+            JsonElement property;
+            ushort result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetUInt16(out result))
+            {
+                val = result;
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref byte val)
+        {
+            JsonElement property;
+            byte result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetByte(out result))
+            {
+                val = result;
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref float val)
+        {
+            JsonElement property;
+            float result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetSingle(out result))
+            {
+                val = result;
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref double val)
+        {
+            JsonElement property;
+            double result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetDouble(out result))
+            {
+                val = result;
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref DateTime val)
+        {
+            JsonElement property;
+            DateTime result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetDateTime(out result))
+            {
+                val = result;
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref DateTimeOffset val)
+        {
+            JsonElement property;
+            DateTimeOffset result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetDateTimeOffset(out result))
+            {
+                val = result;
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref decimal val)
+        {
+            JsonElement property;
+            decimal result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetDecimal(out result))
+            {
+                val = result;
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref Guid val)
+        {
+            JsonElement property;
+            Guid result;
+
+            if (element.TryGetProperty(name, out property) &&
+                property.TryGetGuid(out result))
+            {
+                val = result;
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref string val)
+        {
+            JsonElement property;
+
+            if (element.TryGetProperty(name, out property))
+            {
+                val = property.GetString();
+                return true;
+            }
+            else return false;
+        }
+        public static bool TryFind(this JsonElement element, string name, ref bool val)
+        {
+            JsonElement property;
+
+            if (element.TryGetProperty(name, out property))
+            {
+                val = property.GetBoolean();
+                return true;
+            }
+            else return false;
+        }
+    }
 
     public class ResourceEventArgs : EventArgs
     {
@@ -94,6 +446,16 @@ namespace Resource_Redactor.Descriptions
         private long TimePart;
         private long RandPart;
 
+        public string Value
+        {
+            get { return TimePart.ToString("X16") + RandPart.ToString("X16"); }
+            set 
+            { 
+                TimePart = long.Parse(value.Substring(0, 16), NumberStyles.HexNumber);
+                RandPart = long.Parse(value.Substring(16), NumberStyles.HexNumber);
+            }
+        }
+
         public override bool Equals(object obj)
         {
             var res = obj as ResourceID;
@@ -111,15 +473,21 @@ namespace Resource_Redactor.Descriptions
             return 0;
         }
 
-        private ResourceID(long time_part, long rand_part)
-        {
-            TimePart = time_part;
-            RandPart = rand_part;
-        }
         public ResourceID()
         {
             TimePart = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             RandPart = ((long)Generator.Next(int.MinValue, int.MaxValue) << 32) | (long)Generator.Next(int.MinValue, int.MaxValue);
+        }
+        public ResourceID(string value)
+        {
+            if (value == "")
+            {
+                TimePart = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+                RandPart = ((long)Generator.Next(int.MinValue, int.MaxValue) << 32) | (long)Generator.Next(int.MinValue, int.MaxValue);
+            }
+            var values = value.Split(':');
+            TimePart = Convert.ToInt64(values[0]);
+            RandPart = Convert.ToInt64(values[1]);
         }
         public ResourceID(BinaryReader reader)
         {
@@ -130,6 +498,10 @@ namespace Resource_Redactor.Descriptions
         {
             writer.Write(TimePart);
             writer.Write(RandPart);
+        }
+        public override string ToString()
+        {
+            return TimePart + ":" + RandPart;
         }
     }
     public class ResourceLink
@@ -228,6 +600,7 @@ namespace Resource_Redactor.Descriptions
                 return false;
             }
         }
+
         public static string Factory(string path, ResourceType type)
         {
             string name = "New " + TypeToString(type);
@@ -239,39 +612,15 @@ namespace Resource_Redactor.Descriptions
             if (i != 0) name += " " + i;
             path = Path.Combine(path, name);
 
-            switch (type)
+            if (type == ResourceType.Folder) Directory.CreateDirectory(path);
+            else
             {
-                case ResourceType.Folder:
-                    Directory.CreateDirectory(path);
-                    break;
-                case ResourceType.Texture:
-                    using (var resource = new TextureResource()) resource.Save(path);
-                    break;
-                case ResourceType.Sprite:
-                    using (var resource = new SpriteResource()) resource.Save(path);
-                    break;
-                case ResourceType.Ragdoll:
-                    using (var resource = new RagdollResource()) resource.Save(path);
-                    break;
-                case ResourceType.Animation:
-                    using (var resource = new AnimationResource()) resource.Save(path);
-                    break;
-                case ResourceType.Tool:
-                    using (var resource = new ToolResource()) resource.Save(path);
-                    break;
-                case ResourceType.Entity:
-                    using (var resource = new EntityResource()) resource.Save(path);
-                    break;
-                case ResourceType.Tile:
-                    using (var resource = new TileResource()) resource.Save(path);
-                    break;
-                case ResourceType.Event:
-                    using (var resource = new EventResource()) resource.Save(path);
-                    break;
-                case ResourceType.Outfit:
-                    using (var resource = new OutfitResource()) resource.Save(path);
-                    break;
-                default: throw new NotImplementedException("Resource [" + TypeToString(type) + "] not implemented.");
+                using (var resource = Factory(type))
+                {
+                    if (resource != null) resource.Save(path);
+                    else throw new NotImplementedException("Resource [" + 
+                        TypeToString(type) + "] not implemented.");
+                }
             }
 
             return name;
@@ -379,6 +728,40 @@ namespace Resource_Redactor.Descriptions
 
             return name;
         }
+        public static Resource Factory(ResourceType type)
+        {
+            switch (type)
+            {
+                case ResourceType.Texture: return new TextureResource(); 
+                case ResourceType.Sprite: return new SpriteResource(); 
+                case ResourceType.Ragdoll: return new RagdollResource();
+                case ResourceType.Animation: return new AnimationResource(); 
+                case ResourceType.Tool: return new ToolResource(); 
+                case ResourceType.Entity: return new EntityResource(); 
+                case ResourceType.Tile: return new TileResource(); 
+                case ResourceType.Event: return new EventResource(); 
+                case ResourceType.Outfit: return new OutfitResource(); 
+                default: return null;
+            }
+        }
+        public static Resource Factory(string path)
+        {
+            ResourceType type = GetType(path);
+            switch (type)
+            {
+                case ResourceType.Texture: return new TextureResource(path);
+                case ResourceType.Sprite: return new SpriteResource(path);
+                case ResourceType.Ragdoll: return new RagdollResource(path);
+                case ResourceType.Animation: return new AnimationResource(path);
+                case ResourceType.Tool: return new ToolResource(path);
+                case ResourceType.Entity: return new EntityResource(path);
+                case ResourceType.Tile: return new TileResource(path);
+                case ResourceType.Event: return new EventResource(path);
+                case ResourceType.Outfit: return new OutfitResource(path);
+                default: return null;
+            }
+        }
+
         public static ResourceType GetType(string path)
         {
             try
@@ -414,6 +797,19 @@ namespace Resource_Redactor.Descriptions
             if (type == typeof(OutfitResource)) return OutfitResource.CurrentType;
             return ResourceType.NotResource;
         }
+        public static Type GetType(ResourceType type)
+        {
+            if (type == TextureResource.CurrentType) return typeof(TextureResource);
+            if (type == SpriteResource.CurrentType) return typeof(SpriteResource);
+            if (type == RagdollResource.CurrentType) return typeof(RagdollResource);
+            if (type == AnimationResource.CurrentType) return typeof(AnimationResource);
+            if (type == ToolResource.CurrentType) return typeof(ToolResource);
+            if (type == EntityResource.CurrentType) return typeof(EntityResource);
+            if (type == TileResource.CurrentType) return typeof(TileResource);
+            if (type == EventResource.CurrentType) return typeof(EventResource);
+            if (type == OutfitResource.CurrentType) return typeof(OutfitResource);
+            return null;
+        }
         public static ResourceID GetID(string path)
         {
             if (!File.Exists(path)) return null;
@@ -428,11 +824,40 @@ namespace Resource_Redactor.Descriptions
             }
         }
 
+        public static void Import(string json_path, string resource_path)
+        {
+            string json = File.ReadAllText(json_path);
+            Type type;
+
+            using (var json_doc = JsonDocument.Parse(json))
+            {
+                type = GetType(StringToType(json_doc.RootElement.GetProperty("TypeName").GetString()));
+            }
+
+            using (Resource resource = JsonSerializer.Deserialize(json, type) as Resource) resource.Save(resource_path);
+        }
+        public static void Export(string resource_path, string json_path)
+        {
+            var p = new JsonSerializerOptions
+            {
+                IgnoreReadOnlyProperties = true,
+                WriteIndented = true,
+                
+            };
+            using (Resource resource = Factory(resource_path))
+            {
+                if (resource == null) throw new NotImplementedException("Resource exporter does not implemented.");
+                File.WriteAllText(json_path, JsonSerializer.Serialize(resource, resource.GetType(), p));
+            }
+        }
+
 
         protected abstract void ReadData(BinaryReader r);
         protected abstract void WriteData(BinaryWriter w);
 
+        [JsonIgnore]
         public ResourceType Type { get; private set; }
+        public string TypeName { get { return Type.ToString(); } private set { Type = StringToType(value); } }
         public string Version { get; private set; }
         public string TimeStamp { get; private set; }
         public ResourceID ID { get; private set; } 
@@ -464,7 +889,7 @@ namespace Resource_Redactor.Descriptions
         }
         public void Save(string path)
         {
-            using (var w = new BinaryWriter(File.OpenWrite(path)))
+            using (var w = new BinaryWriter(File.Create(path)))
             {
                 ResourceSignature.Write(w);
                 w.Write(TypeToString(Type));

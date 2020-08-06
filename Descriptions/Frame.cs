@@ -4,6 +4,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Resource_Redactor.Descriptions
@@ -33,10 +35,10 @@ namespace Resource_Redactor.Descriptions
         }
         public class Node
         {
-            public NodeProperties Properties = NodeProperties.Default;
-            public float OffsetX = 0f;
-            public float OffsetY = 0f;
-            public float Angle = 0f;
+            public NodeProperties Properties { get; set; } = NodeProperties.Default;
+            public float OffsetX { get; set; } = 0f;
+            public float OffsetY { get; set; } = 0f;
+            public float Angle { get; set; } = 0f;
 
             public Node()
             {
@@ -88,15 +90,17 @@ namespace Resource_Redactor.Descriptions
             }
         }
 
-        private Node[] Nodes;
+        public Node[] Nodes { get; set; }  = new Node[0];
 
+        [JsonIgnore]
+        public int Count { get { return Nodes.Length; } }
         public Node this[int i]
         {
             get { return i >= 0 && i < Count ? Nodes[i] : null; }
             set { if (i >= 0 && i < Count) Nodes[i] = value; }
         }
-        public int Count { get { return Nodes.Length; } }
 
+        public Frame() { }
         public Frame(Frame f)
         {
             Nodes = new Node[f.Count];

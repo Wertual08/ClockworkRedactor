@@ -113,7 +113,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                 FramesListBox.Items.RemoveAt(FramesListBox.Items.Count - 1);
             FramesListBox.EndUpdate();
 
-            GLSurface.BackColor = LoadedResource.BackColor;
+            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
 
             FPURNumeric.Value = (decimal)LoadedResource.FramesPerUnitRatio;
             TypeUpDown.Items.AddRange(Enum.GetNames(typeof(AnimationType)));
@@ -712,8 +712,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                         else CurrentRagdoll.Render(frame, OffsetX, OffsetY, time, NodesListBox.SelectedIndex, 1, 1, 1, null, -1, 0, NodeVisible);
                     }
 
-                    float b = LoadedResource.PointBounds.X / GLSurface.Zoom;
-                    float s = LoadedResource.PointBounds.Y / GLSurface.Zoom;
+                    float b = LoadedResource.PointBoundsX / GLSurface.Zoom;
+                    float s = LoadedResource.PointBoundsY / GLSurface.Zoom;
                     gl.Disable(GL.TEXTURE_2D);
                     gl.Begin(GL.QUADS);
                     for (int i = 0; i < count; i++)
@@ -797,10 +797,10 @@ namespace Resource_Redactor.Descriptions.Redactors
                 {
                     if (ModifierKeys == Keys.Control)
                     {
-                        if (LoadedResource.PointBounds.X + e.Delta > 1.0f)
+                        if (LoadedResource.PointBoundsX + e.Delta > 1.0f)
                         {
-                            LoadedResource.PointBounds.X += e.Delta;
-                            LoadedResource.PointBounds.Y += e.Delta;
+                            LoadedResource.PointBoundsX += e.Delta;
+                            LoadedResource.PointBoundsY += e.Delta;
                             MakeUnsaved();
                         }
                     }
@@ -829,7 +829,7 @@ namespace Resource_Redactor.Descriptions.Redactors
 
                 if (CurrentRagdoll == null) return;
 
-                float b = LoadedResource.PointBounds.X / GLSurface.Zoom;
+                float b = LoadedResource.PointBoundsX / GLSurface.Zoom;
                 var frame = CurrentRagdoll.MakeFrame(CurrentFrame);
                 if (frame == null) return;
 
@@ -1299,12 +1299,12 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = LoadedResource.BackColor;
+                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color;
-                GLSurface.BackColor = LoadedResource.BackColor;
+                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
+                GLSurface.BackColor = BackgroundColorDialog.Color;
                 MakeUnsaved();
             }
             catch (Exception ex)

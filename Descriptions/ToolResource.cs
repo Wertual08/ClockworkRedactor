@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Resource_Redactor.Descriptions
@@ -41,8 +42,9 @@ namespace Resource_Redactor.Descriptions
                     list.Add(new Subresource<SpriteResource>(r));
             }
 
-            BackColor = Color.FromArgb(r.ReadInt32());
-            PointBounds = r.ReadStruct<PointF>();
+            BackColor = r.ReadInt32();
+            PointBoundsX = r.ReadSingle();
+            PointBoundsY = r.ReadSingle();
             PixelPerfect = r.ReadBoolean();
             Transparency = r.ReadBoolean();
             SelectedSprites = new List<int>(r.ReadInt32());
@@ -68,8 +70,9 @@ namespace Resource_Redactor.Descriptions
                     Sprites[i][j].Write(w);
             }
 
-            w.Write(BackColor.ToArgb());
-            w.Write(PointBounds);
+            w.Write(BackColor);
+            w.Write(PointBoundsX);
+            w.Write(PointBoundsY);
             w.Write(PixelPerfect);
             w.Write(Transparency);
             w.Write(SelectedSprites.Count);
@@ -78,20 +81,22 @@ namespace Resource_Redactor.Descriptions
         }
 
         // Resource //
-        public string ActionName = "";
-        public float FirePointX = 0f;
-        public float FirePointY = 0f;
-        public float FireVectorX = 0f;
-        public float FireVectorY = 0f;
-        public bool AngleAttached = true;
-        public List<bool> SpriteLockedOnCycle = new List<bool>();
-        public List<List<Subresource<SpriteResource>>> Sprites { get; private set; } = new List<List<Subresource<SpriteResource>>>();
+        public string ActionName { get; set; } = "";
+        public float FirePointX { get; set; } = 0f;
+        public float FirePointY { get; set; } = 0f;
+        public float FireVectorX { get; set; } = 0f;
+        public float FireVectorY { get; set; } = 0f;
+        public bool AngleAttached { get; set; } = true;
+        public List<bool> SpriteLockedOnCycle { get; set; } = new List<bool>();
+        public List<List<Subresource<SpriteResource>>> Sprites { get; set; } = new List<List<Subresource<SpriteResource>>>();
 
         // Redactor //
-        public Color BackColor = Color.Black;
-        public PointF PointBounds = new PointF(5f, 4f);
-        public bool PixelPerfect = true;
-        public bool Transparency = false;
+        public int BackColor { get; set; } = Color.Black.ToArgb();
+        public float PointBoundsX { get; set; } = 5f;
+        public float PointBoundsY { get; set; } = 4f;
+        public bool PixelPerfect { get; set; } = true;
+        public bool Transparency { get; set; } = false;
+        [JsonIgnore]
         public List<int> SelectedSprites { get; private set; } = new List<int>();
 
         public ToolResource() : base(CurrentType, CurrentVersion)

@@ -64,6 +64,8 @@
             this.LoadLinksResolverToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ApplyLinksResolverToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CancelLinksResolverToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CompilerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.UndoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,7 +82,8 @@
             this.RedactorsTabControl = new System.Windows.Forms.TabControl();
             this.OpenDescriptionDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveDescriptionDialog = new System.Windows.Forms.SaveFileDialog();
-            this.CompilerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ImportFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.RedactorMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ExplorerSplitContainer)).BeginInit();
             this.ExplorerSplitContainer.Panel1.SuspendLayout();
@@ -117,6 +120,8 @@
             this.PasteToolStripMenuItem,
             this.ToolsToolStripMenuItem,
             this.CompilerToolStripMenuItem,
+            this.ExportToolStripMenuItem,
+            this.ImportToolStripMenuItem,
             this.ExitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -424,6 +429,20 @@
             this.CancelLinksResolverToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.CancelLinksResolverToolStripMenuItem.Text = "Cancel Links Resolver";
             // 
+            // CompilerToolStripMenuItem
+            // 
+            this.CompilerToolStripMenuItem.Name = "CompilerToolStripMenuItem";
+            this.CompilerToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.CompilerToolStripMenuItem.Text = "Compiler";
+            this.CompilerToolStripMenuItem.Click += new System.EventHandler(this.CompilerToolStripMenuItem_Click);
+            // 
+            // ExportToolStripMenuItem
+            // 
+            this.ExportToolStripMenuItem.Name = "ExportToolStripMenuItem";
+            this.ExportToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.ExportToolStripMenuItem.Text = "Export";
+            this.ExportToolStripMenuItem.Click += new System.EventHandler(this.ExportToolStripMenuItem_Click);
+            // 
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
@@ -575,12 +594,12 @@
             this.RedactorsTabControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RedactorsTabControl_MouseMove);
             this.RedactorsTabControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.RedactorsTabControl_MouseUp);
             // 
-            // CompilerToolStripMenuItem
+            // ImportToolStripMenuItem
             // 
-            this.CompilerToolStripMenuItem.Name = "CompilerToolStripMenuItem";
-            this.CompilerToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.CompilerToolStripMenuItem.Text = "Compiler";
-            this.CompilerToolStripMenuItem.Click += new System.EventHandler(this.CompilerToolStripMenuItem_Click);
+            this.ImportToolStripMenuItem.Name = "ImportToolStripMenuItem";
+            this.ImportToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.ImportToolStripMenuItem.Text = "Import";
+            this.ImportToolStripMenuItem.Click += new System.EventHandler(this.ImportToolStripMenuItem_Click);
             // 
             // RedactorForm
             // 
@@ -657,6 +676,9 @@
         private System.Windows.Forms.ToolStripMenuItem CancelLinksResolverToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem EventToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CompilerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ExportToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ImportToolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog ImportFileDialog;
     }
 }
 

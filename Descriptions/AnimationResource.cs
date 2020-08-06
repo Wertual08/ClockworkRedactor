@@ -5,6 +5,8 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Resource_Redactor.Descriptions
@@ -17,8 +19,9 @@ namespace Resource_Redactor.Descriptions
         protected override void ReadData(BinaryReader r)
         {
             if (Type != CurrentType) throw new Exception(
-                "Resource have wrong type [" + TypeToString(Type) + "]. [" +
-                TypeToString(CurrentType) + "] required.");
+                "Resource have wrong type [" +
+                TypeToString(Type) + "]. [" +
+                CurrentType + "] required.");
             if (Version != CurrentVersion) throw new Exception(
                 "Resource have wrong version [" + Version +
                 "]. [" + CurrentVersion + "] required.");
@@ -29,8 +32,9 @@ namespace Resource_Redactor.Descriptions
             Frames = new List<Frame>(r.ReadInt32());
             for (int i = 0; i < Frames.Capacity; i++) Frames.Add(new Frame(r));
 
-            BackColor = Color.FromArgb(r.ReadInt32());
-            PointBounds = r.ReadStruct<PointF>();
+            BackColor = r.ReadInt32();
+            PointBoundsX = r.ReadSingle();
+            PointBoundsY = r.ReadSingle();
             PixelPerfect = r.ReadBoolean();
             GridEnabled = r.ReadBoolean();
             Transparency = r.ReadBoolean();
@@ -44,27 +48,28 @@ namespace Resource_Redactor.Descriptions
             w.Write(Frames.Count);
             foreach (var f in Frames) f.Write(w);
 
-            w.Write(BackColor.ToArgb());
-            w.Write(PointBounds);
+            w.Write(BackColor);
+            w.Write(PointBoundsX);
+            w.Write(PointBoundsY);
             w.Write(PixelPerfect);
             w.Write(GridEnabled);
             w.Write(Transparency);
             Ragdoll.Write(w);
         }
 
-        // Resource //
-        public int NodesCount = 0;
-        public AnimationType Dependency = AnimationType.TimeLoop;
-        public float FramesPerUnitRatio = 1f;
-        public List<Frame> Frames { get; private set; } = new List<Frame>();
+        public int NodesCount { get; set; } = 0;
+        public AnimationType Dependency { get; set; } = AnimationType.TimeLoop;
+        public float FramesPerUnitRatio { get; set; } = 1f;
+        public List<Frame> Frames { get; set; } = new List<Frame>();
 
         // Redactor //
-        public Color BackColor = Color.Black;
-        public PointF PointBounds = new PointF(5f, 4f);
-        public bool PixelPerfect = false;
-        public bool GridEnabled = true;
-        public bool Transparency = true;
-        public WeakSubresource<RagdollResource> Ragdoll { get; private set; } = new WeakSubresource<RagdollResource>();
+        public int BackColor { get; set; } = Color.Black.ToArgb();
+        public float PointBoundsX { get; set; } = 5f;
+        public float PointBoundsY { get; set; } = 4f;
+        public bool PixelPerfect { get; set; } = false;
+        public bool GridEnabled { get; set; } = true;
+        public bool Transparency { get; set; } = true;
+        public WeakSubresource<RagdollResource> Ragdoll { get; set; } = new WeakSubresource<RagdollResource>();
 
         public AnimationResource() : base(CurrentType, CurrentVersion)
         {
@@ -75,6 +80,7 @@ namespace Resource_Redactor.Descriptions
 
         }
 
+        [JsonIgnore]
         public int Count { get { return Frames.Count; } }
         public Frame this[int i]
         {
@@ -83,7 +89,9 @@ namespace Resource_Redactor.Descriptions
         }
 
         private float FrameBuffer = 0f;
+        [JsonIgnore]
         public int Index { get { return (int)FrameBuffer; } set { FrameBuffer = value; } }
+        [JsonIgnore]
         public bool Playing { get; private set; } = false;
         public void Update(float delta, float fpur_scale)
         {
@@ -146,6 +154,7 @@ namespace Resource_Redactor.Descriptions
             FrameBuffer %= Count;
             if (FrameBuffer < 0) FrameBuffer += Count;
         }
+        [JsonIgnore]
         public Frame CurrentFrame
         {
             get

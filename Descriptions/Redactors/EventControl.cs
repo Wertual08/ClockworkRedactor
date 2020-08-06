@@ -29,7 +29,7 @@ namespace Resource_Redactor.Descriptions.Redactors
 
             public Action[] Actions;
 
-            public Color BackColor;
+            public int BackColor;
             public bool GridEnabled;
 
             public State(EventResource r)

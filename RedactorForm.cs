@@ -378,6 +378,47 @@ namespace Resource_Redactor
                 }
             }
         }
+        private void ExportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                foreach (var resource in ResourceExplorer.SelectedItems)
+                {
+                    var path = Path.Combine("../Exports", resource + ".json");
+                    Directory.CreateDirectory(Path.GetDirectoryName(path));
+                    Resource.Export(resource, path);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.ToString(), "Error: Can not export selected resources.", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void ImportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ImportFileDialog.ShowDialog(this);
+            string path = ImportFileDialog.FileName;
+            try
+            {
+
+                string import_path = ResourceExplorer.CurrentDirectory;
+                string name = Path.GetFileNameWithoutExtension(path);
+                int i = 0;
+                if (File.Exists(Path.Combine(import_path, name)) ||
+                    Directory.Exists(Path.Combine(import_path, name)))
+                    while (File.Exists(Path.Combine(import_path, name + " " + ++i)) ||
+                        Directory.Exists(Path.Combine(import_path, name + " " + i))) ;
+                if (i != 0) name += " " + i;
+
+                Resource.Import(path, Path.Combine(import_path, name));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.ToString(), "Error: Can not import [" + path + "].",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();

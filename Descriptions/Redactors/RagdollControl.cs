@@ -238,7 +238,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                 NodesListBox.Items.Add("Node: " + NodesListBox.Items.Count);
             NodesListBox.EndUpdate();
 
-            GLSurface.BackColor = LoadedResource.BackColor;
+            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
 
             GLFrameTimer.Start();
         }
@@ -692,8 +692,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                 if (!LoadedResource.Transparency) LoadedResource.Render(frame, OffsetX, OffsetY, time);
                 else LoadedResource.Render(frame, OffsetX, OffsetY, time, NodesListBox.SelectedIndex);
 
-                float b = LoadedResource.PointBounds.X / GLSurface.Zoom;
-                float s = LoadedResource.PointBounds.Y / GLSurface.Zoom;
+                float b = LoadedResource.PointBoundsX / GLSurface.Zoom;
+                float s = LoadedResource.PointBoundsY / GLSurface.Zoom;
                 gl.Disable(GL.TEXTURE_2D);
                 gl.Begin(GL.QUADS);
                 for (int i = 0; i < count; i++)
@@ -764,7 +764,7 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
-                float b = LoadedResource.PointBounds.X / GLSurface.Zoom;
+                float b = LoadedResource.PointBoundsX / GLSurface.Zoom;
 
                 if (CapturedPoint >= 0)
                 {
@@ -777,10 +777,10 @@ namespace Resource_Redactor.Descriptions.Redactors
                 {
                     if (ModifierKeys == Keys.Control)
                     {
-                        if (LoadedResource.PointBounds.X + e.Delta > 1.0f)
+                        if (LoadedResource.PointBoundsX + e.Delta > 1.0f)
                         {
-                            LoadedResource.PointBounds.X += e.Delta;
-                            LoadedResource.PointBounds.Y += e.Delta;
+                            LoadedResource.PointBoundsX += e.Delta;
+                            LoadedResource.PointBoundsY += e.Delta;
                             MakeUnsaved();
                         }
                     }
@@ -806,7 +806,7 @@ namespace Resource_Redactor.Descriptions.Redactors
             try
             {
                 MouseManager.BeginDrag(e.Location);
-                float b = LoadedResource.PointBounds.X / GLSurface.Zoom;
+                float b = LoadedResource.PointBoundsX / GLSurface.Zoom;
                 var frame = LoadedResource.MakeFrame();
                 if (frame == null) return;
 
@@ -1357,12 +1357,12 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = LoadedResource.BackColor;
+                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color;
-                GLSurface.BackColor = LoadedResource.BackColor;
+                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
+                GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
                 MakeUnsaved();
             }
             catch (Exception ex)

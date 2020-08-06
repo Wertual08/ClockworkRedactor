@@ -32,8 +32,9 @@ namespace Resource_Redactor.Descriptions.Redactors
             private bool[] Locked;
             private string[][] Links;
 
-            public Color BackColor { get; private set; }
-            public PointF PointBounds { get; private set; }
+            public int BackColor { get; private set; }
+            public float PointBoundsX { get; private set; }
+            public float PointBoundsY { get; private set; }
             public bool PixelPerfect { get; private set; }
             public bool Transparency { get; private set; }
 
@@ -57,7 +58,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                 }
 
                 BackColor = r.BackColor;
-                PointBounds = r.PointBounds;
+                PointBoundsX = r.PointBoundsX;
+                PointBoundsY = r.PointBoundsY;
                 PixelPerfect = r.PixelPerfect;
                 Transparency = r.Transparency;
             }
@@ -86,7 +88,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                 }
 
                 if (BackColor != s.BackColor) return false;
-                if (PointBounds != s.PointBounds) return false;
+                if (PointBoundsX != s.PointBoundsX) return false;
+                if (PointBoundsY != s.PointBoundsY) return false;
                 if (PixelPerfect != s.PixelPerfect) return false;
                 if (Transparency != s.Transparency) return false;
 
@@ -106,7 +109,7 @@ namespace Resource_Redactor.Descriptions.Redactors
 
         public string ResourcePath { get; private set; }
         public string ResourceName { get; private set; }
-
+        
         public int FPS
         {
             get { return 1000 / GLFrameTimer.Interval; }
@@ -165,16 +168,15 @@ namespace Resource_Redactor.Descriptions.Redactors
             ResourcePath = path;
             ResourceName = Path.GetFileName(path);
 
-            ActionTextBox.TextChanged += (object sender, EventArgs e) => SyncTextBoxValue(sender, ref LoadedResource.ActionName);
-            FirePointXNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, ref LoadedResource.FirePointX);
-            FirePointYNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, ref LoadedResource.FirePointY);
-            FireVectorXNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, ref LoadedResource.FireVectorX);
-            FireVectorYNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, ref LoadedResource.FireVectorY);
-            AttachedCheckBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxValue(sender, ref LoadedResource.AngleAttached);
+            ActionTextBox.TextChanged += (object sender, EventArgs e) => SyncTextBoxValue(sender, LoadedResource.ActionName, v => LoadedResource.ActionName = v);
+            FirePointXNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.FirePointX, v => LoadedResource.FirePointX = v);
+            FirePointYNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.FirePointY, v => LoadedResource.FirePointY = v);
+            FireVectorXNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.FireVectorX, v => LoadedResource.FireVectorX = v);
+            FireVectorYNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.FireVectorY, v => LoadedResource.FireVectorY = v);
+            AttachedCheckBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxValue(sender, LoadedResource.AngleAttached, v => LoadedResource.AngleAttached = v);
 
             PartsListBox.SelectedIndexChanged += (object sender, EventArgs e) => RestoreChanges(false);
-            PartsListBox.ItemCheck += (object sender, ItemCheckEventArgs e) => SyncCheckedValue(sender, e, ref LoadedResource.SpriteLockedOnCycle);
-
+            PartsListBox.ItemCheck += (object sender, ItemCheckEventArgs e) => SyncCheckedValue(sender, e, LoadedResource.SpriteLockedOnCycle);
 
             GetTab("Pixel perfect").Checked = LoadedResource.PixelPerfect;
             GetTab("Toggle transparency").Checked = LoadedResource.Transparency;
@@ -183,13 +185,13 @@ namespace Resource_Redactor.Descriptions.Redactors
             GLFrameTimer.Start();
         }
 
-        private void SyncNumericValue<T>(object sender, ref T value) where T : struct
+        private void SyncNumericValue<T>(object sender, T value, Action<T> set_value) where T : struct
         {
             var numeric = sender as NumericUpDown;
             var v = (T)Convert.ChangeType(numeric.Value, typeof(T));
             if (numeric != null && !value.Equals(v))
             {
-                value = v;
+                set_value(v);
                 BackupChanges();
                 MakeUnsaved();
             }
@@ -204,27 +206,27 @@ namespace Resource_Redactor.Descriptions.Redactors
                 MakeUnsaved();
             }
         }
-        private void SyncTextBoxValue(object sender, ref string value)
+        private void SyncTextBoxValue(object sender, string value, Action<string> set_value)
         {
             var textbox = sender as TextBox;
             if (textbox != null && value != textbox.Text)
             {
-                value = textbox.Text;
+                set_value(textbox.Text);
                 BackupChanges();
                 MakeUnsaved();
             }
         }
-        private void SyncCheckBoxValue(object sender, ref bool value)
+        private void SyncCheckBoxValue(object sender, bool value, Action<bool> set_value)
         {
             var control = sender as CheckBox;
             if (control != null && value != control.Checked)
             {
-                value = control.Checked;
+                set_value(control.Checked);
                 BackupChanges();
                 MakeUnsaved();
             }
         }
-        private void SyncCheckedValue(object sender, ItemCheckEventArgs e, ref List<bool> values)
+        private void SyncCheckedValue(object sender, ItemCheckEventArgs e, List<bool> values)
         {
             var listbox = sender as CheckedListBox;
             if (listbox != null && values != null && e.Index >= 0 && e.Index < values.Count && 
@@ -345,8 +347,9 @@ namespace Resource_Redactor.Descriptions.Redactors
                 for (int i = 0; i < LoadedResource.SpriteLockedOnCycle.Count; i++)
                     PartsListBox.SetItemChecked(i, LoadedResource.SpriteLockedOnCycle[i]);
 
-                GLSurface.BackColor = item.BackColor;
-                LoadedResource.PointBounds = item.PointBounds;
+                GLSurface.BackColor = Color.FromArgb(item.BackColor);
+                LoadedResource.PointBoundsX = item.PointBoundsX;
+                LoadedResource.PointBoundsY = item.PointBoundsY;
                 GetTab("Pixel perfect").Checked = item.PixelPerfect;
                 GetTab("Toggle transparency").Checked = item.Transparency;
             }
@@ -486,8 +489,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                 else gl.Color4ub(255, 255, 255, 255);
                 LoadedResource.Render(OffsetX, OffsetY, Angle, time, 1000); // FIX THIS SHITTTTTT
 
-                float b = LoadedResource.PointBounds.X / GLSurface.Zoom;
-                float w = LoadedResource.PointBounds.Y / GLSurface.Zoom;
+                float b = LoadedResource.PointBoundsX / GLSurface.Zoom;
+                float w = LoadedResource.PointBoundsY / GLSurface.Zoom;
                 float lx = LoadedResource.FireVectorX;
                 float ly = LoadedResource.FireVectorY;
                 float x1 = LoadedResource.FirePointX;
@@ -585,10 +588,10 @@ namespace Resource_Redactor.Descriptions.Redactors
                 {
                     if (ModifierKeys == Keys.Control)
                     {
-                        if (LoadedResource.PointBounds.X + e.Delta > 1.0f)
+                        if (LoadedResource.PointBoundsX + e.Delta > 1.0f)
                         {
-                            LoadedResource.PointBounds.X += e.Delta;
-                            LoadedResource.PointBounds.Y += e.Delta;
+                            LoadedResource.PointBoundsX += e.Delta;
+                            LoadedResource.PointBoundsY += e.Delta;
                             Story.Item = new State(LoadedResource);
                         }
                     }
@@ -616,7 +619,7 @@ namespace Resource_Redactor.Descriptions.Redactors
             {
                 MouseManager.BeginDrag(e.Location);
 
-                float b = LoadedResource.PointBounds.X / GLSurface.Zoom;
+                float b = LoadedResource.PointBoundsX / GLSurface.Zoom;
                 float x1 = LoadedResource.FirePointX;
                 float y1 = LoadedResource.FirePointY;
                 float x2 = x1 + LoadedResource.FireVectorX;
@@ -865,11 +868,11 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = LoadedResource.BackColor;
+                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color;
+                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
                 Story.Item = new State(LoadedResource);
             }
             catch (Exception ex)

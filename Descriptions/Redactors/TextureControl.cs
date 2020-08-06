@@ -19,7 +19,7 @@ namespace Resource_Redactor.Descriptions.Redactors
         private struct State
         {
             public Bitmap Texture;
-            public Color BackColor;
+            public int BackColor;
             public State(TextureResource r)
             {
                 Texture = r.Texture;
@@ -88,7 +88,7 @@ namespace Resource_Redactor.Descriptions.Redactors
             ResourceName = Path.GetFileName(path);
 
             TextureBitmapBox.Bitmap = LoadedResource.Texture;
-            TextureBitmapBox.BackColor = LoadedResource.BackColor;
+            TextureBitmapBox.BackColor = Color.FromArgb(LoadedResource.BackColor);
 
             Saved = true;
         }
@@ -110,7 +110,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                 Story.Item.ToResource(LoadedResource);
 
                 TextureBitmapBox.Bitmap = LoadedResource.Texture;
-                TextureBitmapBox.BackColor = LoadedResource.BackColor;
+                TextureBitmapBox.BackColor = Color.FromArgb(LoadedResource.BackColor);
 
                 MakeUnsaved();
                 UpdateRedactor();
@@ -156,11 +156,11 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = LoadedResource.BackColor;
+                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color;
+                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
 
                 Story.Item = new State(LoadedResource);
             }

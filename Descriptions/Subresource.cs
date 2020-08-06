@@ -5,15 +5,19 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
+
 
 namespace Resource_Redactor.Descriptions
 {
     public interface ISubresource
     {
-        EventHandler Reloaded { get; set; }
-        EventHandler Updated { get; set; }
+        event EventHandler Reloaded;
+        event EventHandler Updated;
         event EventHandler Refreshed;
         ISynchronizeInvoke SynchronizingObject { get; set; }
         string Link { get; set; }
@@ -47,11 +51,17 @@ namespace Resource_Redactor.Descriptions
             Refreshed?.Invoke(this, EventArgs.Empty);
         }
 
+        [JsonIgnore]
         public ResourceType Type { get { return Descriptions.Resource.GetType(typeof(T)); } }
+        [JsonIgnore]
         public ISynchronizeInvoke SynchronizingObject { get { return Watcher.SynchronizingObject; } set { Watcher.SynchronizingObject = value; } }
-        public EventHandler Reloaded { get; set; }
-        public EventHandler Updated { get; set; }
+        public event EventHandler Reloaded;
+        public event EventHandler Updated;
         public event EventHandler Refreshed;
+        [JsonIgnore]
+        public T Resource { get { return Loaded && Active ? _Resource : null; } }
+        [JsonIgnore]
+        public bool Loaded { get; protected set; } = false;
         public virtual string Link
         {
             get
@@ -67,8 +77,6 @@ namespace Resource_Redactor.Descriptions
                 }
             }
         }
-        public T Resource { get { return Loaded && Active ? _Resource : null; } }
-        public bool Loaded { get; protected set; } = false;
         public bool Active { get; set; } = true;
 
         public Subresource()
@@ -141,6 +149,13 @@ namespace Resource_Redactor.Descriptions
         {
             w.Write(Link);
             w.Write(Active);
+        }
+        public void Export(Utf8JsonWriter json)
+        {
+            json.WriteStartObject("Subresource");
+            json.WriteString("Link", Link);
+            json.WriteBoolean("Active", Active);
+            json.WriteEndObject();
         }
 
         protected bool IsDisposed { get; private set; } = false;
