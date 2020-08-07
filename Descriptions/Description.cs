@@ -28,9 +28,9 @@ namespace Resource_Redactor.Descriptions
             return true;
         }
 
-        public static readonly string RedactorVersion = "0.0.0.4";
+        public static readonly string RedactorVersion = "0.1.0.0";
         public static readonly string CurrentVersion = "0.0.0.1";
-        public static readonly string Extension = "ced";
+        public static readonly string Extension = "cedp";
 
         public string Name { get; private set; }
 

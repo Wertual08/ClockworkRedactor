@@ -139,6 +139,28 @@ namespace Resource_Redactor
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        private void CloseRedactor(TabPage tab)
+        {
+            var redactor = tab.Controls.Count == 1 ? tab.Controls[0] as IResourceControl : null;
+            if (redactor == null) return;
+            if (redactor.Saved)
+            {
+                RedactorsTabControl.TabPages.Remove(tab);
+                tab.Dispose();
+            }
+            else
+            {
+                var result = MessageBox.Show(this, "Save changes before closing?",
+                    "Warning: You have unsaved changes in [" + redactor.ResourceName +
+                    "]!", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes) redactor.Save(redactor.ResourcePath);
+                if (result != DialogResult.Cancel)
+                {
+                    RedactorsTabControl.TabPages.Remove(tab);
+                    tab.Dispose();
+                }
+            }
+        }
         private void RedactorsTabControl_Selected(object sender, TabControlEventArgs e)
         {
             try
@@ -234,11 +256,9 @@ namespace Resource_Redactor
                 var version = Description.CheckVersion(path);
                 if (version != Description.CurrentVersion)
                 {
-                    var result = MessageBox.Show(this, "Would you like to convert it?", 
-                        "Description is outdated.", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    var result = MessageBox.Show(this, "Export description from previous redactor.", 
+                        "Description is outdated.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     if (result != DialogResult.Yes) return;
-
-                    Converter.ConvertDescription(path);
                 }
 
                 path = Path.GetFullPath(path);
@@ -376,50 +396,6 @@ namespace Resource_Redactor
                     MessageBox.Show(this, ex.ToString(), "Error: Can not save resource [" + 
                         rcontrol.ResourceName + "].", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            }
-        }
-        private void ExportToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var result = ExportFolderBrowserDialog.ShowDialog(this);
-                if (result != DialogResult.OK) return;
-                var directory = ExportFolderBrowserDialog.SelectedPath;
-                Directory.CreateDirectory(Path.Combine(directory, "Backups"));
-                Directory.CreateDirectory(Path.Combine(directory, "Compilation"));
-                Directory.CreateDirectory(Path.Combine(directory, "Recycle"));
-                Directory.CreateDirectory(Path.Combine(directory, "Resources"));
-
-                foreach (var file in Directory.EnumerateFiles("..", "*", SearchOption.TopDirectoryOnly))
-                {
-                    if (Path.GetExtension(file) == ".ced")
-                        File.Copy(file, Path.Combine(directory, Path.GetFileName(file) + "p"), true);
-                    else File.Copy(file, Path.Combine(directory, Path.GetFileName(file)), true);
-                }
-
-                var files = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*", SearchOption.AllDirectories);
-                int exported = 0;
-                foreach (var file in files)
-                {
-                    try
-                    {
-                        var type = Resource.GetType(file);
-                        var out_path = Path.Combine(directory, "Resources", ExtraPath.MakeDirectoryRelated(Directory.GetCurrentDirectory(), file));
-                        Directory.CreateDirectory(Path.GetDirectoryName(out_path));
-                        Resource.Export(file, out_path);
-                        exported++;
-                    }
-                    catch (Exception ex) {
-                        //MessageBox.Show(ex.ToString(), file);
-                    }
-                }
-                MessageBox.Show(this, "Exported " + exported + " of " + files.Count() + ".", "Export complete.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not export selected resources.", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -607,19 +583,7 @@ namespace Resource_Redactor
         {
             try
             {
-                var redactor = SelectedRedactor;
-                if (redactor == null) return;
-                if (redactor.Saved) RedactorsTabControl.TabPages.
-                        Remove(RedactorsTabControl.SelectedTab);
-                else
-                {
-                    var result = MessageBox.Show(this, "Save changes before closing?",
-                        "Warning: You have unsaved changes in [" + redactor.ResourceName + 
-                        "]!", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-                    if (result == DialogResult.Yes) redactor.Save(redactor.ResourcePath);
-                    if (result != DialogResult.Cancel) RedactorsTabControl.TabPages.
-                        Remove(RedactorsTabControl.SelectedTab);
-                }
+                CloseRedactor(RedactorsTabControl.SelectedTab);
             }
             catch (Exception ex)
             {
@@ -635,17 +599,7 @@ namespace Resource_Redactor
             {
                 try
                 {
-                    var redactor = tab.Controls.Count == 1 ? tab.Controls[0] as IResourceControl : null;
-                    if (redactor == null) return;
-                    if (redactor.Saved) RedactorsTabControl.TabPages.Remove(tab);
-                    else
-                    {
-                        var result = MessageBox.Show(this, "Save changes before closing?",
-                            "Warning: You have unsaved changes in [" + redactor.ResourceName +
-                            "]!", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-                        if (result == DialogResult.Yes) redactor.Save(redactor.ResourcePath);
-                        if (result != DialogResult.Cancel) RedactorsTabControl.TabPages.Remove(tab);
-                    }
+                    CloseRedactor(tab);
                 }
                 catch (Exception ex)
                 {
@@ -662,20 +616,10 @@ namespace Resource_Redactor
         {
             foreach (TabPage tab in RedactorsTabControl.TabPages)
             {
+                if (tab == RedactorsTabControl.SelectedTab) continue;
                 try
                 {
-                    if (tab == RedactorsTabControl.SelectedTab) continue;
-                    var redactor = tab.Controls.Count == 1 ? tab.Controls[0] as IResourceControl : null;
-                    if (redactor == null) return;
-                    if (redactor.Saved) RedactorsTabControl.TabPages.Remove(tab);
-                    else
-                    {
-                        var result = MessageBox.Show(this, "Save changes before closing?",
-                            "Warning: You have unsaved changes in [" + redactor.ResourceName +
-                            "]!", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-                        if (result == DialogResult.Yes) redactor.Save(redactor.ResourcePath);
-                        if (result != DialogResult.Cancel) RedactorsTabControl.TabPages.Remove(tab);
-                    }
+                    CloseRedactor(tab);
                 }
                 catch (Exception ex)
                 {

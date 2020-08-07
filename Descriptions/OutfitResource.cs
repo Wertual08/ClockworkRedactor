@@ -28,18 +28,6 @@ namespace Resource_Redactor.Descriptions
             public Node()
             {
             }
-            public Node(BinaryReader r)
-            {
-                Sprite = new Subresource<SpriteResource>(r);
-                RagdollNode = r.ReadInt32();
-                ClotheType = (Clothe)r.ReadInt32();
-            }
-            public void Write(BinaryWriter w)
-            {
-                Sprite.Write(w);
-                w.Write(RagdollNode);
-                w.Write((int)ClotheType);
-            }
 
             protected bool IsDisposed { get; private set; } = false;
             public void Dispose()
@@ -62,41 +50,6 @@ namespace Resource_Redactor.Descriptions
             {
                 Dispose(false);
             }
-        }
-
-        protected override void ReadData(BinaryReader r)
-        {
-            if (Type != CurrentType) throw new Exception(
-                "Resource have wrong type [" + TypeToString(Type) + "]. [" +
-                TypeToString(CurrentType) + "] required.");
-            if (Version != CurrentVersion) throw new Exception(
-                "Resource have wrong version [" + Version +
-                "]. [" + CurrentVersion + "] required.");
-
-            Nodes = new List<Node>(r.ReadInt32());
-            for (int i = 0; i < Nodes.Capacity; i++) Nodes.Add(new Node(r));
-
-
-            BackColor = r.ReadInt32();
-            PointBoundsX = r.ReadSingle();
-            PointBoundsY = r.ReadSingle();
-            PixelPerfect = r.ReadBoolean();
-            GridEnabled = r.ReadBoolean();
-            Transparency = r.ReadBoolean();
-            Ragdoll.Read(r);
-        }
-        protected override void WriteData(BinaryWriter w)
-        {
-            w.Write(Nodes.Count);
-            foreach (var n in Nodes) n.Write(w);
-
-            w.Write(BackColor);
-            w.Write(PointBoundsX);
-            w.Write(PointBoundsY);
-            w.Write(PixelPerfect);
-            w.Write(GridEnabled);
-            w.Write(Transparency);
-            Ragdoll.Write(w);
         }
 
         // Resource //

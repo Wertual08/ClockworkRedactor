@@ -19,6 +19,7 @@ namespace Resource_Redactor.Descriptions
 
         public class Node : IDisposable
         {
+            [JsonIgnore]
             public List<Subresource<SpriteResource>> SpritesBackup { get; set; } = new List<Subresource<SpriteResource>>();
             public List<Subresource<SpriteResource>> Sprites { get; set; } = new List<Subresource<SpriteResource>>();
 
@@ -40,26 +41,6 @@ namespace Resource_Redactor.Descriptions
                 OffsetX = x;
                 OffsetY = y;
                 MainNode = m;
-            }
-            public Node(BinaryReader r)
-            {
-                OffsetX = r.ReadSingle();
-                OffsetY = r.ReadSingle();
-                MainNode = r.ReadInt32();
-
-                Sprites.Clear();
-                Sprites.Capacity = r.ReadInt32();
-                for (int i = 0; i < Sprites.Capacity; i++) 
-                    Sprites.Add(new Subresource<SpriteResource>(r));
-            }
-            public void Write(BinaryWriter w)
-            {
-                w.Write(OffsetX);
-                w.Write(OffsetY);
-                w.Write(MainNode);
-
-                w.Write(Sprites.Count);
-                foreach (var s in Sprites) s.Write(w);
             }
 
             public PointF Rotate(float a)
@@ -112,43 +93,6 @@ namespace Resource_Redactor.Descriptions
             }
         }
 
-        protected override void ReadData(BinaryReader r)
-        {
-            if (Type != CurrentType) throw new Exception(
-                "Resource have wrong type [" + TypeToString(Type) + "]. [" +
-                TypeToString(CurrentType) + "] required.");
-            if (Version != CurrentVersion) throw new Exception(
-                "Resource have wrong version [" + Version +
-                "]. [" + CurrentVersion + "] required.");
-
-            Nodes.Clear();
-            Nodes = new List<Node>(r.ReadInt32());
-            for (int i = 0; i < Nodes.Capacity; i++) Nodes.Add(new Node(r));
-            HitboxW = r.ReadDouble();
-            HitboxH = r.ReadDouble();
-            
-            BackColor = r.ReadInt32();
-            PointBoundsX = r.ReadSingle();
-            PointBoundsY = r.ReadSingle();
-            PixelPerfect = r.ReadBoolean();
-            Transparency = r.ReadBoolean();
-
-            BuildUpdateQueue();
-        }
-        protected override void WriteData(BinaryWriter w)
-        {
-            w.Write(Nodes.Count);
-            foreach (var n in Nodes) n.Write(w);
-            w.Write(HitboxW);
-            w.Write(HitboxH);
-
-            w.Write(BackColor);
-            w.Write(PointBoundsX);
-            w.Write(PointBoundsY);
-            w.Write(PixelPerfect);
-            w.Write(Transparency);
-        }
-
         // Resource //
         public List<Node> Nodes { get; set; } = new List<Node>();
         [JsonIgnore]
@@ -166,9 +110,15 @@ namespace Resource_Redactor.Descriptions
 
         public RagdollResource() : base(CurrentType, CurrentVersion)
         {
+            BuildUpdateQueue();
         }
         public RagdollResource(string path) : base(path)
         {
+        }
+        public override void Open(string path)
+        {
+            base.Open(path);
+            BuildUpdateQueue();
         }
         public override void Dispose(bool disposing)
         {

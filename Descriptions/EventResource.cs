@@ -13,29 +13,6 @@ namespace Resource_Redactor.Descriptions
         public static readonly ResourceType CurrentType = ResourceType.Event;
         public static readonly string CurrentVersion = "0.0.0.0";
 
-        protected override void ReadData(BinaryReader r)
-        {
-            if (Type != CurrentType) throw new Exception(
-                "Resource have wrong type [" + TypeToString(Type) + "]. [" +
-                TypeToString(CurrentType) + "] required.");
-            if (Version != CurrentVersion) throw new Exception(
-                "Resource have wrong version \"" + Version +
-                "]. [" + CurrentVersion + "] required.");
-
-
-
-            BackColor = r.ReadInt32();
-            GridEnabled = r.ReadBoolean();
-        }
-        protected override void WriteData(BinaryWriter w)
-        {
-
-
-
-            w.Write(BackColor);
-            w.Write(GridEnabled);
-        }
-
         public enum ActionType : int
         {
             PlaceTile,

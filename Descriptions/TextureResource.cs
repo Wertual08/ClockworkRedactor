@@ -21,27 +21,6 @@ namespace Resource_Redactor.Descriptions
         private Bitmap TextureStorage;
         private uint GLTexture = 0;
 
-        protected override void ReadData(BinaryReader r)
-        {
-            if (Type != CurrentType) throw new Exception(
-                "Resource have wrong type [" + TypeToString(Type) + "]. [" + 
-                TypeToString(CurrentType) + "] required.");
-            if (Version != CurrentVersion) throw new Exception(
-                "Resource have wrong version [" + Version + 
-                "]. [" + CurrentVersion + "] required.");
-
-            Texture = r.ReadBitmap();
-
-            BackColor = r.ReadInt32();
-        }
-        protected override void WriteData(BinaryWriter w)
-        {
-            w.Write(Texture);
-
-            w.Write(BackColor);
-        }
-
-
         // Resource //
         [JsonIgnore]
         public Bitmap Texture
@@ -56,7 +35,7 @@ namespace Resource_Redactor.Descriptions
         }
 
         // Redactor //
-        public int BackColor = Color.Black.ToArgb();
+        public int BackColor { get; set; } = Color.Black.ToArgb();
 
         public TextureResource() : base(CurrentType, CurrentVersion)
         {

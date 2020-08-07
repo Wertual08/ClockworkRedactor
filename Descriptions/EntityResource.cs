@@ -16,70 +16,6 @@ namespace Resource_Redactor.Descriptions
         public static readonly ResourceType CurrentType = ResourceType.Entity;
         public static readonly string CurrentVersion = "0.0.0.1";
 
-        protected override void ReadData(BinaryReader r)
-        {
-            if (Type != CurrentType) throw new Exception(
-                "Resource have wrong type [" + TypeToString(Type) + "]. [" +
-                TypeToString(CurrentType) + "] required.");
-            if (Version != CurrentVersion) throw new Exception(
-                "Resource have wrong version [" + Version +
-                "]. [" + CurrentVersion + "] required.");
-
-            Ragdoll.Read(r);
-            Holders = new List<Holder>(r.ReadInt32());
-            for (int i = 0; i < Holders.Capacity; i++)
-                Holders.Add(new Holder(r));
-            Triggers = new List<Trigger>(r.ReadInt32());
-            for (int i = 0; i < Triggers.Capacity; i++)
-                Triggers.Add(new Trigger(r));
-
-            MaxHealth = r.ReadUInt64();
-            MaxEnergy = r.ReadUInt64();
-            Mass = r.ReadDouble();
-            GravityAcceleration = r.ReadDouble();
-            JumpVelocity = r.ReadDouble();
-            DragX = r.ReadDouble();
-            DragY = r.ReadDouble();
-            SqrDragX = r.ReadDouble();
-            SqrDragY = r.ReadDouble();
-            MoveForceX = r.ReadDouble();
-            MoveForceY = r.ReadDouble();
-
-            BackColor = r.ReadInt32();
-            PointBoundsX = r.ReadSingle();
-            PointBoundsY = r.ReadSingle();
-            GridEnabled = r.ReadBoolean();
-            Transparency = r.ReadBoolean();
-        }
-        protected override void WriteData(BinaryWriter w)
-        {
-            Ragdoll.Write(w);
-            w.Write(Holders.Count);
-            for (int i = 0; i < Holders.Count; i++)
-                Holders[i].Write(w);
-            w.Write(Triggers.Count);
-            for (int i = 0; i < Triggers.Count; i++)
-                Triggers[i].Write(w);
-
-            w.Write(MaxHealth);
-            w.Write(MaxEnergy);
-            w.Write(Mass);
-            w.Write(GravityAcceleration);
-            w.Write(JumpVelocity);
-            w.Write(DragX);
-            w.Write(DragY);
-            w.Write(SqrDragX);
-            w.Write(SqrDragY);
-            w.Write(MoveForceX);
-            w.Write(MoveForceY);
-
-            w.Write(BackColor);
-            w.Write(PointBoundsX);
-            w.Write(PointBoundsY);
-            w.Write(GridEnabled);
-            w.Write(Transparency);
-        }
-
         public class Trigger : IDisposable
         {
             public string Name { get; set; } = "";
@@ -107,42 +43,6 @@ namespace Resource_Redactor.Descriptions
 
             public Trigger()
             {
-            }
-            public Trigger(BinaryReader r)
-            {
-                Name = r.ReadString();
-                Action = r.ReadString();
-                VelocityXLowBound = r.ReadDouble();
-                VelocityXHighBound = r.ReadDouble();
-                VelocityYLowBound = r.ReadDouble();
-                VelocityYHighBound = r.ReadDouble();
-                AccelerationXLowBound = r.ReadDouble();
-                AccelerationXHighBound = r.ReadDouble();
-                AccelerationYLowBound = r.ReadDouble();
-                AccelerationYHighBound = r.ReadDouble();
-                OnGround = r.ReadInt32();
-                OnWall = r.ReadInt32();
-                OnRoof = r.ReadInt32();
-                Direction = r.ReadInt32();
-                Animation.Read(r);
-            }
-            public void Write(BinaryWriter w)
-            {
-                w.Write(Name);
-                w.Write(Action);
-                w.Write(VelocityXLowBound);
-                w.Write(VelocityXHighBound);
-                w.Write(VelocityYLowBound);
-                w.Write(VelocityYHighBound);
-                w.Write(AccelerationXLowBound);
-                w.Write(AccelerationXHighBound);
-                w.Write(AccelerationYLowBound);
-                w.Write(AccelerationYHighBound);
-                w.Write(OnGround);
-                w.Write(OnWall);
-                w.Write(OnRoof);
-                w.Write(Direction);
-                Animation.Write(w);
             }
 
             public enum BoolConditional : int
@@ -210,20 +110,6 @@ namespace Resource_Redactor.Descriptions
 
             public Holder()
             {
-            }
-            public Holder(BinaryReader r)
-            {
-                Name = r.ReadString();
-                Action = r.ReadString();
-                HolderPoint = r.ReadInt32();
-                Animation.Read(r);
-            }
-            public void Write(BinaryWriter w)
-            {
-                w.Write(Name);
-                w.Write(Action);
-                w.Write(HolderPoint);
-                Animation.Write(w);
             }
 
             protected bool IsDisposed { get; private set; } = false;

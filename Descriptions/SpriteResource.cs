@@ -16,50 +16,6 @@ namespace Resource_Redactor.Descriptions
         public static readonly ResourceType CurrentType = ResourceType.Sprite;
         public static readonly string CurrentVersion = "0.0.0.0";
 
-        protected override void ReadData(BinaryReader r)
-        {
-            if (Type != CurrentType) throw new Exception(
-                "Resource have wrong type [" + TypeToString(Type) + "]. [" +
-                TypeToString(CurrentType) + "] required.");
-            if (Version != CurrentVersion) throw new Exception(
-                "Resource have wrong version [" + Version +
-                "]. [" + CurrentVersion + "] required.");
-            
-            FramesCount = r.ReadInt32();
-            FrameDelay = r.ReadInt32();
-            ImgboxW = r.ReadSingle();
-            ImgboxH = r.ReadSingle();
-            AxisX = r.ReadSingle();
-            AxisY = r.ReadSingle();
-            Angle = r.ReadSingle();
-            VerticalFrames = r.ReadBoolean();
-
-            Texture.Link = r.ReadString();
-
-            BackColor = r.ReadInt32();
-            PointBoundsX = r.ReadSingle();
-            PointBoundsY = r.ReadSingle();
-            PixelPerfect = r.ReadBoolean();
-        }
-        protected override void WriteData(BinaryWriter w)
-        {
-            w.Write(FramesCount);
-            w.Write(FrameDelay);
-            w.Write(ImgboxW);
-            w.Write(ImgboxH);
-            w.Write(AxisX);
-            w.Write(AxisY);
-            w.Write(Angle);
-            w.Write(VerticalFrames);
-
-            w.Write(Texture.Link);
-
-            w.Write(BackColor);
-            w.Write(PointBoundsX);
-            w.Write(PointBoundsY);
-            w.Write(PixelPerfect);
-        }
-
         // Resource //
         public int FramesCount { get; set; } = 1;
         public int FrameDelay { get; set; } = 0;

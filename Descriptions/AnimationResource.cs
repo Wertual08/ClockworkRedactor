@@ -16,47 +16,6 @@ namespace Resource_Redactor.Descriptions
         public static readonly ResourceType CurrentType = ResourceType.Animation;
         public static readonly string CurrentVersion = "0.0.0.0";
 
-        protected override void ReadData(BinaryReader r)
-        {
-            if (Type != CurrentType) throw new Exception(
-                "Resource have wrong type [" +
-                TypeToString(Type) + "]. [" +
-                CurrentType + "] required.");
-            if (Version != CurrentVersion) throw new Exception(
-                "Resource have wrong version [" + Version +
-                "]. [" + CurrentVersion + "] required.");
-
-            NodesCount = r.ReadInt32();
-            Dependency = (AnimationType)r.ReadInt32();
-            FramesPerUnitRatio = r.ReadSingle();
-            Frames = new List<Frame>(r.ReadInt32());
-            for (int i = 0; i < Frames.Capacity; i++) Frames.Add(new Frame(r));
-
-            BackColor = r.ReadInt32();
-            PointBoundsX = r.ReadSingle();
-            PointBoundsY = r.ReadSingle();
-            PixelPerfect = r.ReadBoolean();
-            GridEnabled = r.ReadBoolean();
-            Transparency = r.ReadBoolean();
-            Ragdoll.Read(r);
-        }
-        protected override void WriteData(BinaryWriter w)
-        {
-            w.Write(NodesCount);
-            w.Write((int)Dependency);
-            w.Write(FramesPerUnitRatio);
-            w.Write(Frames.Count);
-            foreach (var f in Frames) f.Write(w);
-
-            w.Write(BackColor);
-            w.Write(PointBoundsX);
-            w.Write(PointBoundsY);
-            w.Write(PixelPerfect);
-            w.Write(GridEnabled);
-            w.Write(Transparency);
-            Ragdoll.Write(w);
-        }
-
         public int NodesCount { get; set; } = 0;
         public AnimationType Dependency { get; set; } = AnimationType.TimeLoop;
         public float FramesPerUnitRatio { get; set; } = 1f;

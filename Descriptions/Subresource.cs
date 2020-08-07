@@ -24,8 +24,6 @@ namespace Resource_Redactor.Descriptions
         bool Loaded { get; }
         bool Active { get; set; }
         void Reload();
-        void Read(BinaryReader r);
-        void Write(BinaryWriter w);
         ResourceType Type { get; }
     }
 
@@ -95,14 +93,6 @@ namespace Resource_Redactor.Descriptions
             Link = path;
             Active = active;
         }
-        public Subresource(BinaryReader r)
-        {
-            Watcher.Changed += Watcher_Changed;
-            Watcher.Created += Watcher_Changed;
-            Watcher.Deleted += Watcher_Changed;
-            Watcher.Renamed += Watcher_Renamed;
-            Read(r);
-        }
         public void Reload()
         {
             try
@@ -138,17 +128,6 @@ namespace Resource_Redactor.Descriptions
             }
             Reloaded?.Invoke(this, EventArgs.Empty);
             Refreshed?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void Read(BinaryReader r)
-        {
-            Link = r.ReadString();
-            Active = r.ReadBoolean();
-        }
-        public void Write(BinaryWriter w)
-        {
-            w.Write(Link);
-            w.Write(Active);
         }
 
         protected bool IsDisposed { get; private set; } = false;
@@ -194,9 +173,6 @@ namespace Resource_Redactor.Descriptions
         {
         }
         public WeakSubresource(string path, bool active) : base(path, active)
-        {
-        }
-        public WeakSubresource(BinaryReader r) : base(r)
         {
         }
     }

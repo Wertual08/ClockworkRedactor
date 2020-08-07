@@ -111,27 +111,6 @@ namespace Resource_Redactor.Descriptions
             Nodes = new Node[size];
             for (int i = 0; i < size; i++) Nodes[i] = new Node();
         }
-        public Frame(BinaryReader r)
-        {
-            Read(r);
-        }
-        public void Read(BinaryReader r)
-        {
-            Nodes = new Node[r.ReadInt32()];
-            for (int i = 0; i < Nodes.Length; i++) Nodes[i] =
-                new Node(r.ReadInt32(), r.ReadSingle(), r.ReadSingle(), r.ReadSingle());
-        }
-        public void Write(BinaryWriter w)
-        {
-            w.Write(Nodes.Length);
-            for (int i = 0; i < Nodes.Length; i++)
-            {
-                w.Write((int)Nodes[i].Properties);
-                w.Write(Nodes[i].OffsetX);
-                w.Write(Nodes[i].OffsetY);
-                w.Write(Nodes[i].Angle);
-            }
-        }
         public void Copy(Frame f)
         {
             if (Nodes.Length != f.Count) Nodes = new Node[f.Count];

@@ -65,7 +65,6 @@
             this.ApplyLinksResolverToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CancelLinksResolverToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CompilerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.UndoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -120,7 +119,6 @@
             this.PasteToolStripMenuItem,
             this.ToolsToolStripMenuItem,
             this.CompilerToolStripMenuItem,
-            this.ExportToolStripMenuItem,
             this.ExitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -435,13 +433,6 @@
             this.CompilerToolStripMenuItem.Text = "Compiler";
             this.CompilerToolStripMenuItem.Click += new System.EventHandler(this.CompilerToolStripMenuItem_Click);
             // 
-            // ExportToolStripMenuItem
-            // 
-            this.ExportToolStripMenuItem.Name = "ExportToolStripMenuItem";
-            this.ExportToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.ExportToolStripMenuItem.Text = "Export";
-            this.ExportToolStripMenuItem.Click += new System.EventHandler(this.ExportToolStripMenuItem_Click);
-            // 
             // ExitToolStripMenuItem
             // 
             this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
@@ -668,7 +659,6 @@
         private System.Windows.Forms.ToolStripMenuItem CancelLinksResolverToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem EventToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CompilerToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ExportToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog ImportFileDialog;
         private System.Windows.Forms.FolderBrowserDialog ExportFolderBrowserDialog;
     }

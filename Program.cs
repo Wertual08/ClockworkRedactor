@@ -16,9 +16,6 @@ namespace Resource_Redactor
             try
             {
                 string path = null;
-#if DEBUG
-                path = "../TheTestEver/TheTestEver.ced";
-#endif
                 if (args.Length >= 1 && args[0] != null) path = args[0];
                 for (int i = 1; i < args.Length; i++)
                 {
