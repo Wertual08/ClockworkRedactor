@@ -82,8 +82,8 @@
             this.RedactorsTabControl = new System.Windows.Forms.TabControl();
             this.OpenDescriptionDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveDescriptionDialog = new System.Windows.Forms.SaveFileDialog();
-            this.ImportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ImportFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.ExportFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.RedactorMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ExplorerSplitContainer)).BeginInit();
             this.ExplorerSplitContainer.Panel1.SuspendLayout();
@@ -121,7 +121,6 @@
             this.ToolsToolStripMenuItem,
             this.CompilerToolStripMenuItem,
             this.ExportToolStripMenuItem,
-            this.ImportToolStripMenuItem,
             this.ExitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -594,13 +593,6 @@
             this.RedactorsTabControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RedactorsTabControl_MouseMove);
             this.RedactorsTabControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.RedactorsTabControl_MouseUp);
             // 
-            // ImportToolStripMenuItem
-            // 
-            this.ImportToolStripMenuItem.Name = "ImportToolStripMenuItem";
-            this.ImportToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.ImportToolStripMenuItem.Text = "Import";
-            this.ImportToolStripMenuItem.Click += new System.EventHandler(this.ImportToolStripMenuItem_Click);
-            // 
             // RedactorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -677,8 +669,8 @@
         private System.Windows.Forms.ToolStripMenuItem EventToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CompilerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExportToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ImportToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog ImportFileDialog;
+        private System.Windows.Forms.FolderBrowserDialog ExportFolderBrowserDialog;
     }
 }
 

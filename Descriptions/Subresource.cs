@@ -150,13 +150,6 @@ namespace Resource_Redactor.Descriptions
             w.Write(Link);
             w.Write(Active);
         }
-        public void Export(Utf8JsonWriter json)
-        {
-            json.WriteStartObject("Subresource");
-            json.WriteString("Link", Link);
-            json.WriteBoolean("Active", Active);
-            json.WriteEndObject();
-        }
 
         protected bool IsDisposed { get; private set; } = false;
         public void Dispose()

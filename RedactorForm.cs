@@ -382,40 +382,43 @@ namespace Resource_Redactor
         {
             try
             {
-                foreach (var resource in ResourceExplorer.SelectedItems)
+                var result = ExportFolderBrowserDialog.ShowDialog(this);
+                if (result != DialogResult.OK) return;
+                var directory = ExportFolderBrowserDialog.SelectedPath;
+                Directory.CreateDirectory(Path.Combine(directory, "Backups"));
+                Directory.CreateDirectory(Path.Combine(directory, "Compilation"));
+                Directory.CreateDirectory(Path.Combine(directory, "Recycle"));
+                Directory.CreateDirectory(Path.Combine(directory, "Resources"));
+
+                foreach (var file in Directory.EnumerateFiles("..", "*", SearchOption.TopDirectoryOnly))
                 {
-                    var path = Path.Combine("../Exports", resource + ".json");
-                    Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    Resource.Export(resource, path);
+                    if (Path.GetExtension(file) == ".ced")
+                        File.Copy(file, Path.Combine(directory, Path.GetFileName(file) + "p"), true);
+                    else File.Copy(file, Path.Combine(directory, Path.GetFileName(file)), true);
                 }
+
+                var files = Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*", SearchOption.AllDirectories);
+                int exported = 0;
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        var type = Resource.GetType(file);
+                        var out_path = Path.Combine(directory, "Resources", ExtraPath.MakeDirectoryRelated(Directory.GetCurrentDirectory(), file));
+                        Directory.CreateDirectory(Path.GetDirectoryName(out_path));
+                        Resource.Export(file, out_path);
+                        exported++;
+                    }
+                    catch (Exception ex) {
+                        //MessageBox.Show(ex.ToString(), file);
+                    }
+                }
+                MessageBox.Show(this, "Exported " + exported + " of " + files.Count() + ".", "Export complete.",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(this, ex.ToString(), "Error: Can not export selected resources.", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void ImportToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            ImportFileDialog.ShowDialog(this);
-            string path = ImportFileDialog.FileName;
-            try
-            {
-
-                string import_path = ResourceExplorer.CurrentDirectory;
-                string name = Path.GetFileNameWithoutExtension(path);
-                int i = 0;
-                if (File.Exists(Path.Combine(import_path, name)) ||
-                    Directory.Exists(Path.Combine(import_path, name)))
-                    while (File.Exists(Path.Combine(import_path, name + " " + ++i)) ||
-                        Directory.Exists(Path.Combine(import_path, name + " " + i))) ;
-                if (i != 0) name += " " + i;
-
-                Resource.Import(path, Path.Combine(import_path, name));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not import [" + path + "].",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

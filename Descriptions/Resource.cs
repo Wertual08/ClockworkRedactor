@@ -412,6 +412,42 @@ namespace Resource_Redactor.Descriptions
             else return false;
         }
     }
+    public class JsonHandleSpecialDoublesAsStrings : JsonConverter<double>
+    {
+        public override double Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                return double.Parse(reader.GetString());
+            }
+            return reader.GetDouble();
+        }
+
+        public override void Write(Utf8JsonWriter writer, double value, JsonSerializerOptions options)
+        {
+            if (double.IsNaN(value) || double.IsInfinity(value)) 
+                writer.WriteStringValue(value.ToString());
+            else writer.WriteNumberValue(value);
+        }
+    }
+    public class JsonHandleSpecialFloatsAsStrings : JsonConverter<float>
+    {
+        public override float Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                return float.Parse(reader.GetString());
+            }
+            return reader.GetSingle();
+        }
+
+        public override void Write(Utf8JsonWriter writer, float value, JsonSerializerOptions options)
+        {
+            if (float.IsNaN(value) || float.IsInfinity(value))
+                writer.WriteStringValue(value.ToString());
+            else writer.WriteNumberValue(value);
+        }
+    }
 
     public class ResourceEventArgs : EventArgs
     {
@@ -784,6 +820,25 @@ namespace Resource_Redactor.Descriptions
                 return ResourceType.NotResource;
             }
         }
+        public static ResourceType GetLegacyType(string path)
+        {
+            try
+            {
+                if (Directory.Exists(path)) return ResourceType.Folder;
+                if (!File.Exists(path)) return ResourceType.MissingFile;
+
+                using (var r = new BinaryReader(File.Open(path, FileMode.Open,
+                    FileAccess.Read, FileShare.ReadWrite)))
+                {
+                    if (!ResourceSignature.Read(r)) return ResourceType.NotResource;
+                    return StringToType(r.ReadString());
+                }
+            }
+            catch
+            {
+                return ResourceType.NotResource;
+            }
+        }
         public static ResourceType GetType(Type type)
         {
             if (type == typeof(TextureResource)) return TextureResource.CurrentType;
@@ -817,10 +872,23 @@ namespace Resource_Redactor.Descriptions
             using (var r = new BinaryReader(File.OpenRead(path)))
             {
                 if (!ResourceSignature.Read(r)) return null;
-                var type = r.ReadString();
-                var version = r.ReadString();
-                var timestamp = r.ReadString(); 
-                return null;
+                r.ReadString(); // Type
+                r.ReadString(); // Version
+                r.ReadString(); // TimeStamp
+                return new ResourceID(r);
+            }
+        }
+        public static string GetVersion(string path)
+        {
+            if (Directory.Exists(path)) return "_._._._";
+            if (!File.Exists(path)) return "_._._._";
+
+            using (var r = new BinaryReader(File.Open(path, FileMode.Open,
+                FileAccess.Read, FileShare.ReadWrite)))
+            {
+                if (!ResourceSignature.Read(r)) return "_._._._";
+                r.ReadString(); // Type
+                return r.ReadString();
             }
         }
 
@@ -834,33 +902,65 @@ namespace Resource_Redactor.Descriptions
                 type = GetType(StringToType(json_doc.RootElement.GetProperty("TypeName").GetString()));
             }
 
-            using (Resource resource = JsonSerializer.Deserialize(json, type) as Resource) resource.Save(resource_path);
+            var options = new JsonSerializerOptions
+            {
+                IgnoreReadOnlyProperties = true,
+                WriteIndented = true,
+            };
+            options.Converters.Add(new JsonHandleSpecialDoublesAsStrings());
+            options.Converters.Add(new JsonHandleSpecialFloatsAsStrings());
+            options.Converters.Add(new JsonStringEnumConverter());
+
+            using (Resource resource = JsonSerializer.Deserialize(json, type, options) as Resource) resource.Save(resource_path);
+        }
+        public static Resource Import(string json_path)
+        {
+            string json = File.ReadAllText(json_path);
+            Type type;
+
+            using (var json_doc = JsonDocument.Parse(json))
+            {
+                type = GetType(StringToType(json_doc.RootElement.GetProperty("TypeName").GetString()));
+            }
+
+            return JsonSerializer.Deserialize(json, type) as Resource;
         }
         public static void Export(string resource_path, string json_path)
+        {
+            using (Resource resource = Factory(resource_path))
+            {
+                if (resource == null) throw new NotImplementedException("Resource exporter does not implemented.");
+
+                var options = new JsonSerializerOptions
+                {
+                    IgnoreReadOnlyProperties = true,
+                    WriteIndented = true,
+                };
+                options.Converters.Add(new JsonStringEnumConverter());
+                options.Converters.Add(new JsonHandleSpecialFloatsAsStrings());
+                options.Converters.Add(new JsonHandleSpecialDoublesAsStrings());
+                File.WriteAllText(json_path, JsonSerializer.Serialize(resource, resource.GetType(), options));
+            }
+        }
+        public static void Export(Resource resource, string json_path)
         {
             var p = new JsonSerializerOptions
             {
                 IgnoreReadOnlyProperties = true,
                 WriteIndented = true,
-                
             };
-            using (Resource resource = Factory(resource_path))
-            {
-                if (resource == null) throw new NotImplementedException("Resource exporter does not implemented.");
-                File.WriteAllText(json_path, JsonSerializer.Serialize(resource, resource.GetType(), p));
-            }
+            if (resource == null) throw new NotImplementedException("Resource exporter does not implemented.");
+            File.WriteAllText(json_path, JsonSerializer.Serialize(resource, resource.GetType(), p));
         }
 
 
         protected abstract void ReadData(BinaryReader r);
         protected abstract void WriteData(BinaryWriter w);
 
-        [JsonIgnore]
-        public ResourceType Type { get; private set; }
-        public string TypeName { get { return Type.ToString(); } private set { Type = StringToType(value); } }
-        public string Version { get; private set; }
-        public string TimeStamp { get; private set; }
-        public ResourceID ID { get; private set; } 
+        public ResourceType Type { get; set; }
+        public string Version { get; set; }
+        public string TimeStamp { get; set; }
+        public ResourceID ID { get; set; } 
 
         public Resource(ResourceType type, string version)
         {
