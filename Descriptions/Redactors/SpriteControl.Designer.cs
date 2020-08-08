@@ -37,7 +37,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.LinkTextBox = new System.Windows.Forms.TextBox();
+            this.LinkTextBox = new Resource_Redactor.Descriptions.Redactors.SubresourceTextBox();
             this.ControlsSplitContainer = new System.Windows.Forms.SplitContainer();
             this.VFramesCheckBox = new System.Windows.Forms.CheckBox();
             this.AngleNumeric = new ExtraForms.SafeNumericUpDown();
@@ -140,14 +140,11 @@
             this.LinkTextBox.AllowDrop = true;
             this.LinkTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.LinkTextBox.BackColor = System.Drawing.Color.Red;
             this.LinkTextBox.Location = new System.Drawing.Point(3, 312);
             this.LinkTextBox.Name = "LinkTextBox";
             this.LinkTextBox.Size = new System.Drawing.Size(116, 20);
             this.LinkTextBox.TabIndex = 16;
             this.LinkTextBox.TextChanged += new System.EventHandler(this.LinkTextBox_TextChanged);
-            this.LinkTextBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.LinkTextBox_DragDrop);
-            this.LinkTextBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.LinkTextBox_DragEnter);
             // 
             // ControlsSplitContainer
             // 
@@ -469,7 +466,7 @@
         private ExtraForms.SafeNumericUpDown AxisYNumeric;
         private ExtraForms.SafeNumericUpDown AngleNumeric;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox LinkTextBox;
+        private Resource_Redactor.Descriptions.Redactors.SubresourceTextBox LinkTextBox;
         private System.Windows.Forms.SplitContainer ControlsSplitContainer;
         private System.Windows.Forms.ColorDialog BackgroundColorDialog;
         private ExtraForms.OpenGLSurface GLSurface;

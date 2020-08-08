@@ -40,7 +40,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.HitboxHNumeric = new ExtraForms.SafeNumericUpDown();
             this.HitboxWNumeric = new ExtraForms.SafeNumericUpDown();
-            this.LinksListBox = new System.Windows.Forms.CheckedListBox();
+            this.LinksListBox = new System.Windows.Forms.ListBox();
             this.MainNodeNumeric = new ExtraForms.SafeNumericUpDown();
             this.OffsetYNumeric = new ExtraForms.SafeNumericUpDown();
             this.OffsetXNumeric = new ExtraForms.SafeNumericUpDown();
@@ -246,7 +246,6 @@
             this.LinksListBox.Name = "LinksListBox";
             this.LinksListBox.Size = new System.Drawing.Size(116, 94);
             this.LinksListBox.TabIndex = 1;
-            this.LinksListBox.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.LinksListBox_ItemCheck);
             this.LinksListBox.SelectedIndexChanged += new System.EventHandler(this.LinksListBox_SelectedIndexChanged);
             this.LinksListBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.LinksListBox_DragDrop);
             this.LinksListBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.LinksListBox_DragEnter);
@@ -400,7 +399,7 @@
         private ExtraForms.OpenGLSurface GLSurface;
         private System.Windows.Forms.SplitContainer ControlsSplitContainer;
         private System.Windows.Forms.ColorDialog BackgroundColorDialog;
-        private System.Windows.Forms.CheckedListBox LinksListBox;
+        private System.Windows.Forms.ListBox LinksListBox;
         private System.Windows.Forms.Timer GLFrameTimer;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label7;

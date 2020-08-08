@@ -100,7 +100,7 @@ namespace Resource_Redactor
                     case ResourceType.Outfit: control = new OutfitControl(path); break;
 
                     default:
-                        MessageBox.Show(this, "Resource [" + Resource.TypeToString(type) +
+                        MessageBox.Show(this, "Resource [" + type +
                            "] redactor does not implemented!", "Warning!",
                            MessageBoxButtons.OK, MessageBoxIcon.Warning); break;
                 }
@@ -307,7 +307,7 @@ namespace Resource_Redactor
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                         break;
-                    default: ResourceExplorer.CreateResource(Resource.StringToType(item.Text)); break;
+                    default: ResourceExplorer.CreateResource((ResourceType)Enum.Parse(typeof(ResourceType), item.Text)); break;
                 }
             }
             catch (Exception ex)
@@ -445,8 +445,8 @@ namespace Resource_Redactor
                 {
                     try
                     {
-                        var dest = Path.Combine(Path.GetDirectoryName(Path.Combine(recycle, path)), 
-                            ResourceSignature.FileTimeStamp + Path.GetFileName(path));
+                        var dest = Path.Combine(Path.GetDirectoryName(Path.Combine(recycle, path)),
+                            "[" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss") + "]" + Path.GetFileName(path));
                         if (!Directory.Exists(dest)) Directory.CreateDirectory(Path.GetDirectoryName(dest));
                         Directory.Move(path, dest);
                     }
@@ -654,22 +654,7 @@ namespace Resource_Redactor
             {
                 try
                 {
-                    if (tab.Controls.Count != 1) continue;
-                    var rcontrol = tab.Controls[0] as IResourceControl;
-                    if (rcontrol == null) continue;
-                    if (!rcontrol.Saved)
-                    {
-                        var result = MessageBox.Show(this, "Save changes before closing?",
-                            "Warning: You have unsaved changes in [" + rcontrol.ResourceName +
-                            "]!", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-                        if (result == DialogResult.Yes) rcontrol.Save(rcontrol.ResourcePath);
-                        if (result == DialogResult.Cancel)
-                        {
-                            e.Cancel = true;
-                            return;
-                        }
-                    }
-                    RedactorsTabControl.TabPages.Remove(tab);
+                    CloseRedactor(tab);
                 }
                 catch (Exception ex)
                 {

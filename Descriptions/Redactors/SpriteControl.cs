@@ -143,7 +143,7 @@ namespace Resource_Redactor.Descriptions.Redactors
             ResourceName = Path.GetFileName(path);
 
             LoadedResource.Texture.SynchronizingObject = this;
-            LoadedResource.Texture.Reloaded += Texture_Reloaded;
+            LinkTextBox.Subresource = LoadedResource.Texture;
 
             FramesNumeric.Value = LoadedResource.FramesCount;
             DelayNumeric.Value = (decimal)LoadedResource.FrameDelay;
@@ -187,12 +187,6 @@ namespace Resource_Redactor.Descriptions.Redactors
             UpdateRedactor();
         }
 
-        private void Texture_Reloaded(object sender, EventArgs e)
-        {
-            LinkTextBox.Text = LoadedResource.Texture.Link;
-            if (!LoadedResource.Texture.Loaded) LinkTextBox.BackColor = Color.Red;
-            else LinkTextBox.BackColor = SystemColors.Control;
-        }
         private void Story_ValueChanged(object sender, EventArgs e)
         {
             try
@@ -246,54 +240,7 @@ namespace Resource_Redactor.Descriptions.Redactors
         {
             try
             {
-                LoadedResource.Texture.Link = LinkTextBox.Text;
-                if (!LoadedResource.Texture.Loaded) LinkTextBox.BackColor = Color.Red;
-                else LinkTextBox.BackColor = SystemColors.Control;
-
                 Story.Item = new State(LoadedResource);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not link texture.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void LinkTextBox_DragEnter(object sender, DragEventArgs e)
-        {
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
-            var paths = e.Data.GetData(DataFormats.FileDrop) as string[];
-            if (paths.Length != 1 || Resource.GetType(paths[0]) != ResourceType.Texture) return;
-            if (e.AllowedEffect.HasFlag(DragDropEffects.Link))
-                e.Effect = DragDropEffects.Link;
-            else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy))
-                e.Effect = DragDropEffects.Copy;
-            else if (e.AllowedEffect.HasFlag(DragDropEffects.Move))
-                e.Effect = DragDropEffects.Move;
-            else e.Effect = DragDropEffects.None;
-        }
-        private void LinkTextBox_DragDrop(object sender, DragEventArgs e)
-        {
-            try
-            {
-                if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                {
-                    var paths = e.Data.GetData(DataFormats.FileDrop) as string[];
-                    if (paths.Length != 1)
-                    {
-                        MessageBox.Show(this, "You must choose only one image file.",
-                            "Error: Can not import [" + paths.Length + "] files.",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    var fpath = paths[0];
-                    var dpath = Directory.GetCurrentDirectory();
-                    if (!fpath.StartsWith(dpath)) MessageBox.Show(this,
-                        "Resource is not in description directory.",
-                        "Error: Invalid resource.", MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                    else LinkTextBox.Text = ExtraPath.MakeDirectoryRelated(dpath, fpath);
-                }
             }
             catch (Exception ex)
             {

@@ -653,7 +653,7 @@ namespace Resource_Redactor.Descriptions.Redactors
             }
             catch (Exception ex)
             {
-                GLFrameTimer.Stop();
+                //GLFrameTimer.Stop();
                 MessageBox.Show(this, ex.ToString(), "Error: Can not render frame.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -1827,7 +1827,7 @@ namespace Resource_Redactor.Descriptions.Redactors
         }
         private void ToolCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            EntityController.Tool.Active = ToolCheckBox.Checked;
+            EntityController.ToolEnabled = ToolCheckBox.Checked;
         }
         private void ToolLinkTextBox_TextChanged(object sender, EventArgs e)
         {

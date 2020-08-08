@@ -35,7 +35,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.NodesListBox = new System.Windows.Forms.CheckedListBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.LinkTextBox = new System.Windows.Forms.TextBox();
+            this.LinkTextBox = new Resource_Redactor.Descriptions.Redactors.SubresourceTextBox();
             this.OLICheckBox = new ExtraForms.SafeCheckBox();
             this.ALICheckBox = new ExtraForms.SafeCheckBox();
             this.TypeUpDown = new System.Windows.Forms.DomainUpDown();
@@ -196,8 +196,6 @@
             this.LinkTextBox.Size = new System.Drawing.Size(116, 20);
             this.LinkTextBox.TabIndex = 2;
             this.LinkTextBox.TextChanged += new System.EventHandler(this.LinkTextBox_TextChanged);
-            this.LinkTextBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.LinkTextBox_DragDrop);
-            this.LinkTextBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.LinkTextBox_DragEnter);
             // 
             // OLICheckBox
             // 
@@ -426,7 +424,7 @@
         private System.Windows.Forms.Timer GLFrameTimer;
         private System.Windows.Forms.ListBox FramesListBox;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox LinkTextBox;
+        private Resource_Redactor.Descriptions.Redactors.SubresourceTextBox LinkTextBox;
         private ExtraForms.SafeCheckBox OLICheckBox;
         private ExtraForms.SafeCheckBox ALICheckBox;
         private System.Windows.Forms.DomainUpDown TypeUpDown;

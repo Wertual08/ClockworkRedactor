@@ -417,8 +417,8 @@ namespace Resource_Redactor.Descriptions.Redactors
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.ToString(), "Can not create resource " +
-                    Resource.TypeToString(type) + ".", MessageBoxButtons.OK,
+                MessageBox.Show(this, ex.ToString(), "Can not create resource [" +
+                    type + "].", MessageBoxButtons.OK,
                    MessageBoxIcon.Error);
             }
         }

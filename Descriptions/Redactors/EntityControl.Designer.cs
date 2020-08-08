@@ -406,6 +406,11 @@
             0,
             0,
             0});
+            this.ToolDelayNumeric.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.ToolDelayNumeric.Name = "ToolDelayNumeric";
             this.ToolDelayNumeric.Size = new System.Drawing.Size(160, 20);
             this.ToolDelayNumeric.TabIndex = 2;

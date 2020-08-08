@@ -214,6 +214,9 @@
     <EmbeddedResource Include="Descriptions\Redactors\SpriteControl.resx">
       <DependentUpon>SpriteControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Descriptions\Redactors\SubresourceTextBox.resx">
+      <DependentUpon>SubresourceTextBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Descriptions\Redactors\TextureControl.resx">
       <DependentUpon>TextureControl.cs</DependentUpon>
     </EmbeddedResource>

@@ -11,6 +11,8 @@ using System.Windows.Forms;
 using System.Text.Json;
 using System.Globalization;
 
+
+
 namespace Resource_Redactor.Descriptions
 {
     public enum ResourceType : int
@@ -482,33 +484,6 @@ namespace Resource_Redactor.Descriptions
         }
     }
 
-    public class ResourceEventArgs : EventArgs
-    {
-    }
-
-    static class ResourceSignature
-    {
-        private static readonly string Stamp = "CLOCKWORK_ENGINE_REDACTOR_RESOURCE";
-        public static string FileTimeStamp { get { return DateTime.Now.ToString("[yyyy-MM-dd HH-mm-ss]"); } }
-        public static string TimeStamp { get { return DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"); } }
-        public static void Write(BinaryWriter w)
-        {
-            w.Write(0x00f00fff);
-            w.Write(Stamp.ToCharArray());
-            w.Write(0xff0ff000);
-        }
-        public static bool Read(BinaryReader r)
-        {
-            if (r == null) return false;
-            var astamp = Stamp.ToCharArray();
-            long length = astamp.Length + 8L + 4L;
-            if (r.BaseStream.Length - r.BaseStream.Position < length) return false;
-            if (r.ReadUInt32() != 0x00f00fff) return false;
-            foreach (var c in astamp) if (c != r.ReadChar()) return false;
-            if (r.ReadUInt32() != 0xff0ff000) return false;
-            return true;
-        }
-    }
     public class ResourceID : IComparable
     {
         private static Random Generator = new Random();
@@ -527,6 +502,7 @@ namespace Resource_Redactor.Descriptions
 
         public override bool Equals(object obj)
         {
+            if (obj == null) return false;
             var res = obj as ResourceID;
             return res != null && TimePart == res.TimePart && RandPart == res.RandPart;
         }
@@ -572,29 +548,12 @@ namespace Resource_Redactor.Descriptions
         {
             return TimePart + ":" + RandPart;
         }
-    }
-    public class ResourceLink
-    {
-        private string FilePath;
-        private ResourceType Type;
-        private ResourceID ID;
-
-        public ResourceLink()
+        public ResourceID Copy()
         {
-            FilePath = null;
-            Type = ResourceType.MissingFile;
-            ID = null;
-        }
-        public ResourceLink(string path)
-        {
-            FilePath = path;
-            Type = Resource.GetType(path);
-            ID = Resource.GetID(path);
-        }
-        public ResourceLink(BinaryReader reader)
-        {
-            FilePath = reader.ReadString();
-            Type = Resource.StringToType(reader.ReadString());
+            var id = new ResourceID();
+            id.TimePart = TimePart;
+            id.RandPart = RandPart;
+            return id;
         }
     }
     public class Resource : IDisposable
@@ -605,11 +564,9 @@ namespace Resource_Redactor.Descriptions
             get
             {
                 if (SerializerOptions_ != null) return SerializerOptions_;
-                var options = new JsonSerializerOptions
-                {
-                    IgnoreReadOnlyProperties = true,
-                    WriteIndented = true,
-                };
+                var options = new JsonSerializerOptions();
+                options.IgnoreReadOnlyProperties = true;
+                options.WriteIndented = false;
                 options.Converters.Add(new JsonHandleSpecialDoublesAsStrings());
                 options.Converters.Add(new JsonHandleSpecialFloatsAsStrings());
                 options.Converters.Add(new JsonStringEnumConverter());
@@ -617,236 +574,11 @@ namespace Resource_Redactor.Descriptions
             }
         }
 
-        private static string CurrentVersion(ResourceType type)
-        {
-            switch (type)
-            {
-                case ResourceType.Texture: return TextureResource.CurrentVersion;
-                case ResourceType.Sprite: return SpriteResource.CurrentVersion;
-                case ResourceType.Ragdoll: return RagdollResource.CurrentVersion;
-                case ResourceType.Animation: return AnimationResource.CurrentVersion;
-                case ResourceType.Tool: return ToolResource.CurrentVersion;
-                case ResourceType.Entity: return EntityResource.CurrentVersion;
-                case ResourceType.Tile: return TileResource.CurrentVersion;
-                case ResourceType.Event: return EventResource.CurrentVersion;
-                case ResourceType.Outfit: return OutfitResource.CurrentVersion;
-                default: return "_._._._";
-            }
-        }
-        public static string TypeToString(ResourceType type)
-        {
-            return Enum.GetName(typeof(ResourceType), type);
-        }
-        public static ResourceType StringToType(string type)
-        {
-            ResourceType t;
-            if (Enum.TryParse(type, out t)) return t;
-            else return ResourceType.Unknown;
-        }
         public static int TypeToIcon(ResourceType type)
         {
-            switch (type)
-            {
-                case ResourceType.Outdated: return (int)ResourceIcon.Outdated;
-                case ResourceType.Folder: return (int)ResourceIcon.Folder;
-                case ResourceType.Texture: return (int)ResourceIcon.Texture;
-                case ResourceType.Sound: return (int)ResourceIcon.Sound;
-                case ResourceType.Tile: return (int)ResourceIcon.Tile;
-                case ResourceType.Event: return (int)ResourceIcon.Event;
-                case ResourceType.Sprite: return (int)ResourceIcon.Sprite;
-                case ResourceType.Entity: return (int)ResourceIcon.Entity;
-                case ResourceType.Ragdoll: return (int)ResourceIcon.Ragdoll;
-                case ResourceType.Animation: return (int)ResourceIcon.Animation;
-                case ResourceType.Outfit: return (int)ResourceIcon.Outfit;
-                case ResourceType.Tool: return (int)ResourceIcon.Tool;
-                case ResourceType.Item: return (int)ResourceIcon.Item;
-                case ResourceType.Particle: return (int)ResourceIcon.Particle;
-                default: return (int)ResourceIcon.Invalid;
-            }
-        }
-
-        public static bool PrimalFile(string file)
-        {
-            try
-            {
-                var ext = Path.GetExtension(file).ToLower();
-                switch (ext)
-                {
-                    case ".bmp": return true;
-                    case ".gif": return true;
-                    case ".exif": return true;
-                    case ".jpg": return true;
-                    case ".jpeg": return true;
-                    case ".png": return true;
-                    case ".tif": return true;
-                    default: return false;
-                }
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        public static string Factory(string path, ResourceType type)
-        {
-            string name = "New " + TypeToString(type);
-            int i = 0;
-            if (File.Exists(Path.Combine(path, name)) ||
-                Directory.Exists(Path.Combine(path, name)))
-                while (File.Exists(Path.Combine(path, name + " " + ++i)) ||
-                    Directory.Exists(Path.Combine(path, name + " " + i))) ;
-            if (i != 0) name += " " + i;
-            path = Path.Combine(path, name);
-
-            if (type == ResourceType.Folder) Directory.CreateDirectory(path);
-            else
-            {
-                using (var resource = Factory(type))
-                {
-                    if (resource != null) resource.Save(path);
-                    else throw new NotImplementedException("Resource [" + 
-                        TypeToString(type) + "] not implemented.");
-                }
-            }
-
-            return name;
-        }
-        public static string Factory(string path, ResourceType type, string[] src)
-        {
-            switch (type)
-            {
-                case ResourceType.Sprite:
-
-                    using (var resource = new SpriteResource())
-                    {
-                        if (src.Length != 1) throw new Exception(
-                            "Sources count [" + src.Length + "] is invalid for sprite.");
-                        var src_path = src[0];
-
-                        string name = TypeToString(type) + " " + Path.GetFileName(src_path);
-                        int i = 0;
-                        if (File.Exists(Path.Combine(path, name)) ||
-                            Directory.Exists(Path.Combine(path, name)))
-                            while (File.Exists(Path.Combine(path, name + " " + ++i)) ||
-                                Directory.Exists(Path.Combine(path, name + " " + i))) ;
-                        if (i != 0) name += " " + i;
-                        path = Path.Combine(path, name);
-                        var src_type = GetType(src_path);
-
-                        if (src_type != ResourceType.Texture) throw new Exception(
-                            "Source [" + TypeToString(src_type) + "] is ivalid source for sprite.");
-                        resource.Texture.Link = src_path;
-                        resource.AdjustImgbox();
-                        resource.Save(path);
-                        return path;
-                    }
-                case ResourceType.Ragdoll:
-                    using (var resource = new RagdollResource())
-                    {
-                        Array.Sort(src);
-                        string name = "New " + TypeToString(type);
-                        int i = 0;
-                        if (File.Exists(Path.Combine(path, name)) ||
-                            Directory.Exists(Path.Combine(path, name)))
-                            while (File.Exists(Path.Combine(path, name + " " + ++i)) ||
-                                Directory.Exists(Path.Combine(path, name + " " + i))) ;
-                        if (i != 0) name += " " + i;
-                        path = Path.Combine(path, name);
-                        foreach (var src_path in src)
-                        {
-                            var src_type = GetType(src_path);
-                            if (src_type != ResourceType.Sprite) throw new Exception(
-                                "Source [" + TypeToString(src_type) + "] is ivalid source for ragdoll.");
-                            var node = new RagdollResource.Node();
-                            node.Sprites.Add(new Subresource<SpriteResource>(src_path, true));
-                            resource.Nodes.Add(node);
-                        }
-                        resource.Save(path);
-                        return path;
-                    }
-
-                default: throw new NotImplementedException("Resource [" + TypeToString(type) + "] factory implemented.");
-            }
-        }
-        public static string Factory(string path, string src)
-        {
-            var type = ResourceType.Unknown;
-            var ext = Path.GetExtension(src).ToLower();
-            switch (ext)
-            {
-                case ".bmp": type = ResourceType.Texture; break;
-                case ".gif": type = ResourceType.Texture; break;
-                case ".exif": type = ResourceType.Texture; break;
-                case ".jpg": type = ResourceType.Texture; break;
-                case ".jpeg": type = ResourceType.Texture; break;
-                case ".png": type = ResourceType.Texture; break;
-                case ".tif": type = ResourceType.Texture; break;
-            }
-
-            string name = Path.GetFileNameWithoutExtension(src);
-            int i = 0;
-            if (File.Exists(Path.Combine(path, name)) ||
-                Directory.Exists(Path.Combine(path, name)))
-                while (File.Exists(Path.Combine(path, name + " " + ++i)) ||
-                    Directory.Exists(Path.Combine(path, name + " " + i))) ;
-            if (i != 0) name += " " + i;
-            path = Path.Combine(path, name);
-
-            if (type == ResourceType.Folder)
-            {
-                Directory.CreateDirectory(path);
-                return name;
-            }
-
-            switch (type)
-            {
-                case ResourceType.Texture:
-                    using (var resource = new TextureResource())
-                    {
-                        resource.Texture = new Bitmap(src);
-                        resource.Save(path);
-                    }
-                    break;
-
-                default: throw new Exception("Can not generate resource [" + 
-                    TypeToString(type) + "] from source [" + src + "].");
-            }
-
-            return name;
-        }
-        public static Resource Factory(ResourceType type)
-        {
-            switch (type)
-            {
-                case ResourceType.Texture: return new TextureResource(); 
-                case ResourceType.Sprite: return new SpriteResource(); 
-                case ResourceType.Ragdoll: return new RagdollResource();
-                case ResourceType.Animation: return new AnimationResource(); 
-                case ResourceType.Tool: return new ToolResource(); 
-                case ResourceType.Entity: return new EntityResource(); 
-                case ResourceType.Tile: return new TileResource(); 
-                case ResourceType.Event: return new EventResource(); 
-                case ResourceType.Outfit: return new OutfitResource(); 
-                default: return null;
-            }
-        }
-        public static Resource Factory(string path)
-        {
-            ResourceType type = GetType(path);
-            switch (type)
-            {
-                case ResourceType.Texture: return new TextureResource(path);
-                case ResourceType.Sprite: return new SpriteResource(path);
-                case ResourceType.Ragdoll: return new RagdollResource(path);
-                case ResourceType.Animation: return new AnimationResource(path);
-                case ResourceType.Tool: return new ToolResource(path);
-                case ResourceType.Entity: return new EntityResource(path);
-                case ResourceType.Tile: return new TileResource(path);
-                case ResourceType.Event: return new EventResource(path);
-                case ResourceType.Outfit: return new OutfitResource(path);
-                default: return null;
-            }
+            ResourceIcon i;
+            if (Enum.TryParse(type.ToString(), out i)) return (int)i;
+            else return (int)ResourceIcon.Invalid;
         }
 
         public static ResourceType GetType(string path)
@@ -857,15 +589,6 @@ namespace Resource_Redactor.Descriptions
                 if (!File.Exists(path)) return ResourceType.MissingFile;
 
                 using (var resource = new Resource(path)) return resource.Type; 
-                //using (var r = new BinaryReader(File.Open(path, FileMode.Open,
-                //    FileAccess.Read, FileShare.ReadWrite)))
-                //{
-                //    if (!ResourceSignature.Read(r)) return ResourceType.NotResource;
-                //    var type = StringToType(r.ReadString());
-                //    var version = r.ReadString();
-                //    if (CurrentVersion(type) != version) return ResourceType.Outdated;
-                //    return type;
-                //}
             }
             catch (Exception ex)
             {
@@ -915,6 +638,22 @@ namespace Resource_Redactor.Descriptions
                 }
             }
         }
+        public static string GetVersion(ResourceType type)
+        {
+            switch (type)
+            {
+                case ResourceType.Texture: return TextureResource.CurrentVersion;
+                case ResourceType.Sprite: return SpriteResource.CurrentVersion;
+                case ResourceType.Ragdoll: return RagdollResource.CurrentVersion;
+                case ResourceType.Animation: return AnimationResource.CurrentVersion;
+                case ResourceType.Tool: return ToolResource.CurrentVersion;
+                case ResourceType.Entity: return EntityResource.CurrentVersion;
+                case ResourceType.Tile: return TileResource.CurrentVersion;
+                case ResourceType.Event: return EventResource.CurrentVersion;
+                case ResourceType.Outfit: return OutfitResource.CurrentVersion;
+                default: return "_._._._";
+            }
+        }
         public static string GetVersion(string path)
         {
             if (Directory.Exists(path)) return "_._._._";
@@ -927,10 +666,183 @@ namespace Resource_Redactor.Descriptions
             }
         }
 
+        public static bool PrimalFile(string file)
+        {
+            try
+            {
+                var ext = Path.GetExtension(file).ToLower();
+                switch (ext)
+                {
+                    case ".bmp": return true;
+                    case ".gif": return true;
+                    case ".exif": return true;
+                    case ".jpg": return true;
+                    case ".jpeg": return true;
+                    case ".png": return true;
+                    case ".tif": return true;
+                    default: return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
+        public static string Factory(string path, ResourceType type)
+        {
+            string name = "New " + type;
+            int i = 0;
+            if (File.Exists(Path.Combine(path, name)) ||
+                Directory.Exists(Path.Combine(path, name)))
+                while (File.Exists(Path.Combine(path, name + " " + ++i)) ||
+                    Directory.Exists(Path.Combine(path, name + " " + i))) ;
+            if (i != 0) name += " " + i;
+            path = Path.Combine(path, name);
+
+            if (type == ResourceType.Folder) Directory.CreateDirectory(path);
+            else
+            {
+                using (var resource = Factory(type))
+                {
+                    if (resource != null) resource.Save(path);
+                    else throw new NotImplementedException("Resource [" +
+                        type + "] not implemented.");
+                }
+            }
+
+            return name;
+        }
+        public static string Factory(string path, ResourceType type, string[] src)
+        {
+            switch (type)
+            {
+                case ResourceType.Sprite:
+
+                    using (var resource = new SpriteResource())
+                    {
+                        if (src.Length != 1) throw new Exception(
+                            "Sources count [" + src.Length + "] is invalid for sprite.");
+                        var src_path = src[0];
+
+                        string name = type + " " + Path.GetFileName(src_path);
+                        int i = 0;
+                        if (File.Exists(Path.Combine(path, name)) ||
+                            Directory.Exists(Path.Combine(path, name)))
+                            while (File.Exists(Path.Combine(path, name + " " + ++i)) ||
+                                Directory.Exists(Path.Combine(path, name + " " + i))) ;
+                        if (i != 0) name += " " + i;
+                        path = Path.Combine(path, name);
+                        var src_type = GetType(src_path);
+
+                        if (src_type != ResourceType.Texture) throw new Exception(
+                            "Source [" + src_type + "] is ivalid source for sprite.");
+                        resource.Texture.Link = src_path;
+                        resource.AdjustImgbox();
+                        resource.Save(path);
+                        return path;
+                    }
+                case ResourceType.Ragdoll:
+                    using (var resource = new RagdollResource())
+                    {
+                        Array.Sort(src);
+                        string name = "New " + type;
+                        int i = 0;
+                        if (File.Exists(Path.Combine(path, name)) ||
+                            Directory.Exists(Path.Combine(path, name)))
+                            while (File.Exists(Path.Combine(path, name + " " + ++i)) ||
+                                Directory.Exists(Path.Combine(path, name + " " + i))) ;
+                        if (i != 0) name += " " + i;
+                        path = Path.Combine(path, name);
+                        foreach (var src_path in src)
+                        {
+                            var src_type = GetType(src_path);
+                            if (src_type != ResourceType.Sprite) throw new Exception(
+                                "Source [" + src_type + "] is ivalid source for ragdoll.");
+                            var node = new RagdollResource.Node();
+                            node.Sprites.Add(new Subresource<SpriteResource>(src_path));
+                            resource.Nodes.Add(node);
+                        }
+                        resource.Save(path);
+                        return path;
+                    }
+
+                default: throw new NotImplementedException("Resource [" + type + "] factory implemented.");
+            }
+        }
+        public static string Factory(string path, string src)
+        {
+            var type = ResourceType.Unknown;
+            var ext = Path.GetExtension(src).ToLower();
+            switch (ext)
+            {
+                case ".bmp": type = ResourceType.Texture; break;
+                case ".gif": type = ResourceType.Texture; break;
+                case ".exif": type = ResourceType.Texture; break;
+                case ".jpg": type = ResourceType.Texture; break;
+                case ".jpeg": type = ResourceType.Texture; break;
+                case ".png": type = ResourceType.Texture; break;
+                case ".tif": type = ResourceType.Texture; break;
+            }
+
+            string name = Path.GetFileNameWithoutExtension(src);
+            int i = 0;
+            if (File.Exists(Path.Combine(path, name)) ||
+                Directory.Exists(Path.Combine(path, name)))
+                while (File.Exists(Path.Combine(path, name + " " + ++i)) ||
+                    Directory.Exists(Path.Combine(path, name + " " + i))) ;
+            if (i != 0) name += " " + i;
+            path = Path.Combine(path, name);
+
+            if (type == ResourceType.Folder)
+            {
+                Directory.CreateDirectory(path);
+                return name;
+            }
+
+            switch (type)
+            {
+                case ResourceType.Texture:
+                    using (var resource = new TextureResource())
+                    {
+                        resource.Texture = new Bitmap(src);
+                        resource.Save(path);
+                    }
+                    break;
+
+                default: throw new Exception("Can not generate resource [" + type + "] from source [" + src + "].");
+            }
+
+            return name;
+        }
+        public static Resource Factory(ResourceType type)
+        {
+            switch (type)
+            {
+                case ResourceType.Texture: return new TextureResource();
+                case ResourceType.Sprite: return new SpriteResource();
+                case ResourceType.Ragdoll: return new RagdollResource();
+                case ResourceType.Animation: return new AnimationResource();
+                case ResourceType.Tool: return new ToolResource();
+                case ResourceType.Entity: return new EntityResource();
+                case ResourceType.Tile: return new TileResource();
+                case ResourceType.Event: return new EventResource();
+                case ResourceType.Outfit: return new OutfitResource();
+                default: return null;
+            }
+        }
+        public static Resource Factory(string path)
+        {
+            Resource resource = Factory(GetType(path));
+            resource?.Open(path);
+            return resource;
+        }
+
+
+        public string Stamp { get => "CLOCKWORK_ENGINE_REDACTOR_RESOURCE"; }
         public ResourceType Type { get; set; } = ResourceType.Unknown;
         public string Version { get; set; } = "_._._._";
-        public string TimeStamp { get; set; } = ResourceSignature.TimeStamp;
+        public string TimeStamp { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         public ResourceID ID { get; set; } = new ResourceID();
 
         public Resource(ResourceType type, string version)

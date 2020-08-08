@@ -11,8 +11,41 @@ using System.Windows.Forms;
 
 namespace Resource_Redactor.Descriptions.Redactors
 {
-    class SubresourceTextBox : TextBox
+    public class SubresourceTextBox : TextBox
     {
+        private ContextMenuStrip ActionsContextMenuStrip;
+        private IContainer components;
+        private ToolStripMenuItem ResolveToolStripMenuItem;
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            this.ActionsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ResolveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ActionsContextMenuStrip.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // ActionsContextMenuStrip
+            // 
+            this.ActionsContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ResolveToolStripMenuItem});
+            this.ActionsContextMenuStrip.Name = "ActionsContextMenuStrip";
+            this.ActionsContextMenuStrip.Size = new System.Drawing.Size(115, 26);
+            // 
+            // ResolveToolStripMenuItem
+            // 
+            this.ResolveToolStripMenuItem.Name = "ResolveToolStripMenuItem";
+            this.ResolveToolStripMenuItem.Size = new System.Drawing.Size(114, 22);
+            this.ResolveToolStripMenuItem.Text = "Resolve";
+            this.ResolveToolStripMenuItem.Click += ResolveToolStripMenuItem_Click;
+            this.ActionsContextMenuStrip.ResumeLayout(false);
+            this.ResumeLayout(false);
+
+        }
+        private void ResolveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _Subresource?.ResolveByID();
+        }
+
         private ISubresource _Subresource = null;
         private ISynchronizeInvoke OldSyncer = null;
 
@@ -33,7 +66,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                     OldSyncer = _Subresource.SynchronizingObject;
                     _Subresource.SynchronizingObject = this;
                     Text = _Subresource.Link;
-                    BackColor = _Subresource.Loaded ? DefaultBackColor : Color.Red;
+                    BackColor = _Subresource.Loaded ? _Subresource.ValidID ? DefaultBackColor : Color.Yellow : Color.Red;
                 }
                 else
                 {
@@ -45,6 +78,9 @@ namespace Resource_Redactor.Descriptions.Redactors
 
         public SubresourceTextBox() : base()
         {
+            InitializeComponent();
+
+            ContextMenuStrip = ActionsContextMenuStrip;
             BackColor = Color.Red;
             AllowDrop = true;
         }
@@ -132,16 +168,9 @@ namespace Resource_Redactor.Descriptions.Redactors
 
         private void Subresource_Refreshed(object sender, EventArgs e)
         {
-            try
-            {
-                if (_Subresource == null) return;
-                if (Text != _Subresource.Link) Text = _Subresource.Link;
-                BackColor = _Subresource.Loaded ? DefaultBackColor : Color.Red;
-            }
-            catch
-            {
-
-            }
+            if (_Subresource == null) return;
+            if (Text != _Subresource.Link) Text = _Subresource.Link;
+            BackColor = _Subresource.Loaded ? _Subresource.ValidID ? DefaultBackColor : Color.Yellow : Color.Red;
         }
     }
 }

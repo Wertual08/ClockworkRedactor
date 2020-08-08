@@ -27,7 +27,6 @@ namespace Resource_Redactor.Descriptions.Redactors
             public int MainNode;
 
             public string[] Links;
-            public bool[] Active;
 
             public Node(Node n)
             {
@@ -35,13 +34,9 @@ namespace Resource_Redactor.Descriptions.Redactors
                 OffsetY = n.OffsetY;
                 MainNode = n.MainNode;
                 Links = new string[n.Links.Length];
-                Active = new bool[n.Links.Length];
 
                 for (int i = 0; i < n.Links.Length; i++)
-                {
                     Links[i] = n.Links[i];
-                    Active[i] = n.Active[i];
-                }
             }
             public Node(RagdollResource.Node n)
             {
@@ -49,13 +44,9 @@ namespace Resource_Redactor.Descriptions.Redactors
                 OffsetY = n.OffsetY;
                 MainNode = n.MainNode;
                 Links = new string[n.Sprites.Count];
-                Active = new bool[n.Sprites.Count];
 
                 for (int i = 0; i < n.Sprites.Count; i++)
-                {
                     Links[i] = n.Sprites[i].Link;
-                    Active[i] = n.Sprites[i].Active;
-                }
             }
             public void ToNode(RagdollResource.Node n)
             {
@@ -66,11 +57,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                     n.Sprites.RemoveAt(n.Sprites.Count - 1);
                 while (n.Sprites.Count < Links.Count()) n.Sprites.Add(new Subresource<SpriteResource>());
                 for (int i = 0; i < n.Sprites.Count; i++)
-                {
                     if (n.Sprites[i].Link != Links[i])
                         n.Sprites[i].Link = Links[i];
-                    n.Sprites[i].Active = Active[i];
-                }
             }
             public RagdollResource.Node ToNode()
             {
@@ -80,10 +68,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                 n.MainNode = MainNode;
                 while (n.Sprites.Count < Links.Count()) n.Sprites.Add(new Subresource<SpriteResource>());
                 for (int i = 0; i < n.Sprites.Count; i++)
-                {
-                    n.Sprites[i].Link = Links[i];
-                    n.Sprites[i].Active = Active[i];
-                }
+                    if (n.Sprites[i].Link != Links[i])
+                        n.Sprites[i].Link = Links[i];
                 return n;
             }
             public override bool Equals(object obj)
@@ -96,10 +82,8 @@ namespace Resource_Redactor.Descriptions.Redactors
                 if (MainNode != n.MainNode) return false;
                 if (Links.Length != n.Links.Length) return false;
                 for (int i = 0; i < Links.Length; i++)
-                {
                     if (Links[i] != n.Links[i]) return false;
-                    if (Active[i] != n.Active[i]) return false;
-                }
+
                 return true;
             }
             public override int GetHashCode()
@@ -206,7 +190,6 @@ namespace Resource_Redactor.Descriptions.Redactors
                 new ToolStripMenuItem("Move node down", null, MoveNodeDownMenuItem_Click, Keys.Control | Keys.Down),
                 new ToolStripMenuItem("Link sprite", null, LinkSpriteMenuItem_Click, Keys.Control | Keys.I),
                 new ToolStripMenuItem("Unlink sprite", null, UnlinkSpriteMenuItem_Click, Keys.Control | Keys.U),
-                new ToolStripMenuItem("Toggle link", null, ToggleLinkMenuItem_Click, Keys.Control | Keys.G),
                 new ToolStripMenuItem("Move link up", null, MoveLinkUpMenuItem_Click, Keys.Control | Keys.Shift | Keys.Up),
                 new ToolStripMenuItem("Move link down", null, MoveLinkDownMenuItem_Click, Keys.Control | Keys.Shift | Keys.Down),
                 new ToolStripMenuItem("Toggle transparency", null, ToggleTransparancyMenuItem_Click, Keys.Control | Keys.H),
@@ -281,7 +264,6 @@ namespace Resource_Redactor.Descriptions.Redactors
                 for (int i = 0; i < node.Sprites.Count; i++)
                 {
                     LinksListBox.Items[i] = node.Sprites[i].Link;
-                    LinksListBox.SetItemChecked(i, node.Sprites[i].Active);
                 }
                 LinksListBox.EndUpdate();
             }
@@ -346,10 +328,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                     while (LinksListBox.Items.Count < node.Sprites.Count) LinksListBox.Items.Add("");
                     while (LinksListBox.Items.Count > node.Sprites.Count) LinksListBox.Items.RemoveAt(LinksListBox.Items.Count - 1);
                     for (int i = 0; i < node.Sprites.Count; i++)
-                    {
                         LinksListBox.Items[i] = node.Sprites[i].Link;
-                        LinksListBox.SetItemChecked(i, node.Sprites[i].Active);
-                    }
                     LinksListBox.EndUpdate();
                 }
 
@@ -376,11 +355,11 @@ namespace Resource_Redactor.Descriptions.Redactors
 
                     LinksListBox.BeginUpdate();
                     LinksListBox.Items.Clear();
-                    foreach (var s in node.Sprites)
+                    for (int i = 0; i < node.Sprites.Count; i++)
                     {
-                        s.SynchronizingObject = this;
-                        s.Reloaded += Sprite_Reloaded;
-                        LinksListBox.Items.Add(s.Link, s.Active);
+                        node.Sprites[i].SynchronizingObject = this;
+                        node.Sprites[i].Reloaded += Sprite_Reloaded;
+                        LinksListBox.Items.Add(node.Sprites[i].Link);
                     }
                     LinksListBox.EndUpdate();
 
@@ -520,11 +499,11 @@ namespace Resource_Redactor.Descriptions.Redactors
                             var node = CurrentNode;
                             if (node != null)
                             {
-                                var sprite = new Subresource<SpriteResource>(link, true);
+                                var sprite = new Subresource<SpriteResource>(link);
                                 if (sprite.Resource != null)
                                 {
                                     node.Sprites.Add(sprite);
-                                    LinksListBox.Items.Add(link, true);
+                                    LinksListBox.Items.Add(link);
                                 }
                             }
                         }
@@ -559,24 +538,6 @@ namespace Resource_Redactor.Descriptions.Redactors
             catch (Exception ex)
             {
                 MessageBox.Show(this, ex.ToString(), "Error: Can not seect sprite.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void LinksListBox_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            try
-            {
-                int index = e.Index;
-                var SNode = CurrentSNode;
-                if (CurrentNode != null && index >= 0 && index < SNode.Active.Length)
-                {
-                    SNode.Active[index] = e.NewValue == CheckState.Checked;
-                    CurrentSNode = SNode;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not enable sprite.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -621,11 +582,11 @@ namespace Resource_Redactor.Descriptions.Redactors
                             var node = CurrentNode;
                             if (node != null)
                             {
-                                var sprite = new Subresource<SpriteResource>(link, true);
+                                var sprite = new Subresource<SpriteResource>(link);
                                 if (sprite.Resource != null)
                                 {
                                     node.Sprites.Add(sprite);
-                                    LinksListBox.Items.Add(link, true);
+                                    LinksListBox.Items.Add(link);
                                 }
                             }
                         }
@@ -1147,11 +1108,11 @@ namespace Resource_Redactor.Descriptions.Redactors
                         {
                             if (node != null)
                             {
-                                var sprite = new Subresource<SpriteResource>(link, true);
+                                var sprite = new Subresource<SpriteResource>(link);
                                 if (sprite.Resource != null)
                                 {
                                     node.Sprites.Add(sprite);
-                                    LinksListBox.Items.Add(link, true);
+                                    LinksListBox.Items.Add(link);
                                 }
                             }
                         }
@@ -1175,41 +1136,17 @@ namespace Resource_Redactor.Descriptions.Redactors
                 if (lindex < 0 || lindex >= LoadedResource[index].Count) return;
                 var node = Story[index];
                 var tl = node.Links;
-                var ta = node.Active;
                 node.Links = new string[node.Links.Length - 1];
-                node.Active = new bool[node.Active.Length - 1];
 
                 var c = 0;
                 for (int i = 0; i < tl.Length; i++)
-                {
-                    if (i != lindex)
-                    {
-                        node.Links[c] = tl[i];
-                        node.Active[c++] = ta[i];
-                    }
-                }
+                    if (i != lindex) node.Links[c] = tl[i];
 
                 Story[index] = node;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(this, ex.ToString(), "Error: Can not unlink sprite.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void ToggleLinkMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var index = NodesListBox.SelectedIndex;
-                if (index < 0 || index >= LoadedResource.Count) return;
-                var lindex = LinksListBox.SelectedIndex;
-                if (lindex < 0 || lindex >= LoadedResource[index].Count) return;
-                LinksListBox.SetItemChecked(lindex, !LinksListBox.GetItemChecked(lindex));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not toggle link.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -1229,16 +1166,13 @@ namespace Resource_Redactor.Descriptions.Redactors
                 {
                     var ti = LinksListBox.Items[lindex];
                     var tl = snode.Links[lindex];
-                    var ta = snode.Active[lindex];
                     for (int i = 0; i < LinksListBox.Items.Count - 1; i++)
                     {
                         LinksListBox.Items[i] = LinksListBox.Items[i + 1];
                         snode.Links[i] = snode.Links[i + 1];
-                        snode.Active[i] = snode.Active[i + 1];
                     }
                     LinksListBox.Items[LinksListBox.Items.Count - 1] = ti;
                     snode.Links[LinksListBox.Items.Count - 1] = tl;
-                    snode.Active[LinksListBox.Items.Count - 1] = ta;
                     LinksListBox.SelectedIndex = LinksListBox.Items.Count - 1;
                 }
                 else
@@ -1250,10 +1184,6 @@ namespace Resource_Redactor.Descriptions.Redactors
                     var tl = snode.Links[lindex];
                     snode.Links[lindex] = snode.Links[nlindex];
                     snode.Links[nlindex] = tl;
-
-                    var ta = snode.Active[lindex];
-                    snode.Active[lindex] = snode.Active[nlindex];
-                    snode.Active[nlindex] = ta;
 
                     LinksListBox.SelectedIndex = nlindex;
                 }
@@ -1282,16 +1212,13 @@ namespace Resource_Redactor.Descriptions.Redactors
                 {
                     var ti = LinksListBox.Items[lindex];
                     var tl = snode.Links[lindex];
-                    var ta = snode.Active[lindex];
                     for (int i = lindex; i > 0; i--)
                     {
                         LinksListBox.Items[i] = LinksListBox.Items[i - 1];
                         snode.Links[i] = snode.Links[i - 1];
-                        snode.Active[i] = snode.Active[i - 1];
                     }
                     LinksListBox.Items[0] = ti;
                     snode.Links[0] = tl;
-                    snode.Active[0] = ta;
                     LinksListBox.SelectedIndex = 0;
                 }
                 else
@@ -1303,10 +1230,6 @@ namespace Resource_Redactor.Descriptions.Redactors
                     var tl = snode.Links[lindex];
                     snode.Links[lindex] = snode.Links[nlindex];
                     snode.Links[nlindex] = tl;
-
-                    var ta = snode.Active[lindex];
-                    snode.Active[lindex] = snode.Active[nlindex];
-                    snode.Active[nlindex] = ta;
 
                     LinksListBox.SelectedIndex = nlindex;
                 }

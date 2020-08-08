@@ -31,8 +31,6 @@ namespace Resource_Redactor.Descriptions
         public float PointBoundsY { get; set; } = 4f;
         public bool PixelPerfect { get; set; } = true;
         public bool Transparency { get; set; } = false;
-        [JsonIgnore]
-        public List<int> SelectedSprites { get; private set; } = new List<int>();
 
         public ToolResource() : base(CurrentType, CurrentVersion)
         {
@@ -82,18 +80,19 @@ namespace Resource_Redactor.Descriptions
             }
         }
 
-        public void Render(float x, float y, float a, long time, int cycle, int[] sel = null, float sx = 1f, float sy = 1f, float sa = 1f)
+        public void Render(float x, float y, float a, long time, int cycle, List<int> sel = null, float sx = 1f, float sy = 1f, float sa = 1f)
         {
-            if (sel == null || sel.Length != Count)
+            if (sel == null || sel.Count != Count)
             {
-                sel = new int[Count];
+                sel = new List<int>(Count);
+                while (sel.Count < Count) sel.Add(0);
                 for (int i = 0; i < Count; i++) sel[i] = 0;
             }
             long local_time = CycleTimerPosition >= 0 ? DateTimeOffset.Now.ToUnixTimeMilliseconds() - CycleTimerPosition : 0;
 
             for (int i = 0; i < Count; i++)
             {
-                int cur = SelectedSprites[i];
+                int cur = sel[i];
                 var variants = Sprites[i];
                 var sprite = variants != null && cur >= 0 &&
                     cur < variants.Count ? variants[cur] : null;

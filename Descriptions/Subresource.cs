@@ -22,7 +22,9 @@ namespace Resource_Redactor.Descriptions
         ISynchronizeInvoke SynchronizingObject { get; set; }
         string Link { get; set; }
         bool Loaded { get; }
-        bool Active { get; set; }
+        bool ValidID { get; }
+        bool ResolveByID();
+        void ActualizeID();
         void Reload();
         ResourceType Type { get; }
     }
@@ -56,10 +58,7 @@ namespace Resource_Redactor.Descriptions
         public event EventHandler Reloaded;
         public event EventHandler Updated;
         public event EventHandler Refreshed;
-        [JsonIgnore]
-        public T Resource { get { return Loaded && Active ? _Resource : null; } }
-        [JsonIgnore]
-        public bool Loaded { get; protected set; } = false;
+
         public virtual string Link
         {
             get
@@ -75,7 +74,31 @@ namespace Resource_Redactor.Descriptions
                 }
             }
         }
-        public bool Active { get; set; } = true;
+        public ResourceID ID { get; set; } = null;
+
+        [JsonIgnore]
+        public T Resource { get => _Resource; }
+        [JsonIgnore]
+        public bool Loaded { get => _Resource != null; }
+        [JsonIgnore]
+        public bool ValidID { get => ID != null && _Resource != null && ID.Equals(_Resource.ID); }
+        public bool ResolveByID()
+        {
+            if (ID == null) return false;
+            foreach (var file in Directory.EnumerateFiles(Directory.GetCurrentDirectory(), "*", SearchOption.AllDirectories))
+            {
+                if (ID.Equals(Descriptions.Resource.GetID(file)))
+                {
+                    Link = ExtraPath.MakeDirectoryRelated(Directory.GetCurrentDirectory(), file);
+                    return true;
+                }
+            }
+            return false;
+        }
+        public void ActualizeID()
+        {
+            ID = _Resource?.ID?.Copy() ?? null;
+        }
 
         public Subresource()
         {
@@ -84,14 +107,13 @@ namespace Resource_Redactor.Descriptions
             Watcher.Deleted += Watcher_Changed;
             Watcher.Renamed += Watcher_Renamed;
         }
-        public Subresource(string path, bool active)
+        public Subresource(string path)
         {
             Watcher.Changed += Watcher_Changed;
             Watcher.Created += Watcher_Changed;
             Watcher.Deleted += Watcher_Changed;
             Watcher.Renamed += Watcher_Renamed;
             Link = path;
-            Active = active;
         }
         public void Reload()
         {
@@ -103,7 +125,6 @@ namespace Resource_Redactor.Descriptions
                 if (!File.Exists(_Link))
                 {
                     Watcher.EnableRaisingEvents = false;
-                    Loaded = false;
                     Reloaded?.Invoke(this, EventArgs.Empty);
                     Refreshed?.Invoke(this, EventArgs.Empty);
                     return;
@@ -120,11 +141,11 @@ namespace Resource_Redactor.Descriptions
                 }
                 _Resource = new T();
                 _Resource.Open(_Link);
-                Loaded = true;
+                if (ID == null) ActualizeID();
             }
             catch 
             {
-                Loaded = false;
+                _Resource = null;
             }
             Reloaded?.Invoke(this, EventArgs.Empty);
             Refreshed?.Invoke(this, EventArgs.Empty);
@@ -163,7 +184,6 @@ namespace Resource_Redactor.Descriptions
                 if (_Link != value)
                 {
                     _Link = value;
-                    Loaded = false; 
                     Refresh();
                 }
             } 
@@ -172,7 +192,7 @@ namespace Resource_Redactor.Descriptions
         public WeakSubresource()
         {
         }
-        public WeakSubresource(string path, bool active) : base(path, active)
+        public WeakSubresource(string path) : base(path)
         {
         }
     }

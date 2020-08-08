@@ -66,7 +66,8 @@ namespace Resource_Redactor.Descriptions
 
             public void Render(float x, float y, float a, long t, float sx = 1f, float sy = 1f, float sa = 1f)
             {
-                foreach (var s in Sprites) s.Resource?.Render(x, y, a, t, sx, sy, sa);
+                for (int i = 0; i < Sprites.Count; i++)
+                    Sprites[i].Resource?.Render(x, y, a, t, sx, sy, sa);
             }
 
             protected bool IsDisposed { get; private set; } = false;

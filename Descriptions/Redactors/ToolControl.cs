@@ -99,6 +99,7 @@ namespace Resource_Redactor.Descriptions.Redactors
 
         private StoryItem<State> Story;
         private ToolResource LoadedResource = null;
+        private List<int> SelectedSprites = new List<int>();
 
         public ToolStripMenuItem[] MenuTabs { get; private set; }
         public bool Saved { get; private set; } = true;
@@ -163,6 +164,7 @@ namespace Resource_Redactor.Descriptions.Redactors
             GLSurface.MakeCurrent();
 
             LoadedResource = new ToolResource(path);
+            while (SelectedSprites.Count < LoadedResource.Count) SelectedSprites.Add(0);
             Story = new StoryItem<State>(new State(LoadedResource));
             Story.ValueChanged += Story_ValueChanged;
             ResourcePath = path;
@@ -437,7 +439,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                         else
                         {
                             var rpath = ExtraPath.MakeDirectoryRelated(dpath, path);
-                            sprites.Add(new Subresource<SpriteResource>(rpath, true));
+                            sprites.Add(new Subresource<SpriteResource>(rpath));
                             VariantsListBox.Items.Add(rpath);
                         }
                     }
@@ -456,10 +458,10 @@ namespace Resource_Redactor.Descriptions.Redactors
             try
             {
                 int sind = PartsListBox.SelectedIndex;
-                if (sind < 0 || sind >= LoadedResource.SelectedSprites.Count) return;
-                if (LoadedResource.SelectedSprites[sind] != VariantsListBox.SelectedIndex)
+                if (sind < 0 || sind >= SelectedSprites.Count) return;
+                if (SelectedSprites[sind] != VariantsListBox.SelectedIndex)
                 {
-                    LoadedResource.SelectedSprites[sind] = VariantsListBox.SelectedIndex;
+                    SelectedSprites[sind] = VariantsListBox.SelectedIndex;
                     BackupChanges();
                     MakeUnsaved();
                 }
@@ -487,7 +489,7 @@ namespace Resource_Redactor.Descriptions.Redactors
 
                 if (LoadedResource.Transparency) gl.Color4ub(255, 255, 255, 150);
                 else gl.Color4ub(255, 255, 255, 255);
-                LoadedResource.Render(OffsetX, OffsetY, Angle, time, 1000); // FIX THIS SHITTTTTT
+                LoadedResource.Render(OffsetX, OffsetY, Angle, time, 1000, SelectedSprites); // FIX THIS SHITTTTTT
 
                 float b = LoadedResource.PointBoundsX / GLSurface.Zoom;
                 float w = LoadedResource.PointBoundsY / GLSurface.Zoom;
@@ -735,7 +737,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                 {
                     foreach (var link in subform.SelectedResources)
                     {
-                        sprites.Add(new Subresource<SpriteResource>(link, true));
+                        sprites.Add(new Subresource<SpriteResource>(link));
                         VariantsListBox.Items.Add(link);
                     }
                     BackupChanges();
@@ -779,7 +781,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                 int index = PartsListBox.SelectedIndex + 1;
                 if (index < 0 || index > LoadedResource.Count) return;
                 LoadedResource.Sprites.Insert(index, new List<Subresource<SpriteResource>>());
-                LoadedResource.SelectedSprites.Insert(index, -1);
+                SelectedSprites.Insert(index, -1);
                 LoadedResource.SpriteLockedOnCycle.Insert(index, false);
                 PartsListBox.Items.Add("Part: " + PartsListBox.Items.Count);
                 BackupChanges();
@@ -799,7 +801,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                 if (index < 0 || index >= LoadedResource.Count) return;
                 LoadedResource.Sprites[index].ForEach((Subresource<SpriteResource> s) => s.Dispose());
                 LoadedResource.Sprites.RemoveAt(index);
-                LoadedResource.SelectedSprites.RemoveAt(index);
+                SelectedSprites.RemoveAt(index);
                 LoadedResource.SpriteLockedOnCycle.RemoveAt(index);
                 PartsListBox.Items.RemoveAt(PartsListBox.Items.Count - 1);
                 BackupChanges();

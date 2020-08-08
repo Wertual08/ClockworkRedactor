@@ -31,6 +31,7 @@ namespace Resource_Redactor.Descriptions.Redactors
             public EntityResource Resource;
 
             public Subresource<ToolResource> Tool = new Subresource<ToolResource>();
+            public bool ToolEnabled = true;
 
             public Entity(string path)
             {
@@ -247,7 +248,8 @@ namespace Resource_Redactor.Descriptions.Redactors
             try
             {
                 MakeCurrent();
-                if (Entities[name].Disposable) Entities[name].Resource.Dispose();
+                if (Entities[name].Disposable) Entities[name].Resource?.Dispose();
+                Entities[name].Tool?.Dispose();
                 return Entities.Remove(name);
             }
             catch
@@ -273,7 +275,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                 var entity = e.Value;
                 var resource = entity.Resource;
                 var ragdoll = resource.Ragdoll.Resource;
-                var tool = entity.Tool.Resource;
+                var tool = entity.ToolEnabled ? entity.Tool.Resource : null;
                 double rhw = ragdoll?.HitboxW / 2d ?? 0d;
                 double rhh = ragdoll?.HitboxH / 2d ?? 0d;
                 double fhw = FieldW / 2d;
@@ -451,7 +453,7 @@ namespace Resource_Redactor.Descriptions.Redactors
                 var entity = e.Value;
                 var resource = entity.Resource;
                 var ragdoll = resource.Ragdoll.Resource;
-                var tool = entity.Tool.Resource;
+                var tool = entity.ToolEnabled ? entity.Tool.Resource : null;
                 if (ragdoll == null) continue;
                 var frame = new Frame(ragdoll.Count);
                 foreach (var t in resource.Triggers)
@@ -531,8 +533,21 @@ namespace Resource_Redactor.Descriptions.Redactors
             gl.Vertex2f(-scx + (float)FieldW / 2f, -scy - (float)FieldH / 2f);
             gl.Vertex2f(-scx + (float)FieldW / 2f, -scy + (float)FieldH / 2f);
             gl.End();
+        }
 
-            
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                foreach (var tile in TileNames) tile.Value?.Dispose();
+                foreach (var entity in Entities)
+                {
+                    if (entity.Value.Disposable) entity.Value.Resource?.Dispose();
+                    entity.Value.Tool?.Dispose();
+                }
+            }
+
+            base.Dispose(disposing);
         }
     }
 }

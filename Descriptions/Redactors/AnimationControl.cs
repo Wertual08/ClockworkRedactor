@@ -100,7 +100,8 @@ namespace Resource_Redactor.Descriptions.Redactors
             ResourceName = Path.GetFileName(path);
 
             LoadedResource.Ragdoll.SynchronizingObject = this;
-            LoadedResource.Ragdoll.Reloaded += Ragdoll_Reloaded;
+            LinkTextBox.Subresource = LoadedResource.Ragdoll;
+            LoadedResource.Ragdoll.Reload();
 
             GetTab("Toggle grid").Checked = LoadedResource.GridEnabled;
             GetTab("Toggle transparency").Checked = LoadedResource.Transparency;
@@ -356,19 +357,6 @@ namespace Resource_Redactor.Descriptions.Redactors
             GetTab("Toggle animation").Checked = LoadedResource.Playing;
         }
 
-        private void Ragdoll_Reloaded(object sender, EventArgs e)
-        {
-            GLSurface.MakeCurrent();
-            LinkTextBox.Text = LoadedResource.Ragdoll.Link;
-            if (!LoadedResource.Ragdoll.Loaded) LinkTextBox.BackColor = Color.Red;
-            else LinkTextBox.BackColor = SystemColors.Control;
-            if (CurrentRagdoll != null)
-            {
-                NodeVisible = new bool[CurrentRagdoll.Count];
-                for (int i = 0; i < NodeVisible.Length; i++) NodeVisible[i] = true;
-            }
-            else NodeVisible = null;
-        }
         private void Story_ListChanged(object sender, StoryEventArgs e)
         {
             try
@@ -488,71 +476,22 @@ namespace Resource_Redactor.Descriptions.Redactors
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void LinkTextBox_DragEnter(object sender, DragEventArgs e)
-        {
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
-            var paths = e.Data.GetData(DataFormats.FileDrop) as string[];
-            if (paths.Length != 1 || Resource.GetType(paths[0]) != ResourceType.Ragdoll) return;
-            if (e.AllowedEffect.HasFlag(DragDropEffects.Link))
-                e.Effect = DragDropEffects.Link;
-            else if (e.AllowedEffect.HasFlag(DragDropEffects.Copy))
-                e.Effect = DragDropEffects.Copy;
-            else if (e.AllowedEffect.HasFlag(DragDropEffects.Move))
-                e.Effect = DragDropEffects.Move;
-            else e.Effect = DragDropEffects.None;
-        }
-        private void LinkTextBox_DragDrop(object sender, DragEventArgs e)
-        {
-            try
-            {
-                if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                {
-                    var paths = e.Data.GetData(DataFormats.FileDrop) as string[];
-                    if (paths.Length != 1)
-                    {
-                        MessageBox.Show(this, "You must choose only one image file.",
-                            "Error: Can not import [" + paths.Length + "] files.",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    var fpath = paths[0];
-                    var dpath = Directory.GetCurrentDirectory();
-                    if (!fpath.StartsWith(dpath)) MessageBox.Show(this,
-                        "Resource is not in description directory.",
-                        "Error: Invalid resource.", MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                    else LinkTextBox.Text = ExtraPath.MakeDirectoryRelated(dpath, fpath);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not link ragdoll.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
         private void LinkTextBox_TextChanged(object sender, EventArgs e)
         {
             try
             {
                 GLSurface.MakeCurrent();
-                var link = LoadedResource.Ragdoll.Link;
-                LoadedResource.Ragdoll.Link = LinkTextBox.Text;
-                LoadedResource.Ragdoll.Reload();
-                if (link != LoadedResource.Ragdoll.Link)
-                {
-                    if (CurrentRagdoll != null)
-                    {
-                        if (LoadedResource.Count == 0) LoadedResource.NodesCount = CurrentRagdoll.Count;
-                        else if (LoadedResource.NodesCount != CurrentRagdoll.Count)
-                            MessageBox.Show(this, "If you want use that ragdoll, you must adjust nodes count.",
-                            "Warning: Animation and ragdoll node counts does not match.",
-                            MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                    MakeUnsaved();
-                }
 
-                LinkTextBox.BackColor = LoadedResource.Ragdoll.Loaded ? SystemColors.Window : Color.Red;
+                LoadedResource.Ragdoll.Reload();
+                if (CurrentRagdoll != null)
+                {
+                    if (LoadedResource.Count == 0) LoadedResource.NodesCount = CurrentRagdoll.Count;
+                    else if (LoadedResource.NodesCount != CurrentRagdoll.Count)
+                        MessageBox.Show(this, "If you want use that ragdoll, you must adjust nodes count.",
+                        "Warning: Animation and ragdoll node counts does not match.",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                MakeUnsaved();
 
                 UpdateState();
             }
