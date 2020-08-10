@@ -263,6 +263,27 @@ namespace Resource_Redactor
             }
         }
 
+        private void RedactorsTabControl_MouseClick(object sender, MouseEventArgs e)
+        {
+            var control = sender as TabControl;
+            if (e.Button == MouseButtons.Right)
+            {
+                for (int i = 0; i < control.TabCount; ++i)
+                {
+                    if (control.GetTabRect(i).Contains(e.Location))
+                    {
+                        control.SelectedIndex = i;
+                        TabsContextMenuStrip.Show(control, e.Location);
+                        break;
+                    }
+                }
+            }
+        }
+        private void CloseTabToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CloseToolStripMenuItem.PerformClick();
+        }
+
         private void OpenDescription(string path)
         {
             try
@@ -444,6 +465,22 @@ namespace Resource_Redactor
             {
                 MessageBox.Show(this, ex.ToString(), "Error: Can convert resources to ragdoll.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void ToOutfitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (var res in ResourceExplorer.SelectedItems)
+            {
+                try
+                {
+                    Resource.Factory(ResourceExplorer.CurrentDirectory,
+                        ResourceType.Outfit, new string[] { res });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, ex.ToString(), "Error: Can convert resource to outfit.",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -813,5 +850,6 @@ namespace Resource_Redactor
                 Visible = true;
             }
         }
+
     }
 }

@@ -734,7 +734,6 @@ namespace Resource_Redactor.Resources
             switch (type)
             {
                 case ResourceType.Sprite:
-
                     using (var resource = new SpriteResource())
                     {
                         if (src.Length != 1) throw new Exception(
@@ -758,6 +757,7 @@ namespace Resource_Redactor.Resources
                         resource.Save(path);
                         return path;
                     }
+
                 case ResourceType.Ragdoll:
                     using (var resource = new RagdollResource())
                     {
@@ -780,6 +780,42 @@ namespace Resource_Redactor.Resources
                             resource.Nodes.Add(node);
                         }
                         resource.Save(path);
+                        return path;
+                    }
+
+                case ResourceType.Outfit:
+                    using (var resource = new OutfitResource())
+                    {
+                        if (src.Length != 1) throw new Exception(
+                            "Sources count [" + src.Length + "] is invalid for outfit.");
+                        var src_path = src[0];
+
+                        string name = type + " " + Path.GetFileName(src_path);
+                        int i = 0;
+                        if (File.Exists(Path.Combine(path, name)) ||
+                            Directory.Exists(Path.Combine(path, name)))
+                            while (File.Exists(Path.Combine(path, name + " " + ++i)) ||
+                                Directory.Exists(Path.Combine(path, name + " " + i))) ;
+                        if (i != 0) name += " " + i;
+                        path = Path.Combine(path, name);
+                        var src_type = GetType(src_path);
+
+                        if (src_type != ResourceType.Ragdoll) throw new Exception(
+                            "Source [" + src_type + "] is ivalid source for outfit.");
+
+                        using (var src_resource = new RagdollResource(src_path))
+                        {
+                            resource.Ragdoll.Link = src_path;
+                            for (int j = 0; j < src_resource.Nodes.Count; j++)
+                            {
+                                var node = src_resource.Nodes[j];
+                                foreach (var sprite in node.Sprites)
+                                    resource.Nodes.Add(new OutfitResource.Node(sprite.Link, j));
+                            }
+                        }
+
+                        resource.Save(path);
+
                         return path;
                     }
 

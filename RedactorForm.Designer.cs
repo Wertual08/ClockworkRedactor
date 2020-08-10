@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RedactorForm));
             this.RedactorMenuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,17 +78,21 @@
             this.SwitchViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ResourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExplorerSplitContainer = new System.Windows.Forms.SplitContainer();
-            this.ResourceExplorer = new Resource_Redactor.Resources.Redactors.ExplorerControl();
             this.RedactorsTabControl = new System.Windows.Forms.TabControl();
             this.OpenDescriptionDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveDescriptionDialog = new System.Windows.Forms.SaveFileDialog();
             this.ImportFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.ExportFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.TabsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.CloseTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ResourceExplorer = new Resource_Redactor.Resources.Redactors.ExplorerControl();
+            this.ToOutfitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RedactorMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ExplorerSplitContainer)).BeginInit();
             this.ExplorerSplitContainer.Panel1.SuspendLayout();
             this.ExplorerSplitContainer.Panel2.SuspendLayout();
             this.ExplorerSplitContainer.SuspendLayout();
+            this.TabsContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // RedactorMenuStrip
@@ -275,7 +280,8 @@
             // 
             this.convertToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToSpriteToolStripMenuItem,
-            this.ToRagdollToolStripMenuItem});
+            this.ToRagdollToolStripMenuItem,
+            this.ToOutfitToolStripMenuItem});
             this.convertToolStripMenuItem.Name = "convertToolStripMenuItem";
             this.convertToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.convertToolStripMenuItem.Text = "Convert";
@@ -553,18 +559,6 @@
             this.ExplorerSplitContainer.SplitterDistance = 251;
             this.ExplorerSplitContainer.TabIndex = 3;
             // 
-            // ResourceExplorer
-            // 
-            this.ResourceExplorer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ResourceExplorer.Location = new System.Drawing.Point(0, 0);
-            this.ResourceExplorer.MultiSelect = true;
-            this.ResourceExplorer.Name = "ResourceExplorer";
-            this.ResourceExplorer.Size = new System.Drawing.Size(247, 422);
-            this.ResourceExplorer.TabIndex = 0;
-            this.ResourceExplorer.ViewMode = Resource_Redactor.Resources.Redactors.ListViewMode.MediumIcon;
-            this.ResourceExplorer.ItemLoaded += new Resource_Redactor.Resources.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
-            this.ResourceExplorer.StateChanged += new Resource_Redactor.Resources.Redactors.ExplorerControl.StateChangedEventHandler(this.ResourceExplorer_StateChanged);
-            // 
             // RedactorsTabControl
             // 
             this.RedactorsTabControl.AllowDrop = true;
@@ -580,9 +574,47 @@
             this.RedactorsTabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.RedactorsTabControl_Selected);
             this.RedactorsTabControl.DragEnter += new System.Windows.Forms.DragEventHandler(this.RedactorsTabControl_DragEnter);
             this.RedactorsTabControl.DragOver += new System.Windows.Forms.DragEventHandler(this.RedactorsTabControl_DragOver);
+            this.RedactorsTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.RedactorsTabControl_MouseClick);
             this.RedactorsTabControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RedactorsTabControl_MouseDown);
             this.RedactorsTabControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RedactorsTabControl_MouseMove);
             this.RedactorsTabControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.RedactorsTabControl_MouseUp);
+            // 
+            // TabsContextMenuStrip
+            // 
+            this.TabsContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CloseTabToolStripMenuItem});
+            this.TabsContextMenuStrip.Name = "TabsContextMenuStrip";
+            this.TabsContextMenuStrip.Size = new System.Drawing.Size(104, 26);
+            // 
+            // CloseTabToolStripMenuItem
+            // 
+            this.CloseTabToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("CloseTabToolStripMenuItem.Image")));
+            this.CloseTabToolStripMenuItem.Name = "CloseTabToolStripMenuItem";
+            this.CloseTabToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.CloseTabToolStripMenuItem.Text = "Close";
+            this.CloseTabToolStripMenuItem.Click += new System.EventHandler(this.CloseTabToolStripMenuItem_Click);
+            // 
+            // ResourceExplorer
+            // 
+            this.ResourceExplorer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ResourceExplorer.Location = new System.Drawing.Point(0, 0);
+            this.ResourceExplorer.MultiSelect = true;
+            this.ResourceExplorer.Name = "ResourceExplorer";
+            this.ResourceExplorer.Size = new System.Drawing.Size(247, 422);
+            this.ResourceExplorer.TabIndex = 0;
+            this.ResourceExplorer.ViewMode = Resource_Redactor.Resources.Redactors.ListViewMode.MediumIcon;
+            this.ResourceExplorer.ItemLoaded += new Resource_Redactor.Resources.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
+            this.ResourceExplorer.StateChanged += new Resource_Redactor.Resources.Redactors.ExplorerControl.StateChangedEventHandler(this.ResourceExplorer_StateChanged);
+            // 
+            // ToOutfitToolStripMenuItem
+            // 
+            this.ToOutfitToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("ToOutfitToolStripMenuItem.Image")));
+            this.ToOutfitToolStripMenuItem.Name = "ToOutfitToolStripMenuItem";
+            this.ToOutfitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.O)));
+            this.ToOutfitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.ToOutfitToolStripMenuItem.Text = "To outfit";
+            this.ToOutfitToolStripMenuItem.Click += new System.EventHandler(this.ToOutfitToolStripMenuItem_Click);
             // 
             // RedactorForm
             // 
@@ -600,6 +632,7 @@
             this.ExplorerSplitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ExplorerSplitContainer)).EndInit();
             this.ExplorerSplitContainer.ResumeLayout(false);
+            this.TabsContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -661,6 +694,9 @@
         private System.Windows.Forms.ToolStripMenuItem CompilerToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog ImportFileDialog;
         private System.Windows.Forms.FolderBrowserDialog ExportFolderBrowserDialog;
+        private System.Windows.Forms.ContextMenuStrip TabsContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem CloseTabToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ToOutfitToolStripMenuItem;
     }
 }
 

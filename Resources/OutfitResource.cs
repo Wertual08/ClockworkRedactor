@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Resource_Redactor.Resources
@@ -27,6 +28,12 @@ namespace Resource_Redactor.Resources
             public Clothe ClotheType { get; set; } = Clothe.Over;
             public Node()
             {
+            }
+            public Node(string link, int node, Clothe clothe = Clothe.Over)
+            {
+                Sprite.Link = link;
+                RagdollNode = node;
+                ClotheType = clothe;
             }
 
             protected bool IsDisposed { get; private set; } = false;
@@ -73,6 +80,7 @@ namespace Resource_Redactor.Resources
 
         }
 
+        [JsonIgnore]
         public int Count 
         { 
             get { return Nodes.Count; } 

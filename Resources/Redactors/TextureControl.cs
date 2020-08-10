@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Drawing.Imaging;
 using ExtraSharp;
+using ExtraForms;
 
 namespace Resource_Redactor.Resources.Redactors
 {
@@ -72,6 +73,7 @@ namespace Resource_Redactor.Resources.Redactors
         public TextureControl(string path)
         {
             InitializeComponent();
+            OpenGLSurface.ResetCurrent();
 
             MenuTabs = new ToolStripMenuItem[] {
                 new ToolStripMenuItem("Import texture", null, ImportTextureMenuItem_Click, Keys.Control | Keys.I),
@@ -107,6 +109,8 @@ namespace Resource_Redactor.Resources.Redactors
         {
             try
             {
+                OpenGLSurface.ResetCurrent();
+
                 Story.Item.ToResource(LoadedResource);
 
                 TextureBitmapBox.Bitmap = LoadedResource.Texture;
@@ -127,6 +131,7 @@ namespace Resource_Redactor.Resources.Redactors
             try
             {
                 if (ImportFileDialog.ShowDialog() != DialogResult.OK) return;
+                OpenGLSurface.ResetCurrent();
 
                 LoadedResource.Texture = new Bitmap(ImportFileDialog.FileName);
 
@@ -193,6 +198,7 @@ namespace Resource_Redactor.Resources.Redactors
         {
             try
             {
+                OpenGLSurface.ResetCurrent();
                 if (e.Data.GetDataPresent(DataFormats.FileDrop))
                 {
                     var paths = e.Data.GetData(DataFormats.FileDrop) as string[];
