@@ -60,9 +60,41 @@ namespace Resource_Redactor
                 var tab = RedactorsTabControl.SelectedTab;
                 if (tab == null) return null;
                 if (tab.Controls.Count != 1) return null;
-                var control = tab.Controls[0];
-                return control as IResourceControl;
+                return tab.Controls[0] as IResourceControl;
             }
+        }
+
+        private bool SplitContainerPanelsSwapped = false;
+        private void SetSplitContainerPanelsSwapped(bool swapped)
+        {
+            if (SplitContainerPanelsSwapped == swapped) return;
+            else SplitContainerPanelsSwapped = swapped;
+
+            var panel1Controls = new List<Control>(ExplorerSplitContainer.Panel1.Controls.Count);
+            foreach (Control control in ExplorerSplitContainer.Panel1.Controls)
+                panel1Controls.Add(control);
+
+            var panel1MinSize = ExplorerSplitContainer.Panel1MinSize;
+            var panel1Collapsed = ExplorerSplitContainer.Panel1Collapsed;
+
+            ExplorerSplitContainer.Panel1.Controls.Clear();
+            foreach (Control control in ExplorerSplitContainer.Panel2.Controls)
+                ExplorerSplitContainer.Panel1.Controls.Add(control);
+
+            ExplorerSplitContainer.Panel1MinSize = ExplorerSplitContainer.Panel2MinSize;
+            ExplorerSplitContainer.Panel1Collapsed = ExplorerSplitContainer.Panel2Collapsed;
+
+            ExplorerSplitContainer.Panel2.Controls.Clear();
+            foreach (var control in panel1Controls)
+                ExplorerSplitContainer.Panel2.Controls.Add(control);
+
+            ExplorerSplitContainer.Panel2MinSize = panel1MinSize;
+            ExplorerSplitContainer.Panel2Collapsed = panel1Collapsed;
+
+            if (ExplorerSplitContainer.FixedPanel == FixedPanel.Panel1) 
+                ExplorerSplitContainer.FixedPanel = FixedPanel.Panel2;
+            else ExplorerSplitContainer.FixedPanel = FixedPanel.Panel1;
+            ExplorerSplitContainer.SplitterDistance = ExplorerSplitContainer.Width - ExplorerSplitContainer.SplitterDistance;
         }
 
         private void LoadRedactor(string path, string name)
@@ -291,9 +323,9 @@ namespace Resource_Redactor
                 var version = Description.CheckVersion(path);
                 if (version != Description.CurrentVersion)
                 {
-                    var result = MessageBox.Show(this, "Export description from previous redactor.", 
+                    var result = MessageBox.Show(this, "Export description from previous version of redactor.", 
                         "Description is outdated.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    if (result != DialogResult.Yes) return;
+                    return;
                 }
 
                 path = Path.GetFullPath(path);
@@ -301,7 +333,20 @@ namespace Resource_Redactor
                 path = Path.Combine(Path.GetDirectoryName(path), "Resources");
                 Directory.SetCurrentDirectory(path);
 
+                var properties = new RedactorProperties("../Properties");
+                ExplorerSplitContainer.SplitterDistance = properties.SplitterDistance;
+                ExplorerSplitContainer.Panel1Collapsed = !properties.ExplorerVisible;
+                SetSplitContainerPanelsSwapped(properties.ExplorerRight);
+                ResourceExplorer.ViewMode = properties.ExplorerMode;
+                foreach (var resource in properties.OpenedTabs) 
+                    LoadRedactor(resource, Path.GetFileName(resource));
+
                 ResourceExplorer.LoadLocation(path);
+
+                ResourceExplorer.MoveLocation(properties.ExplorerPath);
+
+                if (properties.SelectedTab >= 0 && properties.SelectedTab < RedactorsTabControl.TabCount)
+                    RedactorsTabControl.SelectedIndex = properties.SelectedTab;
             }
             catch (Exception ex)
             {
@@ -684,10 +729,14 @@ namespace Resource_Redactor
                 }
             }
         }
+
         private void ToggleExplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ExplorerSplitContainer.Panel1Collapsed = 
-                !ExplorerSplitContainer.Panel1Collapsed;
+            if (SplitContainerPanelsSwapped)
+                ExplorerSplitContainer.Panel2Collapsed =
+                    !ExplorerSplitContainer.Panel2Collapsed;
+            else ExplorerSplitContainer.Panel1Collapsed = 
+                    !ExplorerSplitContainer.Panel1Collapsed;
         }
         private void SwitchViewToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -700,12 +749,40 @@ namespace Resource_Redactor
                 case ListViewMode.List: ResourceExplorer.ViewMode = ListViewMode.LargeIcon; break;
             }
         }
+        private void SwapPanelsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetSplitContainerPanelsSwapped(!SplitContainerPanelsSwapped);
+        }
+
         private void ExplorerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            var properties = new RedactorProperties();
+            if (SplitContainerPanelsSwapped)
+            {
+                properties.SplitterDistance = ExplorerSplitContainer.Width - ExplorerSplitContainer.SplitterDistance;
+                properties.ExplorerVisible = !ExplorerSplitContainer.Panel2Collapsed;
+            }
+            else
+            {
+                properties.SplitterDistance = ExplorerSplitContainer.SplitterDistance;
+                properties.ExplorerVisible = !ExplorerSplitContainer.Panel1Collapsed;
+            }
+            properties.ExplorerMode = ResourceExplorer.ViewMode;
+            properties.ExplorerRight = SplitContainerPanelsSwapped;
+            properties.ExplorerPath = ResourceExplorer.CurrentDirectory;
+            properties.SelectedTab = RedactorsTabControl.SelectedIndex;
+
             foreach (TabPage tab in RedactorsTabControl.TabPages)
             {
                 try
                 {
+                    if (tab.Controls.Count == 1)
+                    {
+                        var control = tab.Controls[0] as IResourceControl;
+                        if (control != null) properties.OpenedTabs.Add(ExtraPath.MakeDirectoryRelated(
+                            Directory.GetCurrentDirectory(), control.ResourcePath));
+                    }
+
                     CloseRedactor(tab);
                 }
                 catch (Exception ex)
@@ -715,6 +792,8 @@ namespace Resource_Redactor
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+
+            properties.Save("../Properties");
         }
 
         static readonly Image CloseImage = (Image)(new ComponentResourceManager(typeof(RedactorForm)).GetObject("CloseToolStripMenuItem.Image"));
@@ -851,6 +930,5 @@ namespace Resource_Redactor
                 Visible = true;
             }
         }
-
     }
 }

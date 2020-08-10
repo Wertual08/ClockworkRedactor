@@ -92,6 +92,8 @@
     </Compile>
     <Compile Include="Compiler\IDTable.cs" />
     <Compile Include="Compiler\MessageQueue.cs" />
+    <Compile Include="JsonExt.cs" />
+    <Compile Include="RedactorProperties.cs" />
     <Compile Include="Resources\AnimationResource.cs" />
     <Compile Include="Resources\Description.cs" />
     <Compile Include="Resources\EventResource.cs" />

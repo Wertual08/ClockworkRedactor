@@ -408,6 +408,10 @@ namespace Resource_Redactor.Resources.Redactors
             Walker.Load(path);
             StateChanged?.Invoke(this, new ExplorerEventArgs(null, null, null, ResourceType.MissingFile));
         }
+        public void MoveLocation(string path)
+        {
+            Walker.Move(path);
+        }
         public void CreateResource(ResourceType type)
         {
             try

@@ -50,6 +50,7 @@
             this.convertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToSpriteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToRagdollToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToOutfitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DescriptionOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ResourceOpenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -85,8 +86,8 @@
             this.ExportFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.TabsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.CloseTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SwapPanelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ResourceExplorer = new Resource_Redactor.Resources.Redactors.ExplorerControl();
-            this.ToOutfitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RedactorMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ExplorerSplitContainer)).BeginInit();
             this.ExplorerSplitContainer.Panel1.SuspendLayout();
@@ -306,6 +307,16 @@
             this.ToRagdollToolStripMenuItem.Text = "To ragdoll";
             this.ToRagdollToolStripMenuItem.Click += new System.EventHandler(this.ToRagdollToolStripMenuItem_Click);
             // 
+            // ToOutfitToolStripMenuItem
+            // 
+            this.ToOutfitToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("ToOutfitToolStripMenuItem.Image")));
+            this.ToOutfitToolStripMenuItem.Name = "ToOutfitToolStripMenuItem";
+            this.ToOutfitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.O)));
+            this.ToOutfitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.ToOutfitToolStripMenuItem.Text = "To outfit";
+            this.ToOutfitToolStripMenuItem.Click += new System.EventHandler(this.ToOutfitToolStripMenuItem_Click);
+            // 
             // OpenToolStripMenuItem
             // 
             this.OpenToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -512,7 +523,8 @@
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToggleExplorerToolStripMenuItem,
-            this.SwitchViewToolStripMenuItem});
+            this.SwitchViewToolStripMenuItem,
+            this.SwapPanelsToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -521,7 +533,7 @@
             // 
             this.ToggleExplorerToolStripMenuItem.Name = "ToggleExplorerToolStripMenuItem";
             this.ToggleExplorerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-            this.ToggleExplorerToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.ToggleExplorerToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.ToggleExplorerToolStripMenuItem.Text = "Toggle Explorer";
             this.ToggleExplorerToolStripMenuItem.Click += new System.EventHandler(this.ToggleExplorerToolStripMenuItem_Click);
             // 
@@ -530,8 +542,8 @@
             this.SwitchViewToolStripMenuItem.Name = "SwitchViewToolStripMenuItem";
             this.SwitchViewToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.E)));
-            this.SwitchViewToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.SwitchViewToolStripMenuItem.Text = "Switch view";
+            this.SwitchViewToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.SwitchViewToolStripMenuItem.Text = "Switch View";
             this.SwitchViewToolStripMenuItem.Click += new System.EventHandler(this.SwitchViewToolStripMenuItem_Click);
             // 
             // ResourceToolStripMenuItem
@@ -594,6 +606,14 @@
             this.CloseTabToolStripMenuItem.Text = "Close";
             this.CloseTabToolStripMenuItem.Click += new System.EventHandler(this.CloseTabToolStripMenuItem_Click);
             // 
+            // SwapPanelsToolStripMenuItem
+            // 
+            this.SwapPanelsToolStripMenuItem.Name = "SwapPanelsToolStripMenuItem";
+            this.SwapPanelsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
+            this.SwapPanelsToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.SwapPanelsToolStripMenuItem.Text = "Swap Panels";
+            this.SwapPanelsToolStripMenuItem.Click += new System.EventHandler(this.SwapPanelsToolStripMenuItem_Click);
+            // 
             // ResourceExplorer
             // 
             this.ResourceExplorer.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -605,16 +625,6 @@
             this.ResourceExplorer.ViewMode = Resource_Redactor.Resources.Redactors.ListViewMode.MediumIcon;
             this.ResourceExplorer.ItemLoaded += new Resource_Redactor.Resources.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
             this.ResourceExplorer.StateChanged += new Resource_Redactor.Resources.Redactors.ExplorerControl.StateChangedEventHandler(this.ResourceExplorer_StateChanged);
-            // 
-            // ToOutfitToolStripMenuItem
-            // 
-            this.ToOutfitToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("ToOutfitToolStripMenuItem.Image")));
-            this.ToOutfitToolStripMenuItem.Name = "ToOutfitToolStripMenuItem";
-            this.ToOutfitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.O)));
-            this.ToOutfitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
-            this.ToOutfitToolStripMenuItem.Text = "To outfit";
-            this.ToOutfitToolStripMenuItem.Click += new System.EventHandler(this.ToOutfitToolStripMenuItem_Click);
             // 
             // RedactorForm
             // 
@@ -697,6 +707,7 @@
         private System.Windows.Forms.ContextMenuStrip TabsContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem CloseTabToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ToOutfitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem SwapPanelsToolStripMenuItem;
     }
 }
 
