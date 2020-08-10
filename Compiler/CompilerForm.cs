@@ -1,5 +1,5 @@
 ﻿using ExtraSharp;
-using Resource_Redactor.Descriptions;
+using Resource_Redactor.Resources;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

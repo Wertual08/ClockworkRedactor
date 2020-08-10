@@ -77,7 +77,7 @@
             this.SwitchViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ResourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExplorerSplitContainer = new System.Windows.Forms.SplitContainer();
-            this.ResourceExplorer = new Resource_Redactor.Descriptions.Redactors.ExplorerControl();
+            this.ResourceExplorer = new Resource_Redactor.Resources.Redactors.ExplorerControl();
             this.RedactorsTabControl = new System.Windows.Forms.TabControl();
             this.OpenDescriptionDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveDescriptionDialog = new System.Windows.Forms.SaveFileDialog();
@@ -561,9 +561,9 @@
             this.ResourceExplorer.Name = "ResourceExplorer";
             this.ResourceExplorer.Size = new System.Drawing.Size(247, 422);
             this.ResourceExplorer.TabIndex = 0;
-            this.ResourceExplorer.ViewMode = Resource_Redactor.Descriptions.Redactors.ListViewMode.MediumIcon;
-            this.ResourceExplorer.ItemLoaded += new Resource_Redactor.Descriptions.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
-            this.ResourceExplorer.StateChanged += new Resource_Redactor.Descriptions.Redactors.ExplorerControl.StateChangedEventHandler(this.ResourceExplorer_StateChanged);
+            this.ResourceExplorer.ViewMode = Resource_Redactor.Resources.Redactors.ListViewMode.MediumIcon;
+            this.ResourceExplorer.ItemLoaded += new Resource_Redactor.Resources.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
+            this.ResourceExplorer.StateChanged += new Resource_Redactor.Resources.Redactors.ExplorerControl.StateChangedEventHandler(this.ResourceExplorer_StateChanged);
             // 
             // RedactorsTabControl
             // 
@@ -639,7 +639,7 @@
         private System.Windows.Forms.ToolStripMenuItem RenameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SaveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SaveAsToolStripMenuItem;
-        private Descriptions.Redactors.ExplorerControl ResourceExplorer;
+        private Resources.Redactors.ExplorerControl ResourceExplorer;
         private System.Windows.Forms.ToolStripMenuItem ToggleExplorerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SaveAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem CloseAllToolStripMenuItem;

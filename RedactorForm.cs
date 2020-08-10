@@ -10,8 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ExtraSharp;
 using ExtraForms;
-using Resource_Redactor.Descriptions;
-using Resource_Redactor.Descriptions.Redactors;
+using Resource_Redactor.Resources;
+using Resource_Redactor.Resources.Redactors;
 using System.Collections.Specialized;
 using Resource_Redactor.Compiler;
 
@@ -85,7 +85,21 @@ namespace Resource_Redactor
                     }
                 }
 
-                var type = Resource.GetType(path);
+                ResourceType type = Resource.GetType(path);
+                if (type == ResourceType.Outdated)
+                {
+                    type = Resource.GetLegacyType(path);
+                    string current_version = Resource.GetVersion(path);
+                    string actual_version = Resource.GetVersion(type);
+
+                    string dated = current_version.CompareTo(actual_version) < 0 ? "outdated" : "overdated";
+                    var result = MessageBox.Show(this, "Resource [" + type + ":" + name +
+                       "] version is [" + current_version + "]. Actual version is [" +
+                       actual_version + "]. Would you like to convert it? Some data may be lost.", "Resource is " + dated + ".",
+                       MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (result != DialogResult.Yes) return;
+                }
+
                 Control control = null;
                 switch (type)
                 {
@@ -101,7 +115,7 @@ namespace Resource_Redactor
 
                     default:
                         MessageBox.Show(this, "Resource [" + type +
-                           "] redactor does not implemented!", "Warning!",
+                           "] redactor does not implemented.", "Warning!",
                            MessageBoxButtons.OK, MessageBoxIcon.Warning); break;
                 }
 

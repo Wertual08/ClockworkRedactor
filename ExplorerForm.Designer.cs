@@ -31,7 +31,7 @@
             this.ControlsPanel = new System.Windows.Forms.Panel();
             this.RejectButton = new System.Windows.Forms.Button();
             this.SelectButton = new System.Windows.Forms.Button();
-            this.ResourceExplorer = new Resource_Redactor.Descriptions.Redactors.ExplorerControl();
+            this.ResourceExplorer = new Resource_Redactor.Resources.Redactors.ExplorerControl();
             this.ControlsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -77,7 +77,7 @@
             this.ResourceExplorer.Name = "ResourceExplorer";
             this.ResourceExplorer.Size = new System.Drawing.Size(800, 421);
             this.ResourceExplorer.TabIndex = 1;
-            this.ResourceExplorer.ItemLoaded += new Resource_Redactor.Descriptions.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
+            this.ResourceExplorer.ItemLoaded += new Resource_Redactor.Resources.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
             // 
             // ExplorerForm
             // 
@@ -96,7 +96,7 @@
         #endregion
 
         private System.Windows.Forms.Panel ControlsPanel;
-        private Descriptions.Redactors.ExplorerControl ResourceExplorer;
+        private Resources.Redactors.ExplorerControl ResourceExplorer;
         private System.Windows.Forms.Button RejectButton;
         private System.Windows.Forms.Button SelectButton;
     }

@@ -1,5 +1,5 @@
-﻿using Resource_Redactor.Descriptions;
-using Resource_Redactor.Descriptions.Redactors;
+﻿using Resource_Redactor.Resources;
+using Resource_Redactor.Resources.Redactors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

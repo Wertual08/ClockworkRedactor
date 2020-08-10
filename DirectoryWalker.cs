@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Resource_Redactor.Descriptions
+namespace Resource_Redactor.Resources
 {
     public class WalkerEventArgs : EventArgs
     {
