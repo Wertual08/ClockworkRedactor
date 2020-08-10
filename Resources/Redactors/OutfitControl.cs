@@ -14,45 +14,12 @@ using ExtraForms.OpenGL;
 
 namespace Resource_Redactor.Resources.Redactors
 {
-    public partial class OutfitControl : UserControl, IResourceControl
+    public partial class OutfitControl : ResourceControl<OutfitResource, StoryItem<OutfitControl.StoryState>>, IResourceControl
     {
-        public ToolStripMenuItem[] MenuTabs { get; private set; }
-
-        public bool Saved { get; private set; } = true;
-        public bool UndoEnabled { get { return Story.PrevState; } }
-        public bool RedoEnabled { get { return Story.NextState; } }
-
-        public string ResourcePath { get; private set; }
-        public string ResourceName { get; private set; }
-
-        public event StateChangedEventHandler StateChanged;
-
         public int FPS
         {
             get { return 1000 / GLFrameTimer.Interval; }
             set { GLFrameTimer.Interval = Math.Max(1, 1000 / value); }
-        }
-        public void Activate()
-        {
-            GLSurface.MakeCurrent();
-        }
-        public void Save(string path)
-        {
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
-
-            LoadedResource.Save(path);
-
-            Saved = true;
-            UpdateRedactor();
-        }
-        public void Undo()
-        {
-            Story.Undo();
-        }
-        public void Redo()
-        {
-            Story.Redo();
         }
 
         public OutfitControl(string path)
@@ -77,16 +44,13 @@ namespace Resource_Redactor.Resources.Redactors
             for (int i = 3; i <= 5; i++) MenuTabs[i].Enabled = false;
 
             GLSurface.MakeCurrent();
-            LoadedResource = new OutfitResource(path);
+            Open(path);
             RagdollLinkTextBox.Text = LoadedResource.Ragdoll.Link;
             Story = new StoryItem<StoryState>(new StoryState(LoadedResource));
             Story.ValueChanged += Story_ValueChanged;
             LoadedResource.Ragdoll.Reload();
             RagdollLinkTextBox.Subresource = LoadedResource.Ragdoll;
             LoadedResource.Ragdoll.Resource?.Clothe(LoadedResource);
-
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
 
             GetTab("Toggle grid").Checked = LoadedResource.GridEnabled;
             GetTab("Toggle transparency").Checked = LoadedResource.Transparency;
@@ -164,28 +128,14 @@ namespace Resource_Redactor.Resources.Redactors
             }
         }
 
-        private void UpdateRedactor()
-        {
-            StateChanged?.Invoke(this, EventArgs.Empty);
-        }
-        private void MakeUnsaved()
-        {
-            Saved = false;
-            UpdateRedactor();
-        }
         private void RepairOffset()
         {
 
         }
-        private ToolStripMenuItem GetTab(string title)
-        {
-            return MenuTabs.First((ToolStripMenuItem item) => { return item.Text == title; });
-        }
 
         private DragManager MouseManager = new DragManager(0.015625f);
         private float OffsetX, OffsetY;
-        private OutfitResource LoadedResource;
-        private struct StoryState
+        public struct StoryState
         {
             private string[] Links;
             private int[] Nodes;
@@ -256,7 +206,6 @@ namespace Resource_Redactor.Resources.Redactors
                 return true;
             }
         }
-        private StoryItem<StoryState> Story;
 
         private void GLSurface_GLStart(object sender, EventArgs e)
         {

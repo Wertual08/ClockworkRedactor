@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Resource_Redactor.Resources
 {
-    class EntityResource : Resource
+    public class EntityResource : Resource
     {
         public static readonly ResourceType CurrentType = ResourceType.Entity;
         public static readonly string CurrentVersion = "0.0.0.1";

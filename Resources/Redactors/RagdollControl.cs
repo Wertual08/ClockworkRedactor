@@ -14,13 +14,13 @@ using System.IO;
 
 namespace Resource_Redactor.Resources.Redactors
 {
-    public partial class RagdollControl : UserControl, IResourceControl
+    public partial class RagdollControl : ResourceControl<RagdollResource, StoryList<RagdollControl.Node>>, IResourceControl
     {
         private DragManager MouseManager = new DragManager(0.015625f);
         private int CapturedPoint = -1, SelectedPoint = -1;
         private float OffsetX = 0.0f, OffsetY = 0.0f;
 
-        struct Node
+        public struct Node
         {
             public float OffsetX;
             public float OffsetY;
@@ -92,9 +92,6 @@ namespace Resource_Redactor.Resources.Redactors
             }
         };
 
-        private readonly StoryList<Node> Story = null;
-        private readonly RagdollResource LoadedResource = null;
-
         private RagdollResource.Node CurrentNode
         {
             get
@@ -133,43 +130,10 @@ namespace Resource_Redactor.Resources.Redactors
             }
         }
 
-        public ToolStripMenuItem[] MenuTabs { get; private set; }
-        public bool Saved { get; private set; } = true;
-        public bool UndoEnabled { get { return Story.PrevState; } }
-        public bool RedoEnabled { get { return Story.NextState; } }
-
-        public event StateChangedEventHandler StateChanged;
-
-        public string ResourcePath { get; private set; }
-        public string ResourceName { get; private set; }
-
         public int FPS
         {
             get { return 1000 / GLFrameTimer.Interval; }
             set { GLFrameTimer.Interval = Math.Max(1, 1000 / value); }
-        }
-        public void Activate()
-        {
-            GLSurface.MakeCurrent();
-        }
-
-        public void Save(string path)
-        {
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
-
-            LoadedResource.Save(path);
-
-            Saved = true;
-            UpdateRedactor();
-        }
-        public void Undo()
-        {
-            Story.Undo();
-        }
-        public void Redo()
-        {
-            Story.Redo();
         }
 
         public RagdollControl(string path)
@@ -200,15 +164,12 @@ namespace Resource_Redactor.Resources.Redactors
             for (int i = 1; i <= 8; i++) MenuTabs[i].Enabled = false;
 
 
-            LoadedResource = new RagdollResource(path);
+            Open(path);
             var ln = new List<Node>(LoadedResource.Nodes.Count);
             for (int i = 0; i < LoadedResource.Nodes.Count; i++)
                 ln.Add(new Node(LoadedResource.Nodes[i]));
             Story = new StoryList<Node>(ln);
             Story.ListChanged += Story_ListChanged;
-
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
 
             MenuTabs[9].Checked = LoadedResource.Transparency;
             MenuTabs[10].Checked = LoadedResource.PixelPerfect;
@@ -242,15 +203,6 @@ namespace Resource_Redactor.Resources.Redactors
             //if (OffsetX + lx > sw) OffsetX = sw - lx;
             //if (OffsetY + uy < -sh) OffsetY = -sh - uy;
             //if (OffsetY + dy > sh) OffsetY = sh - dy;
-        }
-        private void UpdateRedactor()
-        {
-            StateChanged?.Invoke(this, EventArgs.Empty);
-        }
-        private void MakeUnsaved()
-        {
-            Saved = false;
-            UpdateRedactor();
         }
 
         private void Sprite_Reloaded(object sender, EventArgs e)
@@ -357,7 +309,6 @@ namespace Resource_Redactor.Resources.Redactors
                     LinksListBox.Items.Clear();
                     for (int i = 0; i < node.Sprites.Count; i++)
                     {
-                        node.Sprites[i].SynchronizingObject = this;
                         node.Sprites[i].Reloaded += Sprite_Reloaded;
                         LinksListBox.Items.Add(node.Sprites[i].Link);
                     }

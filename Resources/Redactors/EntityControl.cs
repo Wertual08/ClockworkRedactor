@@ -14,45 +14,12 @@ using System.Diagnostics;
 
 namespace Resource_Redactor.Resources.Redactors
 {
-    public partial class EntityControl : UserControl, IResourceControl
+    public partial class EntityControl : ResourceControl<EntityResource, StoryItem<EntityControl.Action>>, IResourceControl
     {
-        public ToolStripMenuItem[] MenuTabs { get; private set; }
-
-        public bool Saved { get; private set; } = true;
-        public bool UndoEnabled { get { return Story.PrevState; } }
-        public bool RedoEnabled { get { return Story.NextState; } }
-
-        public string ResourcePath { get; private set; }
-        public string ResourceName { get; private set; }
-
-        public event StateChangedEventHandler StateChanged;
-
         public int FPS
         {
             get { return 1000 / GLFrameTimer.Interval; }
             set { GLFrameTimer.Interval = Math.Max(1, 1000 / value); }
-        }
-        public void Activate()
-        {
-            GLSurface.MakeCurrent();
-        }
-        public void Save(string path)
-        {
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
-
-            LoadedResource.Save(path);
-
-            Saved = true;
-            UpdateRedactor();
-        }
-        public void Undo()
-        {
-            Story.Undo();
-        }
-        public void Redo()
-        {
-            Story.Redo();
         }
 
         private DragManager MouseManager = new DragManager(0.015625f);
@@ -80,7 +47,7 @@ namespace Resource_Redactor.Resources.Redactors
             return result;
         }
         private readonly string[] ParameterNames = GetNames(typeof(Parameter), 20);
-        private struct Action
+        public struct Action
         {
             public struct Trigger
             {
@@ -335,11 +302,9 @@ namespace Resource_Redactor.Resources.Redactors
                 return true;
             }
         }
-        private StoryItem<Action> Story;
 
         private float OffsetX = 0f, OffsetY = 0f;
         private Stopwatch FrameTimer = new Stopwatch();
-        private EntityResource LoadedResource;
         private PreviewSurface.Entity EntityController;
 
         private EntityResource.Trigger SelectedAnimation
@@ -396,13 +361,10 @@ namespace Resource_Redactor.Resources.Redactors
             };
 
             GLSurface.MakeCurrent();
-            LoadedResource = new EntityResource(path);
+            Open(path);
             RagdollLinkTextBox.Text = LoadedResource.Ragdoll.Link;
             Story = new StoryItem<Action>(new Action(LoadedResource));
             Story.ValueChanged += Story_ValueChanged;
-
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
 
             EntityParametersListBox.BeginUpdate();
             EntityParametersListBox.Items.AddRange(ParameterNames);
@@ -430,7 +392,6 @@ namespace Resource_Redactor.Resources.Redactors
             GLSurface.LoadEntity(LoadedResource, "LoadedResource");
             EntityController = GLSurface.GetEntity("LoadedResource");
             EntityController.ToolCycle = 1000;
-            EntityController.Tool.SynchronizingObject = this;
             GLSurface.GridEnabled = LoadedResource.GridEnabled;
 
             ToolLinkTextBox.Subresource = EntityController.Tool;
@@ -453,20 +414,6 @@ namespace Resource_Redactor.Resources.Redactors
             }
         }
 
-        private void UpdateRedactor()
-        {
-            StateChanged?.Invoke(this, EventArgs.Empty);
-        }
-        private void MakeUnsaved()
-        {
-            Saved = false;
-            StateChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        private ToolStripMenuItem GetTab(string title)
-        {
-            return MenuTabs.First((ToolStripMenuItem item) => { return item.Text == title; });
-        }
         string GetEntityParameter(Parameter p)
         {
             switch (p)
@@ -587,7 +534,6 @@ namespace Resource_Redactor.Resources.Redactors
                 for (int i = 0; i < LoadedResource.Triggers.Count; i++)
                 {
                     AnimationsListBox.Items.Add(LoadedResource.Triggers[i].Name);
-                    LoadedResource.Triggers[i].Animation.SynchronizingObject = this;
                     LoadedResource.Triggers[i].Animation.Updated += Animation_Reloaded;
                 }
                 AnimationsListBox.EndUpdate();
@@ -599,7 +545,6 @@ namespace Resource_Redactor.Resources.Redactors
                 for (int i = 0; i < LoadedResource.Holders.Count; i++)
                 {
                     HoldersListBox.Items.Add(LoadedResource.Holders[i].Name);
-                    LoadedResource.Holders[i].Animation.SynchronizingObject = this;
                     LoadedResource.Holders[i].Animation.Updated += Holder_Reloaded;
                 }
                 HoldersListBox.EndUpdate();

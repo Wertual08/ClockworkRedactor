@@ -11,7 +11,7 @@ using ExtraForms.OpenGL;
 
 namespace Resource_Redactor.Resources
 {
-    class TileResource : Resource
+    public class TileResource : Resource
     {
         public static readonly ResourceType CurrentType = ResourceType.Tile;
         public static readonly string CurrentVersion = "0.0.0.0";

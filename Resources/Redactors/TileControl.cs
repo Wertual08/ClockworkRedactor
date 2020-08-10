@@ -15,7 +15,7 @@ using ExtraForms.OpenGL;
 
 namespace Resource_Redactor.Resources.Redactors
 {
-    public partial class TileControl : UserControl, IResourceControl
+    public partial class TileControl : ResourceControl<TileResource, StoryItem<TileControl.State>>, IResourceControl
     {
         private static readonly string TileName = "|\\{:Super***77_#[#]Zalupa:}//|";
         private DragManager MouseManager = new DragManager(0.015625f);
@@ -28,7 +28,7 @@ namespace Resource_Redactor.Resources.Redactors
         }
         private MouseStatus MouseState;
 
-        private struct State
+        public struct State
         {
             public string TextureLink;
 
@@ -146,46 +146,10 @@ namespace Resource_Redactor.Resources.Redactors
             }
         };
 
-        private StoryItem<State> Story;
-        private TileResource LoadedResource = null;
-
-        public ToolStripMenuItem[] MenuTabs { get; private set; }
-        public bool Saved { get; private set; } = true;
-        public bool UndoEnabled { get { return Story.PrevState; } }
-        public bool RedoEnabled { get { return Story.NextState; } }
-
-        public event StateChangedEventHandler StateChanged;
-
-        public string ResourcePath { get; private set; }
-        public string ResourceName { get; private set; }
-
         public int FPS
         {
             get { return 1000 / GLFrameTimer.Interval; }
             set { GLFrameTimer.Interval = Math.Max(1, 1000 / value); }
-        }
-        public void Activate()
-        {
-            GLSurface.MakeCurrent();
-        }
-
-        public void Save(string path)
-        {
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
-
-            LoadedResource.Save(path);
-
-            Saved = true;
-            UpdateRedactor();
-        }
-        public void Undo()
-        {
-            Story.Undo();
-        }
-        public void Redo()
-        {
-            Story.Redo();
         }
 
         public TileControl(string path)
@@ -210,7 +174,10 @@ namespace Resource_Redactor.Resources.Redactors
             };
             
             GLSurface.MakeCurrent();
-            LoadedResource = new TileResource(path);
+            Open(path);
+            Story = new StoryItem<State>(new State(LoadedResource));
+            Story.ValueChanged += Story_ValueChanged;
+            TextureLinkTextBox.Subresource = LoadedResource.Texture;
 
             SolidityNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.Solidity, v => LoadedResource.Solidity = v);
             LayerNumeric.ValueChanged += (object sender, EventArgs e) =>
@@ -242,13 +209,6 @@ namespace Resource_Redactor.Resources.Redactors
             BAnchorBox.CheckedChanged += (object sender, EventArgs e) => SyncCheckBoxAnchor(sender, LoadedResource.Anchors, v =>LoadedResource.Anchors = v, TileResource.Anchor.B);
 
             PropertiesListBox.ItemCheck += (object sender, ItemCheckEventArgs e) => SyncFlags(sender, e, LoadedResource.Properties, v => LoadedResource.Properties = v);
-
-            Story = new StoryItem<State>(new State(LoadedResource));
-            Story.ValueChanged += Story_ValueChanged;
-            TextureLinkTextBox.Subresource = LoadedResource.Texture;
-
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
 
             ShapeComboBox.Items.AddRange(Enum.GetNames(typeof(TileResource.Shape)));
             EventsComboBox.SelectedIndex = 0;
@@ -298,10 +258,6 @@ namespace Resource_Redactor.Resources.Redactors
             GetTab("Toggle grid").Checked = LoadedResource.GridEnabled;
         }
 
-        private ToolStripMenuItem GetTab(string title)
-        {
-            return MenuTabs.First((ToolStripMenuItem item) => { return item.Text == title; });
-        }
         private void SyncNumericValue<T>(object sender, T value, Action<T> set_value) where T : struct
         {
             var numeric = sender as NumericUpDown;
@@ -368,15 +324,6 @@ namespace Resource_Redactor.Resources.Redactors
         private void BackupChanges()
         {
             Story.Item = new State(LoadedResource);
-        }
-        private void UpdateRedactor()
-        {
-            StateChanged?.Invoke(this, EventArgs.Empty);
-        }
-        private void MakeUnsaved()
-        {
-            Saved = false;
-            UpdateRedactor();
         }
 
         private void Story_ValueChanged(object sender, EventArgs e)

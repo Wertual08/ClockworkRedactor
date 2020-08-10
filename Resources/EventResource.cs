@@ -8,22 +8,44 @@ using System.Threading.Tasks;
 
 namespace Resource_Redactor.Resources
 {
-    class EventResource : Resource
+    public class EventResource : Resource
     {
         public static readonly ResourceType CurrentType = ResourceType.Event;
         public static readonly string CurrentVersion = "0.0.0.0";
 
         public enum ActionType : int
         {
+            None,
             PlaceTile,
             RemoveTile,
         }
-        public class Action
+        public class Action : IDisposable
         {
-            public ActionType Type { get; set; }
-            public string Link { get; set; }
-            public int OffsetX { get; set; }
-            public int OffsetY { get; set; }
+            public ActionType Type { get; set; } = ActionType.None;
+            public WeakSubresource<TileResource> Tile { get; set; } = new WeakSubresource<TileResource>();
+            public int OffsetX { get; set; } = 0;
+            public int OffsetY { get; set; } = 0;
+
+            protected bool IsDisposed { get; private set; } = false;
+            public void Dispose()
+            {
+                Dispose(true);
+            }
+            protected virtual void Dispose(bool disposing)
+            {
+                if (IsDisposed) return;
+
+                if (disposing)
+                {
+                    Tile.Dispose();
+                }
+
+                IsDisposed = true;
+            }
+            ~Action()
+            {
+                Dispose(false);
+            }
         }
 
         public ulong MinDelay { get; set; } = 0;
@@ -36,7 +58,6 @@ namespace Resource_Redactor.Resources
 
         public EventResource() : base(CurrentType, CurrentVersion)
         {
-            // Current fps to previous
         }
         public EventResource(string path) : base(path)
         {
@@ -44,6 +65,12 @@ namespace Resource_Redactor.Resources
         public override void Dispose(bool disposing)
         {
             if (IsDisposed) return;
+
+            if (disposing)
+            {
+                foreach (var action in Actions) action.Dispose();
+            }
+
             base.Dispose(disposing);
         }
     }

@@ -14,13 +14,13 @@ using ExtraForms.OpenGL;
 
 namespace Resource_Redactor.Resources.Redactors
 {
-    public partial class ToolControl : UserControl, IResourceControl
+    public partial class ToolControl : ResourceControl<ToolResource, StoryItem<ToolControl.State>>, IResourceControl
     {
         private DragManager MouseManager = new DragManager(0.015625f);
         private int CapturedPoint = -1;
         private float OffsetX = 0.0f, OffsetY = 0.0f, Angle = 0.0f;
 
-        struct State
+        public struct State
         {
             public string ActionName { get; private set; }
             public float FirePointX { get; private set; }
@@ -97,49 +97,14 @@ namespace Resource_Redactor.Resources.Redactors
             }
         };
 
-        private StoryItem<State> Story;
-        private ToolResource LoadedResource = null;
         private List<int> SelectedSprites = new List<int>();
 
-        public ToolStripMenuItem[] MenuTabs { get; private set; }
-        public bool Saved { get; private set; } = true;
-        public bool UndoEnabled { get { return Story.PrevState; } }
-        public bool RedoEnabled { get { return Story.NextState; } }
-
-        public event StateChangedEventHandler StateChanged;
-
-        public string ResourcePath { get; private set; }
-        public string ResourceName { get; private set; }
-        
         public int FPS
         {
             get { return 1000 / GLFrameTimer.Interval; }
             set { GLFrameTimer.Interval = Math.Max(1, 1000 / value); }
         }
-        public void Activate()
-        {
-            GLSurface.MakeCurrent();
-        }
-
-        public void Save(string path)
-        {
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
-
-            LoadedResource.Save(path);
-
-            Saved = true;
-            UpdateRedactor();
-        }
-        public void Undo()
-        {
-            Story.Undo();
-        }
-        public void Redo()
-        {
-            Story.Redo();
-        }
-
+       
         public ToolControl(string path)
         {
             InitializeComponent();
@@ -163,12 +128,10 @@ namespace Resource_Redactor.Resources.Redactors
 
             GLSurface.MakeCurrent();
 
-            LoadedResource = new ToolResource(path);
+            Open(path);
             while (SelectedSprites.Count < LoadedResource.Count) SelectedSprites.Add(0);
             Story = new StoryItem<State>(new State(LoadedResource));
             Story.ValueChanged += Story_ValueChanged;
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
 
             ActionTextBox.TextChanged += (object sender, EventArgs e) => SyncTextBoxValue(sender, LoadedResource.ActionName, v => LoadedResource.ActionName = v);
             FirePointXNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.FirePointX, v => LoadedResource.FirePointX = v);
@@ -240,10 +203,6 @@ namespace Resource_Redactor.Resources.Redactors
             }
         }
 
-        private ToolStripMenuItem GetTab(string title)
-        {
-            return MenuTabs.First((ToolStripMenuItem item) => { return item.Text == title; });
-        }
         private void RepairOffset()
         {
             //var bounds = LoadedResource.GetBounds();
@@ -376,15 +335,6 @@ namespace Resource_Redactor.Resources.Redactors
                 VariantsListBox.Enabled = false;
             }
 
-        }
-        private void UpdateRedactor()
-        {
-            StateChanged?.Invoke(this, EventArgs.Empty);
-        }
-        private void MakeUnsaved()
-        {
-            Saved = false;
-            UpdateRedactor();
         }
 
         private void Story_ValueChanged(object sender, EventArgs e)

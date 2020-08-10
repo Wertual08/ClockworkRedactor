@@ -49,7 +49,7 @@ namespace Resource_Redactor.Compiler
                 try { res = new TileResource(t.Path); }
                 catch
                 {
-                    LogQueue.Put("Tile [" + t.Path + "] not found. ID skipped.");
+                    LogQueue.Put("Tile [" + t.Path + "] was not found. ID skipped.");
                     CompiledTiles[id] = new Compiled.Tile();
                     id++;
                     continue;
@@ -63,17 +63,17 @@ namespace Resource_Redactor.Compiler
                 CompiledTiles[id].RemoveEventID = EventsIDTable[res.RemoveEvent.Link];
 
                 if (res.SetupEvent.Link.Length > 0 && CompiledTiles[id].SetupEventID < 0)
-                    LogQueue.Put("Warning: Setup event [" + res.SetupEvent.Link + "] not found.");
+                    LogQueue.Put("Warning: Setup event [" + res.SetupEvent.Link + "] was not found.");
                 if (res.ReformEvent.Link.Length > 0 && CompiledTiles[id].ReformEventID < 0)
-                    LogQueue.Put("Warning: Reform event [" + res.ReformEvent.Link + "] not found.");
+                    LogQueue.Put("Warning: Reform event [" + res.ReformEvent.Link + "] was not found.");
                 if (res.TouchEvent.Link.Length > 0 && CompiledTiles[id].TouchEventID < 0)
-                    LogQueue.Put("Warning: Touch event [" + res.TouchEvent.Link + "] not found.");
+                    LogQueue.Put("Warning: Touch event [" + res.TouchEvent.Link + "] was not found.");
                 if (res.ActivateEvent.Link.Length > 0 && CompiledTiles[id].ActivateEventID < 0)
-                    LogQueue.Put("Warning: Activate event [" + res.ActivateEvent.Link + "] not found.");
+                    LogQueue.Put("Warning: Activate event [" + res.ActivateEvent.Link + "] was not found.");
                 if (res.RecieveEvent.Link.Length > 0 && CompiledTiles[id].RecieveEventID < 0)
-                    LogQueue.Put("Warning: Recieve event [" + res.RecieveEvent.Link + "] not found.");
+                    LogQueue.Put("Warning: Recieve event [" + res.RecieveEvent.Link + "] was not found.");
                 if (res.RemoveEvent.Link.Length > 0 && CompiledTiles[id].RemoveEventID < 0)
-                    LogQueue.Put("Warning: Remove event [" + res.RemoveEvent.Link + "] not found.");
+                    LogQueue.Put("Warning: Remove event [" + res.RemoveEvent.Link + "] was not found.");
 
                 CompiledTiles[id].OffsetX = res.OffsetX;
                 CompiledTiles[id].OffsetY = res.OffsetY;
@@ -189,7 +189,7 @@ namespace Resource_Redactor.Compiler
                 try { res = new EventResource(e.Path); }
                 catch
                 {
-                    LogQueue.Put("Event [" + e.Path + "] not found. ID skipped.");
+                    LogQueue.Put("Event [" + e.Path + "] was not found. ID skipped.");
                     CompiledEvents[id] = new Compiled.Event();
                     id++;
                     continue;
@@ -204,12 +204,12 @@ namespace Resource_Redactor.Compiler
                 {
                     var ca = new Compiled.Event.Action();
 
-                    ca.LinkID = TilesIDTable[a.Link];
+                    ca.LinkID = TilesIDTable[a.Tile.Link];
                     ca.Type = (int)a.Type;
                     ca.OffsetX = a.OffsetX;
                     ca.OffsetY = a.OffsetY;
 
-                    if (ca.LinkID < 0) LogQueue.Put("Warning: Link [" + a.Link + "] not found.");
+                    if (ca.LinkID < 0) LogQueue.Put("Warning: Link [" + a.Tile.Link + "] was not found.");
 
                     CompiledActions.Add(ca);
                 }
@@ -248,7 +248,7 @@ namespace Resource_Redactor.Compiler
                 try { res = new SpriteResource(s.Path); }
                 catch
                 {
-                    LogQueue.Put("Sprite [" + s.Path + "] not found. ID skipped.");
+                    LogQueue.Put("Sprite [" + s.Path + "] was not found. ID skipped.");
                     CompiledSprites[id] = new Compiled.Sprite();
                     id++;
                     continue;
@@ -360,7 +360,7 @@ namespace Resource_Redactor.Compiler
                 try { res = new RagdollResource(r.Path); }
                 catch
                 {
-                    LogQueue.Put("Ragdoll [" + r.Path + "] not found. ID skipped.");
+                    LogQueue.Put("Ragdoll [" + r.Path + "] was not found. ID skipped.");
                     CompiledRagdolls[id++] = new Compiled.Ragdoll();
                     continue;
                 }
@@ -412,7 +412,7 @@ namespace Resource_Redactor.Compiler
                 try { res = new AnimationResource(r.Path); }
                 catch
                 {
-                    LogQueue.Put("Animation [" + r.Path + "] not found. ID skipped.");
+                    LogQueue.Put("Animation [" + r.Path + "] was not found. ID skipped.");
                     CompiledAnimations[id++] = new Compiled.Animation();
                     continue;
                 }
@@ -473,7 +473,7 @@ namespace Resource_Redactor.Compiler
                 try { res = new EntityResource(e.Path); }
                 catch
                 {
-                    LogQueue.Put("Entity [" + e.Path + "] not found. ID skipped.");
+                    LogQueue.Put("Entity [" + e.Path + "] was not found. ID skipped.");
                     CompiledEntities[id++] = new Compiled.Entity();
                     continue;
                 }
@@ -573,7 +573,7 @@ namespace Resource_Redactor.Compiler
                 try { res = new OutfitResource(e.Path); }
                 catch
                 {
-                    LogQueue.Put("Outfit [" + e.Path + "] not found. ID skipped.");
+                    LogQueue.Put("Outfit [" + e.Path + "] was not found. ID skipped.");
                     CompiledOutfits[id++] = new Compiled.Outfit();
                     continue;
                 }

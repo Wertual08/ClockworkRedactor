@@ -15,13 +15,13 @@ using System.IO;
 namespace Resource_Redactor.Resources.Redactors
 {
     [DefaultEvent("StateChanged")]
-    public partial class SpriteControl : UserControl, IResourceControl
+    public partial class SpriteControl : ResourceControl<SpriteResource, StoryItem<SpriteControl.State>>, IResourceControl
     {
         private DragManager MouseManager = new DragManager(0.015625f);
         private bool PointCaptured = false;
         private float OffsetX = 0.0f, OffsetY = 0.0f, Angle = 0.0f;
 
-        struct State
+        public struct State
         {
             public int FramesCount;
             public int FrameDelay;
@@ -70,46 +70,10 @@ namespace Resource_Redactor.Resources.Redactors
             }
         };
 
-        private StoryItem<State> Story;
-        private SpriteResource LoadedResource = null;
-
-        public ToolStripMenuItem[] MenuTabs { get; private set; }
-        public bool Saved { get; private set; } = true;
-        public bool UndoEnabled { get { return Story.PrevState; } }
-        public bool RedoEnabled { get { return Story.NextState; } }
-
-        public event StateChangedEventHandler StateChanged;
-
-        public string ResourcePath { get; private set; }
-        public string ResourceName { get; private set; }
-
         public int FPS
         {
             get { return 1000 / GLFrameTimer.Interval; }
             set { GLFrameTimer.Interval = Math.Max(1, 1000 / value); }
-        }
-        public void Activate()
-        {
-            GLSurface.MakeCurrent();
-        }
-
-        public void Save(string path)
-        {
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
-
-            LoadedResource.Save(path);
-
-            Saved = true;
-            StateChanged?.Invoke(this, EventArgs.Empty);
-        }
-        public void Undo()
-        {
-            Story.Undo();
-        }
-        public void Redo()
-        {
-            Story.Redo();
         }
 
         public SpriteControl(string path)
@@ -133,16 +97,12 @@ namespace Resource_Redactor.Resources.Redactors
             };
 
             GLSurface.MakeCurrent();
-            LoadedResource = new SpriteResource(path);
+            Open(path);
             Story = new StoryItem<State>(new State(LoadedResource));
             Story.ValueChanged += Story_ValueChanged;
 
             MenuTabs[4].Checked = LoadedResource.PixelPerfect;
 
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
-
-            LoadedResource.Texture.SynchronizingObject = this;
             LinkTextBox.Subresource = LoadedResource.Texture;
 
             FramesNumeric.Value = LoadedResource.FramesCount;
@@ -176,15 +136,6 @@ namespace Resource_Redactor.Resources.Redactors
             if (OffsetX + lx > sw) OffsetX = sw - lx;
             if (OffsetY + uy < -sh) OffsetY = -sh - uy;
             if (OffsetY + dy > sh) OffsetY = sh - dy;
-        }
-        private void UpdateRedactor()
-        {
-            StateChanged?.Invoke(this, EventArgs.Empty);
-        }
-        private void MakeUnsaved()
-        {
-            Saved = false;
-            UpdateRedactor();
         }
 
         private void Story_ValueChanged(object sender, EventArgs e)

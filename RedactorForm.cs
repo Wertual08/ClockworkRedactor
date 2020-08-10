@@ -313,6 +313,7 @@ namespace Resource_Redactor
         public RedactorForm(string initial_file = null)
         {
             InitializeComponent();
+            Subresource.SynchronizingObject = this;
 
             RedactorsTabControl.ImageList = ResourceExplorer.SmallIconList;
             Text = "Clockwork engine resource redactor V" + Description.RedactorVersion;

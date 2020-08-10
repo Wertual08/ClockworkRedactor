@@ -15,9 +15,9 @@ using ExtraForms;
 namespace Resource_Redactor.Resources.Redactors
 {
     [DefaultEvent("StateChanged")]
-    public partial class TextureControl : UserControl, IResourceControl
+    public partial class TextureControl : ResourceControl<TextureResource, StoryItem<TextureControl.State>>, IResourceControl
     {
-        private struct State
+        public struct State
         {
             public Bitmap Texture;
             public int BackColor;
@@ -33,42 +33,7 @@ namespace Resource_Redactor.Resources.Redactors
             }
         }
 
-        private StoryItem<State> Story = null;
-        private TextureResource LoadedResource = null;
-        
-        public ToolStripMenuItem[] MenuTabs { get; private set; }
-        public bool Saved { get; private set; } = true;
-        public bool UndoEnabled { get { return Story.PrevState; } }
-        public bool RedoEnabled { get { return Story.NextState; } }
-
-        public event StateChangedEventHandler StateChanged;
-
-        public string ResourcePath { get; private set; }
-        public string ResourceName { get; private set; }
-
         public int FPS { get; set; }
-        public void Activate()
-        {
-        }
-
-        public void Save(string path)
-        {
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
-
-            LoadedResource.Save(path);
-
-            Saved = true;
-            UpdateRedactor();
-        }
-        public void Undo()
-        {
-            Story.Undo();
-        }
-        public void Redo()
-        {
-            Story.Redo();
-        }
 
         public TextureControl(string path)
         {
@@ -82,27 +47,12 @@ namespace Resource_Redactor.Resources.Redactors
                 new ToolStripMenuItem("Reset position", null, ResetPositionMenuItem_Click, Keys.Control | Keys.R),
             };
 
-            LoadedResource = new TextureResource(path);
+            Open(path);
             Story = new StoryItem<State>(new State(LoadedResource));
             Story.ValueChanged += Story_ValueChanged;
 
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
-
             TextureBitmapBox.Bitmap = LoadedResource.Texture;
             TextureBitmapBox.BackColor = Color.FromArgb(LoadedResource.BackColor);
-
-            Saved = true;
-        }
-
-        private void UpdateRedactor()
-        {
-            StateChanged?.Invoke(this, EventArgs.Empty);
-        }
-        private void MakeUnsaved()
-        {
-            Saved = false;
-            UpdateRedactor();
         }
 
         private void Story_ValueChanged(object sender, EventArgs e)

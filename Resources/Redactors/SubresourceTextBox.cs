@@ -62,7 +62,6 @@ namespace Resource_Redactor.Resources.Redactors
         }
 
         private ISubresource _Subresource = null;
-        private ISynchronizeInvoke OldSyncer = null;
 
         public ISubresource Subresource
         {
@@ -72,20 +71,16 @@ namespace Resource_Redactor.Resources.Redactors
                 if (_Subresource != null)
                 {
                     _Subresource.Refreshed -= Subresource_Refreshed;
-                    _Subresource.SynchronizingObject = OldSyncer;
                 }
                 _Subresource = value;
                 if (_Subresource != null)
                 {
                     _Subresource.Refreshed += Subresource_Refreshed;
-                    OldSyncer = _Subresource.SynchronizingObject;
-                    _Subresource.SynchronizingObject = this;
                     Text = _Subresource.Link;
                     BackColor = _Subresource.Loaded ? _Subresource.ValidID ? DefaultBackColor : Color.Yellow : Color.Red;
                 }
                 else
                 {
-                    OldSyncer = null;
                     Text = "";
                 }
             }

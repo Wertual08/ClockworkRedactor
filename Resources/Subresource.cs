@@ -19,7 +19,6 @@ namespace Resource_Redactor.Resources
         event EventHandler Reloaded;
         event EventHandler Updated;
         event EventHandler Refreshed;
-        ISynchronizeInvoke SynchronizingObject { get; set; }
         string Link { get; set; }
         bool Loaded { get; }
         bool ValidID { get; }
@@ -29,9 +28,13 @@ namespace Resource_Redactor.Resources
         ResourceType Type { get; }
     }
 
+    public static class Subresource
+    {
+        public static ISynchronizeInvoke SynchronizingObject;
+    }
     public class Subresource<T> : ISubresource, IDisposable where T : Resource, new()
     {
-        private FileSystemWatcher Watcher = new FileSystemWatcher();
+        private FileSystemWatcher Watcher = new FileSystemWatcher() { SynchronizingObject = Subresource.SynchronizingObject };
         private void Watcher_Renamed(object sender, RenamedEventArgs e)
         {
             _Link = ExtraPath.MakeDirectoryRelated(Directory.GetCurrentDirectory(), e.FullPath);
@@ -53,8 +56,6 @@ namespace Resource_Redactor.Resources
 
         [JsonIgnore]
         public ResourceType Type { get { return Resources.Resource.GetType(typeof(T)); } }
-        [JsonIgnore]
-        public ISynchronizeInvoke SynchronizingObject { get { return Watcher.SynchronizingObject; } set { Watcher.SynchronizingObject = value; } }
         public event EventHandler Reloaded;
         public event EventHandler Updated;
         public event EventHandler Refreshed;

@@ -34,6 +34,7 @@ namespace Resource_Redactor.Resources
         Tool,
         Item,
         Particle,
+        Inventory,
     }
     public enum ResourceIcon : int
     {

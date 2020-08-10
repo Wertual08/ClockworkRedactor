@@ -12,9 +12,9 @@ using System.IO;
 
 namespace Resource_Redactor.Resources.Redactors
 {
-    public partial class EventControl : UserControl, IResourceControl
+    public partial class EventControl : ResourceControl<EventResource, StoryItem<EventControl.State>>, IResourceControl
     {
-        private struct State
+        public struct State
         {
             public struct Action
             {
@@ -39,7 +39,7 @@ namespace Resource_Redactor.Resources.Redactors
                 for (int i = 0; i < r.Actions.Count; i++)
                 {
                     Actions[i].Type = r.Actions[i].Type;
-                    Actions[i].Link = r.Actions[i].Link;
+                    Actions[i].Link = r.Actions[i].Tile.Link;
                     Actions[i].OffsetX = r.Actions[i].OffsetX;
                     Actions[i].OffsetY = r.Actions[i].OffsetY;
                 }
@@ -57,7 +57,7 @@ namespace Resource_Redactor.Resources.Redactors
                 {
                     r.Actions.Add(new EventResource.Action());
                     r.Actions[i].Type = Actions[i].Type;
-                    r.Actions[i].Link = Actions[i].Link;
+                    r.Actions[i].Tile.Link = Actions[i].Link;
                     r.Actions[i].OffsetX = Actions[i].OffsetX;
                     r.Actions[i].OffsetY = Actions[i].OffsetY;
                 }
@@ -90,46 +90,10 @@ namespace Resource_Redactor.Resources.Redactors
             }
         };
 
-        private StoryItem<State> Story;
-        private EventResource LoadedResource;
-
-        public ToolStripMenuItem[] MenuTabs { get; private set; }
-        public bool Saved { get; private set; } = true;
-        public bool UndoEnabled { get { return Story.PrevState; } }
-        public bool RedoEnabled { get { return Story.NextState; } }
-
-        public event StateChangedEventHandler StateChanged;
-
-        public string ResourcePath { get; private set; }
-        public string ResourceName { get; private set; }
-
         public int FPS
         {
             get { return 1000/* / GLFrameTimer.Interval*/; }
             set { /*GLFrameTimer.Interval = Math.Max(1, 1000 / value);*/ }
-        }
-        public void Activate()
-        {
-            //GLSurface.MakeCurrent();
-        }
-
-        public void Save(string path)
-        {
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
-
-            LoadedResource.Save(path);
-
-            Saved = true;
-            UpdateRedactor();
-        }
-        public void Undo()
-        {
-            Story.Undo();
-        }
-        public void Redo()
-        {
-            Story.Redo();
         }
 
         public EventControl(string path)
@@ -139,18 +103,11 @@ namespace Resource_Redactor.Resources.Redactors
             MenuTabs = new ToolStripMenuItem[] {
             };
 
-            LoadedResource = new EventResource(path);
+            Open(path);
             Story = new StoryItem<State>(new State(LoadedResource));
             Story.ValueChanged += Story_ValueChanged;
-
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
         }
 
-        private ToolStripMenuItem GetTab(string title)
-        {
-            return MenuTabs.First((ToolStripMenuItem item) => { return item.Text == title; });
-        }
         private void SyncNumericValue<T>(object sender, ref T value) where T : struct
         {
             var numeric = sender as NumericUpDown;
@@ -217,15 +174,6 @@ namespace Resource_Redactor.Resources.Redactors
         private void BackupChanges()
         {
             Story.Item = new State(LoadedResource);
-        }
-        private void UpdateRedactor()
-        {
-            StateChanged?.Invoke(this, EventArgs.Empty);
-        }
-        private void MakeUnsaved()
-        {
-            Saved = false;
-            UpdateRedactor();
         }
 
         private void Story_ValueChanged(object sender, EventArgs e)

@@ -15,45 +15,12 @@ using System.Diagnostics;
 
 namespace Resource_Redactor.Resources.Redactors
 {
-    public partial class AnimationControl : UserControl, IResourceControl
+    public partial class AnimationControl : ResourceControl<AnimationResource, StoryList<Frame>>, IResourceControl
     {
-        public ToolStripMenuItem[] MenuTabs { get; private set; }
-
-        public bool Saved { get; private set; } = true;
-        public bool UndoEnabled { get { return Story.PrevState && !LoadedResource.Playing; } }
-        public bool RedoEnabled { get { return Story.NextState && !LoadedResource.Playing; } }
-
-        public string ResourcePath { get; private set; }
-        public string ResourceName { get; private set; }
-
-        public event StateChangedEventHandler StateChanged;
-
         public int FPS 
         { 
             get { return 1000 / GLFrameTimer.Interval; } 
             set { GLFrameTimer.Interval = Math.Max(1, 1000 / value); } 
-        }
-        public void Activate()
-        {
-            GLSurface.MakeCurrent();
-        }
-        public void Save(string path)
-        {
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
-
-            LoadedResource.Save(path);
-
-            Saved = true;
-            UpdateRedactor();
-        }
-        public void Undo()
-        {
-            Story.Undo();
-        }
-        public void Redo()
-        {
-            Story.Redo();
         }
 
         public AnimationControl(string path)
@@ -91,15 +58,11 @@ namespace Resource_Redactor.Resources.Redactors
             MenuTabs[6].Enabled = true;
 
             GLSurface.MakeCurrent();
-            LoadedResource = new AnimationResource(path);
+            Open(path);
             LinkTextBox.Text = LoadedResource.Ragdoll.Link;
             Story = new StoryList<Frame>(LoadedResource.Frames);
             Story.ListChanged += Story_ListChanged;
 
-            ResourcePath = path;
-            ResourceName = Path.GetFileName(path);
-
-            LoadedResource.Ragdoll.SynchronizingObject = this;
             LinkTextBox.Subresource = LoadedResource.Ragdoll;
             LoadedResource.Ragdoll.Reload();
 
@@ -140,8 +103,6 @@ namespace Resource_Redactor.Resources.Redactors
         private bool NodesLocked = false, ViewInverted = false;
         private bool[] NodeVisible;
         private float OffsetX = 0f, OffsetY = 0f, GridX = 0f, GridY = 0f;
-        private AnimationResource LoadedResource;
-        private StoryList<Frame> Story;
         private Frame LockedFrame = null;
         private Frame CurrentFrame
         {
@@ -224,10 +185,6 @@ namespace Resource_Redactor.Resources.Redactors
                 }
             }
         }
-        private ToolStripMenuItem GetTab(string title)
-        {
-            return MenuTabs.First((ToolStripMenuItem item) => { return item.Text == title; });
-        }
         private void UpdateState()
         {
             GetTab("Create frame").Enabled = !LoadedResource.Playing;
@@ -279,15 +236,6 @@ namespace Resource_Redactor.Resources.Redactors
                 ALICheckBox.Enabled = OLICheckBox.Enabled = AngleNumeric.Enabled = 
                     OffsetXNumeric.Enabled = OffsetYNumeric.Enabled = false;
             }
-        }
-        private void UpdateRedactor()
-        {
-            StateChanged?.Invoke(this, EventArgs.Empty);
-        }
-        private void MakeUnsaved()
-        {
-            Saved = false;
-            UpdateRedactor();
         }
         private void RepairOffset()
         {

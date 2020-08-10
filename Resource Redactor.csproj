@@ -96,6 +96,7 @@
     <Compile Include="Resources\Description.cs" />
     <Compile Include="Resources\EventResource.cs" />
     <Compile Include="Resources\Frame.cs" />
+    <Compile Include="Resources\InventoryResource.cs" />
     <Compile Include="Resources\OutfitResource.cs" />
     <Compile Include="Resources\RagdollResource.cs" />
     <Compile Include="Resources\Redactors\AnimationControl.cs">
@@ -138,6 +139,9 @@
     </Compile>
     <Compile Include="Resources\Redactors\RagdollControl.Designer.cs">
       <DependentUpon>RagdollControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Redactors\ResourceControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Resources\Redactors\SpriteControl.cs">
       <SubType>UserControl</SubType>
