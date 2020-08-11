@@ -19,39 +19,6 @@ namespace Resource_Redactor
 {
     public partial class RedactorForm : Form
     {
-        private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
-        {
-            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
-
-            if (!dir.Exists)
-            {
-                throw new DirectoryNotFoundException(
-                    "Source directory does not exist or could not be found: "
-                    + sourceDirName);
-            }
-
-            DirectoryInfo[] dirs = dir.GetDirectories();
-            if (!Directory.Exists(destDirName))
-            {
-                Directory.CreateDirectory(destDirName);
-            }
-
-            FileInfo[] files = dir.GetFiles();
-            foreach (FileInfo file in files)
-            {
-                string temppath = Path.Combine(destDirName, file.Name);
-                file.CopyTo(temppath, false);
-            }
-
-            if (copySubDirs)
-            {
-                foreach (DirectoryInfo subdir in dirs)
-                {
-                    string temppath = Path.Combine(destDirName, subdir.Name);
-                    DirectoryCopy(subdir.FullName, temppath, copySubDirs);
-                }
-            }
-        }
         private IResourceControl SelectedRedactor
         {
             get
@@ -282,18 +249,6 @@ namespace Resource_Redactor
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void ResourceExplorer_StateChanged(object sender, ExplorerEventArgs e)
-        {
-            try
-            {
-                
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not update redactor interface.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
 
         private void RedactorsTabControl_MouseClick(object sender, MouseEventArgs e)
         {
@@ -306,6 +261,17 @@ namespace Resource_Redactor
                     {
                         control.SelectedIndex = i;
                         TabsContextMenuStrip.Show(control, e.Location);
+                        break;
+                    }
+                }
+            }
+            if (e.Button == MouseButtons.Middle)
+            {
+                for (int i = 0; i < control.TabCount; ++i)
+                {
+                    if (control.GetTabRect(i).Contains(e.Location))
+                    {
+                        CloseRedactor(control.TabPages[i]);
                         break;
                     }
                 }
@@ -332,6 +298,7 @@ namespace Resource_Redactor
                 var desc = new Description(path);
                 path = Path.Combine(Path.GetDirectoryName(path), "Resources");
                 Directory.SetCurrentDirectory(path);
+                ResourceExplorer.LoadLocation(path);
 
                 var properties = new RedactorProperties("../Properties");
                 ExplorerSplitContainer.SplitterDistance = properties.SplitterDistance;
@@ -340,17 +307,51 @@ namespace Resource_Redactor
                 ResourceExplorer.ViewMode = properties.ExplorerMode;
                 foreach (var resource in properties.OpenedTabs) 
                     LoadRedactor(resource, Path.GetFileName(resource));
-
-                ResourceExplorer.LoadLocation(path);
-
                 ResourceExplorer.MoveLocation(properties.ExplorerPath);
-
                 if (properties.SelectedTab >= 0 && properties.SelectedTab < RedactorsTabControl.TabCount)
                     RedactorsTabControl.SelectedIndex = properties.SelectedTab;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(this, ex.ToString(), "Error: Can not open description.",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void SaveDescription()
+        {
+            try
+            {
+                var properties = new RedactorProperties();
+                if (SplitContainerPanelsSwapped)
+                {
+                    properties.SplitterDistance = ExplorerSplitContainer.Width - ExplorerSplitContainer.SplitterDistance;
+                    properties.ExplorerVisible = !ExplorerSplitContainer.Panel2Collapsed;
+                }
+                else
+                {
+                    properties.SplitterDistance = ExplorerSplitContainer.SplitterDistance;
+                    properties.ExplorerVisible = !ExplorerSplitContainer.Panel1Collapsed;
+                }
+                properties.ExplorerMode = ResourceExplorer.ViewMode;
+                properties.ExplorerRight = SplitContainerPanelsSwapped;
+                properties.ExplorerPath = ResourceExplorer.CurrentDirectory;
+                properties.SelectedTab = RedactorsTabControl.SelectedIndex;
+
+                foreach (TabPage tab in RedactorsTabControl.TabPages)
+                {
+                    if (tab.Controls.Count == 1)
+                    {
+                        var control = tab.Controls[0] as IResourceControl;
+                        if (control != null) properties.OpenedTabs.Add(ExtraPath.MakeDirectoryRelated(
+                            Directory.GetCurrentDirectory(), control.ResourcePath));
+                    }
+                }
+
+                properties.Save("../Properties");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.ToString(), "Error: Can not save description.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -628,7 +629,7 @@ namespace Resource_Redactor
                         if (Directory.Exists(path))
                         {
                             if (effect.HasFlag(DragDropEffects.Move)) Directory.Move(path, dest + s);
-                            else DirectoryCopy(path, dest + s, true);
+                            else Utilities.DirectoryCopy(path, dest + s, true);
                         }
                         else if (File.Exists(path))
                         {
@@ -756,33 +757,11 @@ namespace Resource_Redactor
 
         private void ExplorerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            var properties = new RedactorProperties();
-            if (SplitContainerPanelsSwapped)
-            {
-                properties.SplitterDistance = ExplorerSplitContainer.Width - ExplorerSplitContainer.SplitterDistance;
-                properties.ExplorerVisible = !ExplorerSplitContainer.Panel2Collapsed;
-            }
-            else
-            {
-                properties.SplitterDistance = ExplorerSplitContainer.SplitterDistance;
-                properties.ExplorerVisible = !ExplorerSplitContainer.Panel1Collapsed;
-            }
-            properties.ExplorerMode = ResourceExplorer.ViewMode;
-            properties.ExplorerRight = SplitContainerPanelsSwapped;
-            properties.ExplorerPath = ResourceExplorer.CurrentDirectory;
-            properties.SelectedTab = RedactorsTabControl.SelectedIndex;
-
+            SaveDescription();
             foreach (TabPage tab in RedactorsTabControl.TabPages)
             {
                 try
                 {
-                    if (tab.Controls.Count == 1)
-                    {
-                        var control = tab.Controls[0] as IResourceControl;
-                        if (control != null) properties.OpenedTabs.Add(ExtraPath.MakeDirectoryRelated(
-                            Directory.GetCurrentDirectory(), control.ResourcePath));
-                    }
-
                     CloseRedactor(tab);
                 }
                 catch (Exception ex)
@@ -792,8 +771,6 @@ namespace Resource_Redactor
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-
-            properties.Save("../Properties");
         }
 
         static readonly Image CloseImage = (Image)(new ComponentResourceManager(typeof(RedactorForm)).GetObject("CloseToolStripMenuItem.Image"));
@@ -916,9 +893,8 @@ namespace Resource_Redactor
         {
             try
             {
-                Visible = false;
                 using (var Compiler = new CompilerForm("../IDTable.txt"))
-                    Compiler.ShowDialog(this);
+                    this.LoadSubform(Compiler);
             }
             catch (Exception ex)
             {

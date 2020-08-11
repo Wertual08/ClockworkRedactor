@@ -149,7 +149,7 @@ namespace Resource_Redactor.Resources
             {
                 if (SerializerOptions_ != null) return SerializerOptions_;
                 var options = new JsonSerializerOptions();
-                options.IgnoreReadOnlyProperties = true;
+                options.IgnoreReadOnlyProperties = false;
                 options.WriteIndented = false;
                 options.Converters.Add(new JsonHandleSpecialDoublesAsStrings());
                 options.Converters.Add(new JsonHandleSpecialFloatsAsStrings());
@@ -499,6 +499,8 @@ namespace Resource_Redactor.Resources
         public virtual void Save(string path)
         {
             Version = GetVersion(Type);
+            TimeStamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
             File.WriteAllText(path, JsonSerializer.Serialize(this, GetType(), SerializerOptions));
         }
 

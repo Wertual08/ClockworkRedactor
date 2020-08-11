@@ -624,7 +624,6 @@
             this.ResourceExplorer.TabIndex = 0;
             this.ResourceExplorer.ViewMode = Resource_Redactor.Resources.Redactors.ListViewMode.MediumIcon;
             this.ResourceExplorer.ItemLoaded += new Resource_Redactor.Resources.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
-            this.ResourceExplorer.StateChanged += new Resource_Redactor.Resources.Redactors.ExplorerControl.StateChangedEventHandler(this.ResourceExplorer_StateChanged);
             // 
             // RedactorForm
             // 

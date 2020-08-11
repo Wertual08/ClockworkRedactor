@@ -186,6 +186,17 @@ namespace Resource_Redactor.Resources.Redactors
 
             GLFrameTimer.Start();
         }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                GLSurface.MakeCurrent();
+                GLFrameTimer.Stop();
+                LoadedResource.Dispose();
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
         private void RepairOffset()
         {
@@ -553,30 +564,6 @@ namespace Resource_Redactor.Resources.Redactors
             }
         }
 
-        private void GLSurface_GLStart(object sender, EventArgs e)
-        {
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not start OpenGL.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void GLSurface_GLStop(object sender, EventArgs e)
-        {
-            try
-            {
-                GLFrameTimer.Stop();
-                LoadedResource.Dispose();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not stop OpenGL.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
         private void GLSurface_GLPaint(object sender, EventArgs e)
         {
             try

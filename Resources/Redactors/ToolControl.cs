@@ -149,6 +149,17 @@ namespace Resource_Redactor.Resources.Redactors
 
             GLFrameTimer.Start();
         }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                GLSurface.MakeCurrent();
+                GLFrameTimer.Stop();
+                LoadedResource.Dispose();
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
         private void SyncNumericValue<T>(object sender, T value, Action<T> set_value) where T : struct
         {
@@ -423,14 +434,6 @@ namespace Resource_Redactor.Resources.Redactors
             }
         }
 
-        private void GLSurface_GLStart(object sender, EventArgs e)
-        {
-        }
-        private void GLSurface_GLStop(object sender, EventArgs e)
-        {
-            GLFrameTimer.Stop();
-            LoadedResource.Dispose();
-        }
         private void GLSurface_GLPaint(object sender, EventArgs e)
         {
             try

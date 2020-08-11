@@ -54,6 +54,15 @@ namespace Resource_Redactor.Resources.Redactors
             TextureBitmapBox.Bitmap = LoadedResource.Texture;
             TextureBitmapBox.BackColor = Color.FromArgb(LoadedResource.BackColor);
         }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                LoadedResource.Dispose();
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
         private void Story_ValueChanged(object sender, EventArgs e)
         {

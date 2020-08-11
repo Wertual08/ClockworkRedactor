@@ -107,6 +107,16 @@ namespace Resource_Redactor.Resources.Redactors
             Story = new StoryItem<State>(new State(LoadedResource));
             Story.ValueChanged += Story_ValueChanged;
         }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                //GLSurface.MakeCurrent();
+                LoadedResource.Dispose();
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
         private void SyncNumericValue<T>(object sender, ref T value) where T : struct
         {

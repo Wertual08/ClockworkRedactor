@@ -7,19 +7,6 @@
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary> 
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
         #region Component Designer generated code
 
         /// <summary> 
@@ -173,9 +160,7 @@
             this.GLSurface.TabIndex = 1;
             this.GLSurface.Text = "OpenGLSurface1";
             this.GLSurface.Zoom = 16F;
-            this.GLSurface.GLStart += new System.EventHandler(this.GLSurface_GLStart);
             this.GLSurface.GLPaint += new System.EventHandler(this.GLSurface_GLPaint);
-            this.GLSurface.GLStop += new System.EventHandler(this.GLSurface_GLStop);
             this.GLSurface.GLSizeChanged += new System.EventHandler(this.GLSurface_GLSizeChanged);
             this.GLSurface.GLMouseWheel += new ExtraForms.GLMouseEventHandler(this.GLSurface_GLMouseWheel);
             this.GLSurface.GLMouseDown += new ExtraForms.GLMouseEventHandler(this.GLSurface_GLMouseDown);

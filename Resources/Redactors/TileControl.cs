@@ -257,6 +257,19 @@ namespace Resource_Redactor.Resources.Redactors
             GLSurface.GridEnabled = LoadedResource.GridEnabled;
             GetTab("Toggle grid").Checked = LoadedResource.GridEnabled;
         }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                GLSurface.MakeCurrent();
+                GLFrameTimer.Stop();
+                GLSurface.Dispose();
+                LoadedResource.Dispose();
+                
+                components?.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
         private void SyncNumericValue<T>(object sender, T value, Action<T> set_value) where T : struct
         {
@@ -374,30 +387,6 @@ namespace Resource_Redactor.Resources.Redactors
             UpdateRedactor();
         }
 
-        private void GLSurface_GLStart(object sender, EventArgs e)
-        {
-            try
-            {
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not start OpenGL.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void GLSurface_GLStop(object sender, EventArgs e)
-        {
-            try
-            {
-                GLFrameTimer.Stop();
-                LoadedResource.Dispose();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not stop OpenGL.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
         private void GLSurface_GLPaint(object sender, EventArgs e)
         {
             try

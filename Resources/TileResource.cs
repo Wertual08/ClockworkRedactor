@@ -220,6 +220,17 @@ namespace Resource_Redactor.Resources
         }
         public override void Dispose(bool disposing)
         {
+            if (disposing)
+            {
+                Texture?.Dispose();
+                SetupEvent?.Dispose();
+                ReformEvent?.Dispose();
+                TouchEvent?.Dispose();
+                ActivateEvent?.Dispose();
+                RecieveEvent?.Dispose();
+                RemoveEvent?.Dispose();
+            }
+
             base.Dispose(disposing);
         }
 
