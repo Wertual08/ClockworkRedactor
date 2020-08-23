@@ -153,28 +153,6 @@ namespace Resource_Redactor
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void CloseRedactor(TabPage tab)
-        {
-            var redactor = tab.Controls.Count == 1 ? tab.Controls[0] as IResourceControl : null;
-            if (redactor == null) return;
-            if (redactor.Saved)
-            {
-                RedactorsTabControl.TabPages.Remove(tab);
-                tab.Dispose();
-            }
-            else
-            {
-                var result = MessageBox.Show(this, "Save changes before closing?",
-                    "Warning: You have unsaved changes in [" + redactor.ResourceName +
-                    "]!", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-                if (result == DialogResult.Yes) redactor.Save(redactor.ResourcePath);
-                if (result != DialogResult.Cancel)
-                {
-                    RedactorsTabControl.TabPages.Remove(tab);
-                    tab.Dispose();
-                }
-            }
-        }
         private void RedactorsTabControl_Selected(object sender, TabControlEventArgs e)
         {
             try
@@ -211,6 +189,20 @@ namespace Resource_Redactor
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        private void RedactorsTabControl_TabClosing(object sender, TabControlCancelEventArgs e)
+        {
+            var redactor = e.TabPage.Controls.Count == 1 ? e.TabPage.Controls[0] as IResourceControl : null;
+            if (redactor == null) return;
+
+            if (!redactor.Saved) 
+            {
+                var result = MessageBox.Show(this, "Save changes before closing?",
+                    "Warning: You have unsaved changes in [" + redactor.ResourceName + "]!", 
+                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes) redactor.Save(redactor.ResourcePath);
+                if (result == DialogResult.Cancel) e.Cancel = true;
+            }
+        }
         private void Redactor_StateChanged(object sender, EventArgs e)
         {
             try
@@ -240,7 +232,7 @@ namespace Resource_Redactor
         {
             try
             {
-                LoadRedactor(e.Path, e.Name);
+                LoadRedactor(e.LocalPath, e.Name);
             }
             catch (Exception ex)
             {
@@ -251,33 +243,6 @@ namespace Resource_Redactor
             }
         }
 
-        private void RedactorsTabControl_MouseClick(object sender, MouseEventArgs e)
-        {
-            var control = sender as TabControl;
-            if (e.Button == MouseButtons.Right)
-            {
-                for (int i = 0; i < control.TabCount; ++i)
-                {
-                    if (control.GetTabRect(i).Contains(e.Location))
-                    {
-                        control.SelectedIndex = i;
-                        TabsContextMenuStrip.Show(control, e.Location);
-                        break;
-                    }
-                }
-            }
-            if (e.Button == MouseButtons.Middle)
-            {
-                for (int i = 0; i < control.TabCount; ++i)
-                {
-                    if (control.GetTabRect(i).Contains(e.Location))
-                    {
-                        CloseRedactor(control.TabPages[i]);
-                        break;
-                    }
-                }
-            }
-        }
         private void CloseTabToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CloseToolStripMenuItem.PerformClick();
@@ -682,7 +647,7 @@ namespace Resource_Redactor
         {
             try
             {
-                CloseRedactor(RedactorsTabControl.SelectedTab);
+                RedactorsTabControl.TryCloseTab(RedactorsTabControl.SelectedTab);
             }
             catch (Exception ex)
             {
@@ -698,7 +663,7 @@ namespace Resource_Redactor
             {
                 try
                 {
-                    CloseRedactor(tab);
+                    RedactorsTabControl.TryCloseTab(tab);
                 }
                 catch (Exception ex)
                 {
@@ -718,7 +683,7 @@ namespace Resource_Redactor
                 if (tab == RedactorsTabControl.SelectedTab) continue;
                 try
                 {
-                    CloseRedactor(tab);
+                    RedactorsTabControl.TryCloseTab(tab);
                 }
                 catch (Exception ex)
                 {
@@ -763,7 +728,7 @@ namespace Resource_Redactor
             {
                 try
                 {
-                    CloseRedactor(tab);
+                    RedactorsTabControl.TryCloseTab(tab);
                 }
                 catch (Exception ex)
                 {
@@ -772,122 +737,6 @@ namespace Resource_Redactor
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-        }
-
-        static readonly Image CloseImage = (Image)(new ComponentResourceManager(typeof(RedactorForm)).GetObject("CloseToolStripMenuItem.Image"));
-        private void RedactorsTabControl_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            var tc = sender as TabControl;
-            var tab = tc.TabPages[e.Index];
-            
-            if (tc.SelectedIndex != e.Index) e.Graphics.FillRectangle(Brushes.LightGray, e.Bounds.Left, e.Bounds.Top + 2, e.Bounds.Width, e.Bounds.Height);
-            else e.Graphics.FillRectangle(Brushes.White, e.Bounds.Left, e.Bounds.Top + 2, e.Bounds.Width, e.Bounds.Height);
-            e.Graphics.DrawImage(tc.ImageList.Images[tab.ImageIndex], e.Bounds.Left + 3, e.Bounds.Top + 3, 16, 16);
-            e.Graphics.DrawString(tab.Text, e.Font, Brushes.Black, e.Bounds.Left + 20, e.Bounds.Top + 4);
-            e.Graphics.DrawImage(CloseImage, e.Bounds.Right - 19, e.Bounds.Top + 3, 16, 16);
-        }
-        private void RedactorsTabControl_MouseDown(object sender, MouseEventArgs e)
-        {
-            try
-            {
-                var tc = sender as TabControl;
-                if (tc == null) return;
-                for (int i = 0; i < tc.TabPages.Count; i++)
-                {
-                    Rectangle r = tc.GetTabRect(i);
-                    Rectangle closeButton = new Rectangle(r.Right - 16, r.Top + 4, 14, 14);
-                    if (closeButton.Contains(e.Location) && false)
-                    {
-                        if (tc.TabPages[i].Controls.Count != 1) continue;
-                        var redactor = tc.TabPages[i].Controls[0] as IResourceControl;
-                        if (redactor == null) continue;
-                        if (redactor.Saved) RedactorsTabControl.TabPages.RemoveAt(i);
-                        else
-                        {
-                            var result = MessageBox.Show(this, "Save changes before closing?",
-                                "Warning: You have unsaved changes in [" + redactor.ResourceName +
-                                "]!", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-                            if (result == DialogResult.Yes) redactor.Save(redactor.ResourcePath);
-                            if (result != DialogResult.Cancel) RedactorsTabControl.TabPages.RemoveAt(i);
-                        }
-                    }
-                    if (r.Contains(e.Location)) tc.Tag = tc.TabPages[i];
-                }
-            }
-            catch (Exception ex)
-            {
-                var name = "";
-                if (RedactorsTabControl.SelectedTab != null)
-                    name = RedactorsTabControl.SelectedTab.Text;
-                if (SelectedRedactor != null) name = SelectedRedactor.ResourceName;
-                MessageBox.Show(this, ex.ToString(), "Error: Can not close resource [" + name + "].",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void RedactorsTabControl_MouseMove(object sender, MouseEventArgs e)
-        {
-            TabControl tc = sender as TabControl;
-            if ((e.Button != MouseButtons.Left) || (tc.Tag == null)) return;
-            tc.DoDragDrop(tc.Tag as TabPage, DragDropEffects.All);
-        }
-        private void RedactorsTabControl_MouseUp(object sender, MouseEventArgs e)
-        {
-            var tc = sender as TabControl;
-            if (tc != null) tc.Tag = null;
-        }
-        private void RedactorsTabControl_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(typeof(TabPage))) return;
-        }
-        private void RedactorsTabControl_DragOver(object sender, DragEventArgs e)
-        {
-            var tc = sender as TabControl;
-
-            if (e.Data.GetData(typeof(TabPage)) == null) return;
-            TabPage dragTab = (TabPage)e.Data.GetData(typeof(TabPage));
-            int dragTab_index = tc.TabPages.IndexOf(dragTab);
-
-            int hoverTab_index = -1;
-            for (int i = 0; i < tc.TabPages.Count; i++)
-            {
-                Rectangle r = tc.GetTabRect(i);
-                if (r.Contains(tc.PointToClient(new Point(e.X, e.Y)))) hoverTab_index = i;
-            }
-            if (hoverTab_index < 0) { e.Effect = DragDropEffects.None; return; }
-            var hoverTab = tc.TabPages[hoverTab_index];
-            e.Effect = DragDropEffects.Move;
-
-            if (dragTab == hoverTab) return;
-
-            Rectangle dragTabRect = tc.GetTabRect(dragTab_index);
-            Rectangle hoverTabRect = tc.GetTabRect(hoverTab_index);
-
-            if (dragTabRect.Width < hoverTabRect.Width)
-            {
-                Point tcLocation = tc.PointToScreen(tc.Location);
-
-                if (dragTab_index < hoverTab_index)
-                {
-                    if ((e.X - tcLocation.X) > ((hoverTabRect.X + hoverTabRect.Width) - dragTabRect.Width))
-                        SwapTabPages(tc, dragTab, hoverTab);
-                }
-                else if (dragTab_index > hoverTab_index)
-                {
-                    if ((e.X - tcLocation.X) < (hoverTabRect.X + dragTabRect.Width))
-                        SwapTabPages(tc, dragTab, hoverTab);
-                }
-            }
-            else SwapTabPages(tc, dragTab, hoverTab);
-
-            tc.SelectedIndex = tc.TabPages.IndexOf(dragTab);
-        }
-        private void SwapTabPages(TabControl tc, TabPage src, TabPage dst)
-        {
-            int index_src = tc.TabPages.IndexOf(src);
-            int index_dst = tc.TabPages.IndexOf(dst);
-            tc.TabPages[index_dst] = src;
-            tc.TabPages[index_src] = dst;
-            tc.Refresh();
         }
 
         private void CompilerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -906,6 +755,11 @@ namespace Resource_Redactor
             {
                 Visible = true;
             }
+        }
+
+        private void FrameTimer_Tick(object sender, EventArgs e)
+        {
+            SelectedRedactor?.Render();
         }
     }
 }

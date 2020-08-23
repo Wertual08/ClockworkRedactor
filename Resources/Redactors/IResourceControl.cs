@@ -21,11 +21,12 @@ namespace Resource_Redactor.Resources.Redactors
         string ResourcePath { get; }
         string ResourceName { get; }
 
-        int FPS { get; set; }
         void Activate();
         
         void Save(string path);
         void Undo();
         void Redo();
+
+        void Render();
     }
 }

@@ -34,7 +34,6 @@
             this.OffsetXNumeric = new ExtraForms.SafeNumericUpDown();
             this.FramesListBox = new System.Windows.Forms.ListBox();
             this.GLSurface = new ExtraForms.OpenGLSurface();
-            this.GLFrameTimer = new System.Windows.Forms.Timer(this.components);
             this.BackgroundColorDialog = new System.Windows.Forms.ColorDialog();
             ((System.ComponentModel.ISupportInitialize)(this.ControlsSplitContainer)).BeginInit();
             this.ControlsSplitContainer.Panel1.SuspendLayout();
@@ -181,6 +180,7 @@
             this.LinkTextBox.Location = new System.Drawing.Point(112, 19);
             this.LinkTextBox.Name = "LinkTextBox";
             this.LinkTextBox.Size = new System.Drawing.Size(116, 20);
+            this.LinkTextBox.Subresource = null;
             this.LinkTextBox.TabIndex = 2;
             this.LinkTextBox.TextChanged += new System.EventHandler(this.LinkTextBox_TextChanged);
             // 
@@ -376,11 +376,6 @@
             this.GLSurface.GLMouseMove += new ExtraForms.GLMouseEventHandler(this.GLSurface_GLMouseMove);
             this.GLSurface.GLMouseUp += new ExtraForms.GLMouseEventHandler(this.GLSurface_GLMouseUp);
             // 
-            // GLFrameTimer
-            // 
-            this.GLFrameTimer.Interval = 1;
-            this.GLFrameTimer.Tick += new System.EventHandler(this.GLFrameTimer_Tick);
-            // 
             // AnimationControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -406,7 +401,6 @@
 
         private System.Windows.Forms.SplitContainer ControlsSplitContainer;
         private ExtraForms.OpenGLSurface GLSurface;
-        private System.Windows.Forms.Timer GLFrameTimer;
         private System.Windows.Forms.ListBox FramesListBox;
         private System.Windows.Forms.Label label6;
         private Resource_Redactor.Resources.Redactors.SubresourceTextBox LinkTextBox;

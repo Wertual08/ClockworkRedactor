@@ -16,7 +16,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.GLFrameTimer = new System.Windows.Forms.Timer(this.components);
             this.BackgroundColorDialog = new System.Windows.Forms.ColorDialog();
             this.ControlsSplitContainer = new System.Windows.Forms.SplitContainer();
             this.ParamsTabControl = new System.Windows.Forms.TabControl();
@@ -66,11 +65,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.ToolDelayNumeric)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.HolderNodeNumeric)).BeginInit();
             this.SuspendLayout();
-            // 
-            // GLFrameTimer
-            // 
-            this.GLFrameTimer.Interval = 1;
-            this.GLFrameTimer.Tick += new System.EventHandler(this.GLFrameTimer_Tick);
             // 
             // ControlsSplitContainer
             // 
@@ -160,6 +154,7 @@
             this.RagdollLinkTextBox.Location = new System.Drawing.Point(6, 19);
             this.RagdollLinkTextBox.Name = "RagdollLinkTextBox";
             this.RagdollLinkTextBox.Size = new System.Drawing.Size(268, 20);
+            this.RagdollLinkTextBox.Subresource = null;
             this.RagdollLinkTextBox.TabIndex = 2;
             this.RagdollLinkTextBox.TextChanged += new System.EventHandler(this.RagdollLinkTextBox_TextChanged);
             // 
@@ -322,6 +317,7 @@
             this.AnimationLinkTextBox.Location = new System.Drawing.Point(117, 367);
             this.AnimationLinkTextBox.Name = "AnimationLinkTextBox";
             this.AnimationLinkTextBox.Size = new System.Drawing.Size(157, 20);
+            this.AnimationLinkTextBox.Subresource = null;
             this.AnimationLinkTextBox.TabIndex = 7;
             this.AnimationLinkTextBox.TextChanged += new System.EventHandler(this.AnimationLinkTextBox_TextChanged);
             // 
@@ -427,6 +423,7 @@
             this.ToolLinkTextBox.Location = new System.Drawing.Point(117, 341);
             this.ToolLinkTextBox.Name = "ToolLinkTextBox";
             this.ToolLinkTextBox.Size = new System.Drawing.Size(160, 20);
+            this.ToolLinkTextBox.Subresource = null;
             this.ToolLinkTextBox.TabIndex = 3;
             this.ToolLinkTextBox.TextChanged += new System.EventHandler(this.ToolLinkTextBox_TextChanged);
             // 
@@ -499,6 +496,7 @@
             this.HolderAnimationLinkTextBox.Location = new System.Drawing.Point(117, 97);
             this.HolderAnimationLinkTextBox.Name = "HolderAnimationLinkTextBox";
             this.HolderAnimationLinkTextBox.Size = new System.Drawing.Size(160, 20);
+            this.HolderAnimationLinkTextBox.Subresource = null;
             this.HolderAnimationLinkTextBox.TabIndex = 19;
             this.HolderAnimationLinkTextBox.TextChanged += new System.EventHandler(this.HolderAnimationLinkTextBox_TextChanged);
             // 
@@ -590,8 +588,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Timer GLFrameTimer;
         private System.Windows.Forms.ColorDialog BackgroundColorDialog;
         private Resource_Redactor.Resources.Redactors.PreviewSurface GLSurface;
         private System.Windows.Forms.SplitContainer ControlsSplitContainer;

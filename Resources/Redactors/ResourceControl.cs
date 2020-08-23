@@ -63,5 +63,7 @@ namespace Resource_Redactor.Resources.Redactors
         {
             Story.Redo();
         }
+
+        public virtual void Render() { }
     }
 }

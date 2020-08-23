@@ -98,12 +98,6 @@ namespace Resource_Redactor.Resources.Redactors
         };
 
         private List<int> SelectedSprites = new List<int>();
-
-        public int FPS
-        {
-            get { return 1000 / GLFrameTimer.Interval; }
-            set { GLFrameTimer.Interval = Math.Max(1, 1000 / value); }
-        }
        
         public ToolControl(string path)
         {
@@ -146,15 +140,12 @@ namespace Resource_Redactor.Resources.Redactors
             GetTab("Pixel perfect").Checked = LoadedResource.PixelPerfect;
             GetTab("Toggle transparency").Checked = LoadedResource.Transparency;
             RestoreChanges();
-
-            GLFrameTimer.Start();
         }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
                 GLSurface.MakeCurrent();
-                GLFrameTimer.Stop();
                 LoadedResource.Dispose();
                 components?.Dispose();
             }
@@ -523,7 +514,6 @@ namespace Resource_Redactor.Resources.Redactors
             }
             catch (Exception ex)
             {
-                GLFrameTimer.Stop();
                 MessageBox.Show(this, ex.ToString(), "Error: Can not render frame.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -670,10 +660,6 @@ namespace Resource_Redactor.Resources.Redactors
         private void GLSurface_GLSizeChanged(object sender, EventArgs e)
         {
 
-        }
-        private void GLFrameTimer_Tick(object sender, EventArgs e)
-        {
-            GLSurface.Refresh();
         }
 
         private void LinkSpriteMenuItem_Click(object sender, EventArgs e)
@@ -850,6 +836,11 @@ namespace Resource_Redactor.Resources.Redactors
                 MessageBox.Show(this, ex.ToString(), "Error: Can not reset position.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        public override void Render()
+        {
+            GLSurface.Refresh();
         }
     }
 }

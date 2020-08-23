@@ -15,7 +15,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.ControlsSplitContainer = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.PropertiesTabPage = new System.Windows.Forms.TabPage();
@@ -24,7 +23,6 @@
             this.ElementsListBox = new System.Windows.Forms.ListBox();
             this.GLSurface = new ExtraForms.OpenGLSurface();
             this.BackgroundColorDialog = new System.Windows.Forms.ColorDialog();
-            this.GLFrameTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.ControlsSplitContainer)).BeginInit();
             this.ControlsSplitContainer.Panel1.SuspendLayout();
             this.ControlsSplitContainer.Panel2.SuspendLayout();
@@ -122,11 +120,6 @@
             this.GLSurface.GLMouseMove += new ExtraForms.GLMouseEventHandler(this.GLSurface_GLMouseMove);
             this.GLSurface.GLMouseUp += new ExtraForms.GLMouseEventHandler(this.GLSurface_GLMouseUp);
             // 
-            // GLFrameTimer
-            // 
-            this.GLFrameTimer.Interval = 1;
-            this.GLFrameTimer.Tick += new System.EventHandler(this.GLFrameTimer_Tick);
-            // 
             // InventoryControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -149,7 +142,6 @@
         private System.Windows.Forms.SplitContainer ControlsSplitContainer;
         private System.Windows.Forms.ColorDialog BackgroundColorDialog;
         private ExtraForms.OpenGLSurface GLSurface;
-        private System.Windows.Forms.Timer GLFrameTimer;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage PropertiesTabPage;
         private System.Windows.Forms.PropertyGrid ElementPropertyGrid;

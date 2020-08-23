@@ -16,12 +16,6 @@ namespace Resource_Redactor.Resources.Redactors
 {
     public partial class OutfitControl : ResourceControl<OutfitResource, StoryItem<OutfitControl.StoryState>>, IResourceControl
     {
-        public int FPS
-        {
-            get { return 1000 / GLFrameTimer.Interval; }
-            set { GLFrameTimer.Interval = Math.Max(1, 1000 / value); }
-        }
-
         public OutfitControl(string path)
         {
             InitializeComponent();
@@ -68,15 +62,12 @@ namespace Resource_Redactor.Resources.Redactors
             ClotheTypeComboBox.Items.AddRange(Enum.GetNames(typeof(OutfitResource.Node.Clothe)));
 
             UpdateRedactor();
-
-            GLFrameTimer.Start();
         }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
                 GLSurface.MakeCurrent();
-                GLFrameTimer.Stop();
                 LoadedResource.Dispose();
                 components?.Dispose();
             }
@@ -232,7 +223,6 @@ namespace Resource_Redactor.Resources.Redactors
             }
             catch (Exception ex)
             {
-                GLFrameTimer.Stop();
                 MessageBox.Show(this, ex.ToString(), "Error: Can not render frame.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -305,18 +295,6 @@ namespace Resource_Redactor.Resources.Redactors
             catch (Exception ex)
             {
                 MessageBox.Show(this, ex.ToString(), "Error: Can not handle SizeChanged event.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void GLFrameTimer_Tick(object sender, EventArgs e)
-        {
-            try
-            {
-                GLSurface.Refresh();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not handle Tick event.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -572,6 +550,11 @@ namespace Resource_Redactor.Resources.Redactors
                 MessageBox.Show(this, ex.ToString(), "Error: Can not reset position.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        public override void Render()
+        {
+            GLSurface.Refresh();
         }
     }
 }

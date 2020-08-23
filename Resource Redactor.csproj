@@ -92,6 +92,9 @@
     </Compile>
     <Compile Include="Compiler\IDTable.cs" />
     <Compile Include="Compiler\MessageQueue.cs" />
+    <Compile Include="ExtraTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="JsonExt.cs" />
     <Compile Include="RedactorProperties.cs" />
     <Compile Include="Resources\AnimationResource.cs" />

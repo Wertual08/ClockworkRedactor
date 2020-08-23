@@ -16,12 +16,6 @@ namespace Resource_Redactor.Resources.Redactors
 {
     public partial class EntityControl : ResourceControl<EntityResource, StoryItem<EntityControl.Action>>, IResourceControl
     {
-        public int FPS
-        {
-            get { return 1000 / GLFrameTimer.Interval; }
-            set { GLFrameTimer.Interval = Math.Max(1, 1000 / value); }
-        }
-
         private DragManager MouseManager = new DragManager(0.015625f);
         private static readonly List<string> BoolNames = new List<string>(Enum.GetNames(typeof(EntityResource.Trigger.BoolConditional)));
         private static readonly List<string> DirectionNames = new List<string>(Enum.GetNames(typeof(EntityResource.Trigger.DirectionConditional)));
@@ -398,15 +392,12 @@ namespace Resource_Redactor.Resources.Redactors
             RagdollLinkTextBox.Subresource = LoadedResource.Ragdoll;
             AnimationLinkTextBox.Subresource = SelectedAnimation?.Animation;
             HolderAnimationLinkTextBox.Subresource = SelectedHolder?.Animation;
-
-            GLFrameTimer.Start();
         }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
                 GLSurface.MakeCurrent();
-                GLFrameTimer.Stop();
                 LoadedResource.Dispose();
                 components?.Dispose();
             }
@@ -693,18 +684,6 @@ namespace Resource_Redactor.Resources.Redactors
             catch (Exception ex)
             {
                 MessageBox.Show(this, ex.ToString(), "Error: Can not handle SizeChanged event.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void GLFrameTimer_Tick(object sender, EventArgs e)
-        {
-            try
-            {
-                GLSurface.Refresh();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not handle Tick event.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -1592,6 +1571,11 @@ namespace Resource_Redactor.Resources.Redactors
         private void ToolDelayNumeric_ValueChanged(object sender, EventArgs e)
         {
             EntityController.ToolCycle = (int)ToolDelayNumeric.Value;
+        }
+
+        public override void Render()
+        {
+            GLSurface.Refresh();
         }
     }
 }

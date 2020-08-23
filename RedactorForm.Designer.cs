@@ -47,6 +47,7 @@
             this.ToolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ParticleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.InventoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.convertToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToSpriteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToRagdollToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,15 +81,15 @@
             this.SwapPanelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ResourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExplorerSplitContainer = new System.Windows.Forms.SplitContainer();
-            this.RedactorsTabControl = new System.Windows.Forms.TabControl();
+            this.ResourceExplorer = new Resource_Redactor.Resources.Redactors.ExplorerControl();
+            this.RedactorsTabControl = new Resource_Redactor.ExtraTabControl();
             this.OpenDescriptionDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveDescriptionDialog = new System.Windows.Forms.SaveFileDialog();
             this.ImportFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.ExportFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.TabsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.CloseTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.InventoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ResourceExplorer = new Resource_Redactor.Resources.Redactors.ExplorerControl();
+            this.FrameTimer = new System.Windows.Forms.Timer(this.components);
             this.RedactorMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ExplorerSplitContainer)).BeginInit();
             this.ExplorerSplitContainer.Panel1.SuspendLayout();
@@ -279,6 +280,14 @@
             this.ParticleToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
             this.ParticleToolStripMenuItem.Text = "Particle";
             this.ParticleToolStripMenuItem.Click += new System.EventHandler(this.CreateToolStripMenuItem_Click);
+            // 
+            // InventoryToolStripMenuItem
+            // 
+            this.InventoryToolStripMenuItem.Name = "InventoryToolStripMenuItem";
+            this.InventoryToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.N)));
+            this.InventoryToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.InventoryToolStripMenuItem.Text = "Inventory";
+            this.InventoryToolStripMenuItem.Click += new System.EventHandler(this.CreateToolStripMenuItem_Click);
             // 
             // convertToolStripMenuItem
             // 
@@ -582,6 +591,17 @@
             this.ExplorerSplitContainer.SplitterDistance = 251;
             this.ExplorerSplitContainer.TabIndex = 3;
             // 
+            // ResourceExplorer
+            // 
+            this.ResourceExplorer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ResourceExplorer.Location = new System.Drawing.Point(0, 0);
+            this.ResourceExplorer.MultiSelect = true;
+            this.ResourceExplorer.Name = "ResourceExplorer";
+            this.ResourceExplorer.Size = new System.Drawing.Size(247, 422);
+            this.ResourceExplorer.TabIndex = 0;
+            this.ResourceExplorer.ViewMode = Resource_Redactor.Resources.Redactors.ListViewMode.MediumIcon;
+            this.ResourceExplorer.ItemLoaded += new Resource_Redactor.Resources.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
+            // 
             // RedactorsTabControl
             // 
             this.RedactorsTabControl.AllowDrop = true;
@@ -593,14 +613,9 @@
             this.RedactorsTabControl.SelectedIndex = 0;
             this.RedactorsTabControl.Size = new System.Drawing.Size(541, 422);
             this.RedactorsTabControl.TabIndex = 0;
-            this.RedactorsTabControl.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.RedactorsTabControl_DrawItem);
+            this.RedactorsTabControl.TabsContextMenuStrip = this.TabsContextMenuStrip;
+            this.RedactorsTabControl.TabClosing += new System.Windows.Forms.TabControlCancelEventHandler(this.RedactorsTabControl_TabClosing);
             this.RedactorsTabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.RedactorsTabControl_Selected);
-            this.RedactorsTabControl.DragEnter += new System.Windows.Forms.DragEventHandler(this.RedactorsTabControl_DragEnter);
-            this.RedactorsTabControl.DragOver += new System.Windows.Forms.DragEventHandler(this.RedactorsTabControl_DragOver);
-            this.RedactorsTabControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.RedactorsTabControl_MouseClick);
-            this.RedactorsTabControl.MouseDown += new System.Windows.Forms.MouseEventHandler(this.RedactorsTabControl_MouseDown);
-            this.RedactorsTabControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.RedactorsTabControl_MouseMove);
-            this.RedactorsTabControl.MouseUp += new System.Windows.Forms.MouseEventHandler(this.RedactorsTabControl_MouseUp);
             // 
             // TabsContextMenuStrip
             // 
@@ -617,24 +632,11 @@
             this.CloseTabToolStripMenuItem.Text = "Close";
             this.CloseTabToolStripMenuItem.Click += new System.EventHandler(this.CloseTabToolStripMenuItem_Click);
             // 
-            // InventoryToolStripMenuItem
+            // FrameTimer
             // 
-            this.InventoryToolStripMenuItem.Name = "InventoryToolStripMenuItem";
-            this.InventoryToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.N)));
-            this.InventoryToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.InventoryToolStripMenuItem.Text = "Inventory";
-            this.InventoryToolStripMenuItem.Click += new System.EventHandler(this.CreateToolStripMenuItem_Click);
-            // 
-            // ResourceExplorer
-            // 
-            this.ResourceExplorer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ResourceExplorer.Location = new System.Drawing.Point(0, 0);
-            this.ResourceExplorer.MultiSelect = true;
-            this.ResourceExplorer.Name = "ResourceExplorer";
-            this.ResourceExplorer.Size = new System.Drawing.Size(247, 422);
-            this.ResourceExplorer.TabIndex = 0;
-            this.ResourceExplorer.ViewMode = Resource_Redactor.Resources.Redactors.ListViewMode.MediumIcon;
-            this.ResourceExplorer.ItemLoaded += new Resource_Redactor.Resources.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
+            this.FrameTimer.Enabled = true;
+            this.FrameTimer.Interval = 1;
+            this.FrameTimer.Tick += new System.EventHandler(this.FrameTimer_Tick);
             // 
             // RedactorForm
             // 
@@ -669,7 +671,7 @@
         private System.Windows.Forms.SplitContainer ExplorerSplitContainer;
         private System.Windows.Forms.OpenFileDialog OpenDescriptionDialog;
         private System.Windows.Forms.SaveFileDialog SaveDescriptionDialog;
-        private System.Windows.Forms.TabControl RedactorsTabControl;
+        private Resource_Redactor.ExtraTabControl RedactorsTabControl;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ResourceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem UndoToolStripMenuItem;
@@ -719,6 +721,7 @@
         private System.Windows.Forms.ToolStripMenuItem ToOutfitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SwapPanelsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem InventoryToolStripMenuItem;
+        private System.Windows.Forms.Timer FrameTimer;
     }
 }
 

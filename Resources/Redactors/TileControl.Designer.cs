@@ -60,7 +60,6 @@
             this.OffsetXNumeric = new ExtraForms.SafeNumericUpDown();
             this.TileComboBox = new System.Windows.Forms.ComboBox();
             this.GLSurface = new Resource_Redactor.Resources.Redactors.PreviewSurface();
-            this.GLFrameTimer = new System.Windows.Forms.Timer(this.components);
             this.BackgroundColorDialog = new System.Windows.Forms.ColorDialog();
             ((System.ComponentModel.ISupportInitialize)(this.ControlsSplitContainer)).BeginInit();
             this.ControlsSplitContainer.Panel1.SuspendLayout();
@@ -670,11 +669,6 @@
             this.GLSurface.DragEnter += new System.Windows.Forms.DragEventHandler(this.GLSurface_DragEnter);
             this.GLSurface.DragOver += new System.Windows.Forms.DragEventHandler(this.GLSurface_DragOver);
             // 
-            // GLFrameTimer
-            // 
-            this.GLFrameTimer.Interval = 1;
-            this.GLFrameTimer.Tick += new System.EventHandler(this.GLFrameTimer_Tick);
-            // 
             // TileControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -721,7 +715,6 @@
         private System.Windows.Forms.Label label8;
         private ExtraForms.SafeNumericUpDown SizeNumeric;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Timer GLFrameTimer;
         private System.Windows.Forms.ColorDialog BackgroundColorDialog;
         private System.Windows.Forms.GroupBox ReactionGroupBox;
         private System.Windows.Forms.CheckBox MReactionBox;

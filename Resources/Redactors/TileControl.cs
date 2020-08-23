@@ -146,12 +146,6 @@ namespace Resource_Redactor.Resources.Redactors
             }
         };
 
-        public int FPS
-        {
-            get { return 1000 / GLFrameTimer.Interval; }
-            set { GLFrameTimer.Interval = Math.Max(1, 1000 / value); }
-        }
-
         public TileControl(string path)
         {
             InitializeComponent();
@@ -243,7 +237,6 @@ namespace Resource_Redactor.Resources.Redactors
             RAnchorBox.Checked = LoadedResource.Anchors.HasFlag(TileResource.Anchor.R);
             FAnchorBox.Checked = LoadedResource.Anchors.HasFlag(TileResource.Anchor.F);
             BAnchorBox.Checked = LoadedResource.Anchors.HasFlag(TileResource.Anchor.B);
-            GLFrameTimer.Start();
 
             int ox = (int)(GLSurface.FieldW / 2);
             int oy = (int)(GLSurface.FieldH / 2);
@@ -262,7 +255,6 @@ namespace Resource_Redactor.Resources.Redactors
             if (disposing)
             {
                 GLSurface.MakeCurrent();
-                GLFrameTimer.Stop();
                 GLSurface.Dispose();
                 LoadedResource.Dispose();
                 
@@ -410,7 +402,6 @@ namespace Resource_Redactor.Resources.Redactors
             }
             catch (Exception ex)
             {
-                GLFrameTimer.Stop();
                 MessageBox.Show(this, ex.ToString(), "Error: Can not render frame.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -509,18 +500,6 @@ namespace Resource_Redactor.Resources.Redactors
             catch (Exception ex)
             {
                 MessageBox.Show(this, ex.ToString(), "Error: Can not handle SizeChanged event.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void GLFrameTimer_Tick(object sender, EventArgs e)
-        {
-            try
-            {
-                GLSurface.Refresh();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not handle Tick event.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -729,6 +708,11 @@ namespace Resource_Redactor.Resources.Redactors
         private void LinkTextureMenuItem_Click(object sender, EventArgs e)
         {
             throw new NotImplementedException();
+        }
+
+        public override void Render()
+        {
+            GLSurface.Refresh();
         }
     }
 }

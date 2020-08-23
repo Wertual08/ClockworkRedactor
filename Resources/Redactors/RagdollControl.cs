@@ -130,12 +130,6 @@ namespace Resource_Redactor.Resources.Redactors
             }
         }
 
-        public int FPS
-        {
-            get { return 1000 / GLFrameTimer.Interval; }
-            set { GLFrameTimer.Interval = Math.Max(1, 1000 / value); }
-        }
-
         public RagdollControl(string path)
         {
             InitializeComponent();
@@ -183,15 +177,12 @@ namespace Resource_Redactor.Resources.Redactors
             NodesListBox.EndUpdate();
 
             GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
-
-            GLFrameTimer.Start();
         }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
                 GLSurface.MakeCurrent();
-                GLFrameTimer.Stop();
                 LoadedResource.Dispose();
                 components?.Dispose();
             }
@@ -654,7 +645,6 @@ namespace Resource_Redactor.Resources.Redactors
             }
             catch (Exception ex)
             {
-                GLFrameTimer.Stop();
                 MessageBox.Show(this, ex.ToString(), "Error: Can not render frame.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -826,10 +816,6 @@ namespace Resource_Redactor.Resources.Redactors
                 MessageBox.Show(this, ex.ToString(), "Error: Can not handle SizeChanged event.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-        private void GLFrameTimer_Tick(object sender, EventArgs e)
-        {
-            GLSurface.Refresh();
         }
 
         private void CreateNodeMenuItem_Click(object sender, EventArgs e)
@@ -1245,6 +1231,11 @@ namespace Resource_Redactor.Resources.Redactors
                 MessageBox.Show(this, ex.ToString(), "Error: Can not reset position.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        public override void Render()
+        {
+            GLSurface.Refresh();
         }
     }
 }

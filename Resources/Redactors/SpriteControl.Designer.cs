@@ -36,7 +36,6 @@
             this.DelayNumeric = new ExtraForms.SafeNumericUpDown();
             this.GLSurface = new ExtraForms.OpenGLSurface();
             this.BackgroundColorDialog = new System.Windows.Forms.ColorDialog();
-            this.GLFrameTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.ControlsSplitContainer)).BeginInit();
             this.ControlsSplitContainer.Panel1.SuspendLayout();
             this.ControlsSplitContainer.Panel2.SuspendLayout();
@@ -127,9 +126,11 @@
             this.LinkTextBox.AllowDrop = true;
             this.LinkTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.LinkTextBox.BackColor = System.Drawing.Color.Red;
             this.LinkTextBox.Location = new System.Drawing.Point(3, 312);
             this.LinkTextBox.Name = "LinkTextBox";
             this.LinkTextBox.Size = new System.Drawing.Size(116, 20);
+            this.LinkTextBox.Subresource = null;
             this.LinkTextBox.TabIndex = 16;
             this.LinkTextBox.TextChanged += new System.EventHandler(this.LinkTextBox_TextChanged);
             // 
@@ -407,11 +408,6 @@
             this.GLSurface.GLMouseMove += new ExtraForms.GLMouseEventHandler(this.GLSurface_GLMouseMove);
             this.GLSurface.GLMouseUp += new ExtraForms.GLMouseEventHandler(this.GLSurface_GLMouseUp);
             // 
-            // GLFrameTimer
-            // 
-            this.GLFrameTimer.Interval = 1;
-            this.GLFrameTimer.Tick += new System.EventHandler(this.GLFrameTimer_Tick);
-            // 
             // SpriteControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -456,6 +452,5 @@
         private System.Windows.Forms.ColorDialog BackgroundColorDialog;
         private ExtraForms.OpenGLSurface GLSurface;
         private System.Windows.Forms.CheckBox VFramesCheckBox;
-        private System.Windows.Forms.Timer GLFrameTimer;
     }
 }

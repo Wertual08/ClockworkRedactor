@@ -16,7 +16,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.GLFrameTimer = new System.Windows.Forms.Timer(this.components);
             this.BackgroundColorDialog = new System.Windows.Forms.ColorDialog();
             this.ControlsSplitContainer = new System.Windows.Forms.SplitContainer();
             this.label3 = new System.Windows.Forms.Label();
@@ -24,22 +23,17 @@
             this.label2 = new System.Windows.Forms.Label();
             this.RagdollNodeNumeric = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
+            this.SpriteLinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.RagdollLinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
             this.NodesListBox = new System.Windows.Forms.ListBox();
             this.GLSurface = new ExtraForms.OpenGLSurface();
-            this.SpriteLinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
-            this.RagdollLinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.ControlsSplitContainer)).BeginInit();
             this.ControlsSplitContainer.Panel1.SuspendLayout();
             this.ControlsSplitContainer.Panel2.SuspendLayout();
             this.ControlsSplitContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RagdollNodeNumeric)).BeginInit();
             this.SuspendLayout();
-            // 
-            // GLFrameTimer
-            // 
-            this.GLFrameTimer.Interval = 1;
-            this.GLFrameTimer.Tick += new System.EventHandler(this.GLFrameTimer_Tick);
             // 
             // ControlsSplitContainer
             // 
@@ -128,6 +122,20 @@
             this.label1.TabIndex = 29;
             this.label1.Text = "Sprite link";
             // 
+            // SpriteLinkTextBox
+            // 
+            this.SpriteLinkTextBox.AllowDrop = true;
+            this.SpriteLinkTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.SpriteLinkTextBox.BackColor = System.Drawing.Color.Red;
+            this.SpriteLinkTextBox.Enabled = false;
+            this.SpriteLinkTextBox.Location = new System.Drawing.Point(3, 380);
+            this.SpriteLinkTextBox.Name = "SpriteLinkTextBox";
+            this.SpriteLinkTextBox.Size = new System.Drawing.Size(190, 20);
+            this.SpriteLinkTextBox.Subresource = null;
+            this.SpriteLinkTextBox.TabIndex = 28;
+            this.SpriteLinkTextBox.TextChanged += new System.EventHandler(this.SpriteLinkTextBox_TextChanged);
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -136,6 +144,19 @@
             this.label6.Size = new System.Drawing.Size(62, 13);
             this.label6.TabIndex = 27;
             this.label6.Text = "Ragdoll link";
+            // 
+            // RagdollLinkTextBox
+            // 
+            this.RagdollLinkTextBox.AllowDrop = true;
+            this.RagdollLinkTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.RagdollLinkTextBox.BackColor = System.Drawing.Color.Red;
+            this.RagdollLinkTextBox.Location = new System.Drawing.Point(3, 19);
+            this.RagdollLinkTextBox.Name = "RagdollLinkTextBox";
+            this.RagdollLinkTextBox.Size = new System.Drawing.Size(190, 20);
+            this.RagdollLinkTextBox.Subresource = null;
+            this.RagdollLinkTextBox.TabIndex = 2;
+            this.RagdollLinkTextBox.TextChanged += new System.EventHandler(this.RagdollLinkTextBox_TextChanged);
             // 
             // NodesListBox
             // 
@@ -167,33 +188,6 @@
             this.GLSurface.GLMouseMove += new ExtraForms.GLMouseEventHandler(this.GLSurface_GLMouseMove);
             this.GLSurface.GLMouseUp += new ExtraForms.GLMouseEventHandler(this.GLSurface_GLMouseUp);
             // 
-            // SpriteLinkTextBox
-            // 
-            this.SpriteLinkTextBox.AllowDrop = true;
-            this.SpriteLinkTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.SpriteLinkTextBox.BackColor = System.Drawing.Color.Red;
-            this.SpriteLinkTextBox.Enabled = false;
-            this.SpriteLinkTextBox.Location = new System.Drawing.Point(3, 380);
-            this.SpriteLinkTextBox.Name = "SpriteLinkTextBox";
-            this.SpriteLinkTextBox.Size = new System.Drawing.Size(190, 20);
-            this.SpriteLinkTextBox.Subresource = null;
-            this.SpriteLinkTextBox.TabIndex = 28;
-            this.SpriteLinkTextBox.TextChanged += new System.EventHandler(this.SpriteLinkTextBox_TextChanged);
-            // 
-            // RagdollLinkTextBox
-            // 
-            this.RagdollLinkTextBox.AllowDrop = true;
-            this.RagdollLinkTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.RagdollLinkTextBox.BackColor = System.Drawing.Color.Red;
-            this.RagdollLinkTextBox.Location = new System.Drawing.Point(3, 19);
-            this.RagdollLinkTextBox.Name = "RagdollLinkTextBox";
-            this.RagdollLinkTextBox.Size = new System.Drawing.Size(190, 20);
-            this.RagdollLinkTextBox.Subresource = null;
-            this.RagdollLinkTextBox.TabIndex = 2;
-            this.RagdollLinkTextBox.TextChanged += new System.EventHandler(this.RagdollLinkTextBox_TextChanged);
-            // 
             // OutfitControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -212,8 +206,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Timer GLFrameTimer;
         private System.Windows.Forms.ColorDialog BackgroundColorDialog;
         private System.Windows.Forms.SplitContainer ControlsSplitContainer;
         private System.Windows.Forms.Label label3;

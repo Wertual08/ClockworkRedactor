@@ -33,8 +33,6 @@ namespace Resource_Redactor.Resources.Redactors
             }
         }
 
-        public int FPS { get; set; }
-
         public TextureControl(string path)
         {
             InitializeComponent();

@@ -17,12 +17,6 @@ namespace Resource_Redactor.Resources.Redactors
 {
     public partial class AnimationControl : ResourceControl<AnimationResource, StoryList<Frame>>, IResourceControl
     {
-        public int FPS 
-        { 
-            get { return 1000 / GLFrameTimer.Interval; } 
-            set { GLFrameTimer.Interval = Math.Max(1, 1000 / value); } 
-        }
-
         public AnimationControl(string path)
         {
             InitializeComponent();
@@ -93,15 +87,12 @@ namespace Resource_Redactor.Resources.Redactors
                 for (int i = 0; i < NodeVisible.Length; i++) NodeVisible[i] = true;
             }
             else NodeVisible = null;
-
-            GLFrameTimer.Start();
         }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
                 GLSurface.MakeCurrent();
-                GLFrameTimer.Stop();
                 LoadedResource.Dispose();
                 components?.Dispose();
             }
@@ -649,7 +640,6 @@ namespace Resource_Redactor.Resources.Redactors
             }
             catch (Exception ex)
             {
-                GLFrameTimer.Stop();
                 MessageBox.Show(this, ex.ToString(), "Error: Can not render frame.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -1278,6 +1268,11 @@ namespace Resource_Redactor.Resources.Redactors
                 MessageBox.Show(this, ex.ToString(), "Error: Can not handle KeyDown event.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        public override void Render()
+        {
+            GLSurface.Refresh();
         }
     }
 }
