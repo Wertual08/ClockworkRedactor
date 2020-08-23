@@ -65,7 +65,7 @@ namespace Resource_Redactor.Resources.Redactors
                     TypeFilter.Length < 1 || TypeFilter.Contains(type))
                 {
                     var name = Path.GetFileName(file);
-                    int img = Resource.TypeToIcon(type);
+                    int img = type.ToIcon();
                     if (name == "..") img = (int)ResourceIcon.PFolder;
                     var item = ResourcesListView.Items.Add(name, img);
 

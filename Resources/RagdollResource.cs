@@ -76,7 +76,7 @@ namespace Resource_Redactor.Resources
                 Dispose(true);
                 GC.SuppressFinalize(this);
             }
-            public virtual void Dispose(bool disposing)
+            protected virtual void Dispose(bool disposing)
             {
                 if (IsDisposed) return;
 
@@ -121,7 +121,7 @@ namespace Resource_Redactor.Resources
             base.Open(path);
             BuildUpdateQueue();
         }
-        public override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (IsDisposed) return;
             if (disposing)

@@ -42,7 +42,7 @@ namespace Resource_Redactor.Resources
                 Dispose(true);
                 GC.SuppressFinalize(this);
             }
-            public virtual void Dispose(bool disposing)
+            protected virtual void Dispose(bool disposing)
             {
                 if (IsDisposed) return;
 
@@ -103,7 +103,7 @@ namespace Resource_Redactor.Resources
             Nodes[second] = t;
         }
 
-        public override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (IsDisposed) return;
 

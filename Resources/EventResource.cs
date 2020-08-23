@@ -63,7 +63,7 @@ namespace Resource_Redactor.Resources
         public EventResource(string path) : base(path)
         {
         }
-        public override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (IsDisposed) return;
 

@@ -399,7 +399,6 @@ namespace Resource_Redactor
             }
             return reader.GetDouble();
         }
-
         public override void Write(Utf8JsonWriter writer, double value, JsonSerializerOptions options)
         {
             if (double.IsNaN(value) || double.IsInfinity(value))
@@ -417,7 +416,6 @@ namespace Resource_Redactor
             }
             return reader.GetSingle();
         }
-
         public override void Write(Utf8JsonWriter writer, float value, JsonSerializerOptions options)
         {
             if (float.IsNaN(value) || float.IsInfinity(value))

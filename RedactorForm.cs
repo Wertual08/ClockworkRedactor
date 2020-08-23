@@ -111,6 +111,7 @@ namespace Resource_Redactor
                     case ResourceType.Tile: control = new TileControl(path); break;
                     case ResourceType.Event: control = new EventControl(path); break;
                     case ResourceType.Outfit: control = new OutfitControl(path); break;
+                    case ResourceType.Inventory: control = new InventoryControl(path); break;
 
                     default:
                         MessageBox.Show(this, "Resource [" + type +
@@ -122,7 +123,7 @@ namespace Resource_Redactor
                 control.Dock = DockStyle.Fill;
 
                 var page = new TabPage(name);
-                page.ImageIndex = Resource.TypeToIcon(type);
+                page.ImageIndex = type.ToIcon();
                 bool refresh = RedactorsTabControl.TabPages.Count == 0;
                 RedactorsTabControl.TabPages.Add(page);
 

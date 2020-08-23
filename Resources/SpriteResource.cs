@@ -39,7 +39,7 @@ namespace Resource_Redactor.Resources
         public SpriteResource(string path) : base(path)
         {
         }
-        public override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (IsDisposed) return;
 

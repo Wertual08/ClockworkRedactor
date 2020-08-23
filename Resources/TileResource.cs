@@ -218,7 +218,7 @@ namespace Resource_Redactor.Resources
         public TileResource(string path) : base(path)
         {
         }
-        public override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (disposing)
             {

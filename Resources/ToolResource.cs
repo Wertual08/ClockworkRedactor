@@ -40,7 +40,7 @@ namespace Resource_Redactor.Resources
         {
 
         }
-        public override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (IsDisposed) return;
 

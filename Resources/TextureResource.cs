@@ -13,19 +13,38 @@ using System.Text.Json.Serialization;
 
 namespace Resource_Redactor.Resources
 {
+    public enum TextureStretch
+    {
+        Scale,
+        Repeat,
+    }
     public class TextureResource : Resource
     {
         public static readonly ResourceType CurrentType = ResourceType.Texture;
         public static readonly string CurrentVersion = "0.0.0.0";
 
+        private TextureStretch TextureStretchStorage = TextureStretch.Scale;
         private Bitmap TextureStorage;
         private uint GLTexture = 0;
 
         // Resource //
         [JsonIgnore]
+        public TextureStretch StretchMode
+        {
+            get => TextureStretchStorage; 
+            set
+            {
+                if (TextureStretchStorage != value)
+                {
+                    TextureStretchStorage = value;
+                    Refresh();
+                }
+            }
+        }
+        [JsonIgnore]
         public Bitmap Texture
         {
-            get { return TextureStorage; }
+            get => TextureStorage; 
             set { TextureStorage = value; Refresh(); }
         }
         public byte[] TextureData
@@ -43,7 +62,7 @@ namespace Resource_Redactor.Resources
         public TextureResource(string path) : base(path)
         {
         }
-        public override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (IsDisposed) return;
 
@@ -70,7 +89,15 @@ namespace Resource_Redactor.Resources
         public void Refresh()
         {
             if (GLTexture != 0) gl.DeleteTexture(GLTexture);
-            GLTexture = fgl.BitmapToGLTexture(TextureStorage);
+
+            int wrap;
+            switch (TextureStretchStorage)
+            {
+                case TextureStretch.Scale: wrap = GL.CLAMP; break;
+                case TextureStretch.Repeat: wrap = GL.REPEAT; break;
+                default: throw new Exception("TextureResource error: Invalid TextureWrap value.");
+            }
+            GLTexture = fgl.BitmapToGLTexture(TextureStorage, wrap);
         }
         public void Bind()
         {

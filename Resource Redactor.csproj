@@ -145,6 +145,12 @@
     <Compile Include="Resources\Redactors\ResourceControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Resources\Redactors\InventoryControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Resources\Redactors\InventoryControl.Designer.cs">
+      <DependentUpon>InventoryControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Redactors\SpriteControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -217,6 +223,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Redactors\RagdollControl.resx">
       <DependentUpon>RagdollControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Redactors\InventoryControl.resx">
+      <DependentUpon>InventoryControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Redactors\SpriteControl.resx">
       <DependentUpon>SpriteControl.cs</DependentUpon>

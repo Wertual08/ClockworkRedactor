@@ -66,6 +66,12 @@ namespace Resource_Redactor.Resources
         {
             return type > ResourceType.Folder;
         }
+        public static int ToIcon(this ResourceType type)
+        {
+            ResourceIcon i;
+            if (Enum.TryParse(type.ToString(), out i)) return (int)i;
+            else return (int)ResourceIcon.Invalid;
+        }
     }
     
     public class ResourceID : IComparable
@@ -156,13 +162,6 @@ namespace Resource_Redactor.Resources
                 options.Converters.Add(new JsonStringEnumConverter());
                 return SerializerOptions_ = options;
             }
-        }
-
-        public static int TypeToIcon(ResourceType type)
-        {
-            ResourceIcon i;
-            if (Enum.TryParse(type.ToString(), out i)) return (int)i;
-            else return (int)ResourceIcon.Invalid;
         }
 
         public static ResourceType GetType(string path)
@@ -289,6 +288,29 @@ namespace Resource_Redactor.Resources
             }
         }
 
+        public static Resource Factory(ResourceType type)
+        {
+            switch (type)
+            {
+                case ResourceType.Texture: return new TextureResource();
+                case ResourceType.Sprite: return new SpriteResource();
+                case ResourceType.Ragdoll: return new RagdollResource();
+                case ResourceType.Animation: return new AnimationResource();
+                case ResourceType.Tool: return new ToolResource();
+                case ResourceType.Entity: return new EntityResource();
+                case ResourceType.Tile: return new TileResource();
+                case ResourceType.Event: return new EventResource();
+                case ResourceType.Outfit: return new OutfitResource();
+                case ResourceType.Inventory: return new InventoryResource();
+                default: return null;
+            }
+        }
+        public static Resource Factory(string path)
+        {
+            Resource resource = Factory(GetType(path));
+            resource?.Open(path);
+            return resource;
+        }
         public static string Factory(string path, ResourceType type)
         {
             string name = "New " + type;
@@ -451,31 +473,9 @@ namespace Resource_Redactor.Resources
 
             return name;
         }
-        public static Resource Factory(ResourceType type)
-        {
-            switch (type)
-            {
-                case ResourceType.Texture: return new TextureResource();
-                case ResourceType.Sprite: return new SpriteResource();
-                case ResourceType.Ragdoll: return new RagdollResource();
-                case ResourceType.Animation: return new AnimationResource();
-                case ResourceType.Tool: return new ToolResource();
-                case ResourceType.Entity: return new EntityResource();
-                case ResourceType.Tile: return new TileResource();
-                case ResourceType.Event: return new EventResource();
-                case ResourceType.Outfit: return new OutfitResource();
-                default: return null;
-            }
-        }
-        public static Resource Factory(string path)
-        {
-            Resource resource = Factory(GetType(path));
-            resource?.Open(path);
-            return resource;
-        }
 
 
-        public string Stamp { get => "CLOCKWORK_ENGINE_REDACTOR_RESOURCE"; }
+        public string Stamp { get => "CLOCKWORK_ENGINE_REDACTOR_RESOURCE"; set => "".ToString(); }
         public ResourceType Type { get; set; } = ResourceType.Unknown;
         public string Version { get; set; } = "_._._._";
         public string TimeStamp { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -510,7 +510,7 @@ namespace Resource_Redactor.Resources
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        public virtual void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             IsDisposed = true;
         }
