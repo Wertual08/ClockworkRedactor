@@ -63,7 +63,7 @@ namespace Resource_Redactor.Resources
         public List<Node> Nodes { get; set; } = new List<Node>();
 
         // Redactor //
-        public int BackColor { get; set; } = Color.Black.ToArgb();
+        public Color BackColor { get; set; } = Color.Black;
         public float PointBoundsX { get; set; } = 5f;
         public float PointBoundsY { get; set; } = 4f;
         public bool PixelPerfect { get; set; } = false;

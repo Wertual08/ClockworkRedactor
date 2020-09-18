@@ -95,31 +95,31 @@ namespace Resource_Redactor.Compiler
                         int th = tex.Height;
 
                         int ucw = tw / res.PartSize;
-                        int uch = th / res.FramesCount / res.PartSize;
+                        int uch = th / res.FrameCount / res.PartSize;
 
-                        if (tex.Width % res.PartSize != 0 || tex.Height % res.FramesCount != 0 || uch != ucw ||
-                            tex.Height / res.FramesCount % res.PartSize != 0 || ucw % 2 != 0 || uch % 2 != 0)
+                        if (tex.Width % res.PartSize != 0 || tex.Height % res.FrameCount != 0 || uch != ucw ||
+                            tex.Height / res.FrameCount % res.PartSize != 0 || ucw % 2 != 0 || uch % 2 != 0)
                             LogQueue.Put("Warning: Bad tile texture proporions.");
                         int uc = Math.Min(ucw, uch);
 
                         if (uc == 2)
                         {
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FramesCount, 0, 0));
+                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 0, 0));
                         }
                         else if (uc == 4)
                         {
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FramesCount, 1, 1));
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FramesCount, 1, 0));
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FramesCount, 0, 1));
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FramesCount, 0, 0));
+                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 1, 1));
+                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 1, 0));
+                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 0, 1));
+                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 0, 0));
                         }
                         else if (uc == 6)
                         {
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FramesCount, 2, 2));
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FramesCount, 2, 1));
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FramesCount, 1, 2));
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FramesCount, 1, 1));
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FramesCount, 0, 0));
+                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 2, 2));
+                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 2, 1));
+                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 1, 2));
+                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 1, 1));
+                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 0, 0));
                         }
                         else throw new Exception("Tile texture compilation error: Unsupported texture [" + 
                             res.Texture.Link + "] format.");
@@ -140,7 +140,7 @@ namespace Resource_Redactor.Compiler
                     LogQueue.Put("Found texture [" + res.Texture.Link + "] index [" + CompiledTiles[id].TextureIndex + "].");
                 }
                 CompiledTiles[id].PartSize = res.PartSize;
-                CompiledTiles[id].FramesCount = res.FramesCount;
+                CompiledTiles[id].FrameCount = res.FrameCount;
                 CompiledTiles[id].FrameDelay = res.FrameDelay;
                 CompiledTiles[id].Layer = res.Layer;
 
@@ -255,7 +255,7 @@ namespace Resource_Redactor.Compiler
                 }
 
                 CompiledSprites[id].TextureIndex = -1;
-                CompiledSprites[id].FramesCount = res.FramesCount;
+                CompiledSprites[id].FrameCount = res.FrameCount;
                 CompiledSprites[id].FrameDelay = res.FrameDelay;
                 CompiledSprites[id].ImgboxW = res.ImgboxW;
                 CompiledSprites[id].ImgboxH = res.ImgboxH;
@@ -263,7 +263,7 @@ namespace Resource_Redactor.Compiler
                 CompiledSprites[id].AxisY = res.AxisY;
                 CompiledSprites[id].Angle = res.Angle;
 
-                if (!SpriteTextureIndexes.ContainsKey("~:/" + res.FramesCount + res.VerticalFrames + "\\:~" + res.Texture.Link))
+                if (!SpriteTextureIndexes.ContainsKey("~:/" + res.FrameCount + res.VerticalFrames + "\\:~" + res.Texture.Link))
                 {
                     try
                     {
@@ -275,10 +275,10 @@ namespace Resource_Redactor.Compiler
                         var pixels = new uint[tw * th];
                         if (res.VerticalFrames)
                         {
-                            if (th % res.FramesCount != 0) LogQueue.Put("Warning: Bad texture proporions.");
-                            th /= res.FramesCount;
+                            if (th % res.FrameCount != 0) LogQueue.Put("Warning: Bad texture proporions.");
+                            th /= res.FrameCount;
 
-                            for (int f = 0; f < res.FramesCount; f++)
+                            for (int f = 0; f < res.FrameCount; f++)
                             {
                                 for (int y = 0; y < th; y++)
                                 {
@@ -292,10 +292,10 @@ namespace Resource_Redactor.Compiler
                         }
                         else
                         {
-                            if (tw % res.FramesCount != 0) LogQueue.Put("Warning: Bad texture proporions.");
-                            tw /= res.FramesCount;
+                            if (tw % res.FrameCount != 0) LogQueue.Put("Warning: Bad texture proporions.");
+                            tw /= res.FrameCount;
 
-                            for (int f = 0; f < res.FramesCount; f++)
+                            for (int f = 0; f < res.FrameCount; f++)
                             {
                                 for (int y = 0; y < th; y++)
                                 {
@@ -311,8 +311,8 @@ namespace Resource_Redactor.Compiler
                         SpriteTexturePixels.Add((uint)th);
                         SpriteTexturePixels.AddRange(pixels);
 
-                        SpriteTextureIndexes.Add("~:/" + res.FramesCount + res.VerticalFrames + "\\:~" + res.Texture.Link, ind);
-                        CompiledSprites[id].TextureIndex = SpriteTextureIndexes["~:/" + res.FramesCount + res.VerticalFrames + "\\:~" + res.Texture.Link];
+                        SpriteTextureIndexes.Add("~:/" + res.FrameCount + res.VerticalFrames + "\\:~" + res.Texture.Link, ind);
+                        CompiledSprites[id].TextureIndex = SpriteTextureIndexes["~:/" + res.FrameCount + res.VerticalFrames + "\\:~" + res.Texture.Link];
                         LogQueue.Put("Loaded texture [" + res.Texture.Link + "] index [" + CompiledSprites[id].TextureIndex + "].");
                     }
                     catch
@@ -323,7 +323,7 @@ namespace Resource_Redactor.Compiler
                 }
                 else
                 {
-                    CompiledSprites[id].TextureIndex = SpriteTextureIndexes["~:/" + res.FramesCount + res.VerticalFrames + "\\:~" + res.Texture.Link];
+                    CompiledSprites[id].TextureIndex = SpriteTextureIndexes["~:/" + res.FrameCount + res.VerticalFrames + "\\:~" + res.Texture.Link];
                     LogQueue.Put("Found texture [" + res.Texture.Link + "] index [" + CompiledSprites[id].TextureIndex + "].");
                 }
 
@@ -418,7 +418,7 @@ namespace Resource_Redactor.Compiler
                 }
 
                 CompiledAnimations[id].FirstNode = AnimationNodes.Count;
-                CompiledAnimations[id].FramesCount = res.Count;
+                CompiledAnimations[id].FrameCount = res.Count;
                 CompiledAnimations[id].NodesPerFrame = res.NodesCount;
                 CompiledAnimations[id].Dependency = (int)res.Dependency;
                 CompiledAnimations[id].FramesPerUnitRatio = res.FramesPerUnitRatio;

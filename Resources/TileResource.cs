@@ -88,7 +88,7 @@ namespace Resource_Redactor.Resources
 
         public int Layer { get; set; } = 0;
         public int PartSize { get; set; } = 8;
-        public int FramesCount { get; set; } = 1;
+        public int FrameCount { get; set; } = 1;
         public int FrameDelay { get; set; } = 0;
 
         public int OffsetX { get; set; } = 0;
@@ -101,12 +101,12 @@ namespace Resource_Redactor.Resources
         public Subresource<EventResource> RecieveEvent { get; set; } = new Subresource<EventResource>(); 
         public Subresource<EventResource> RemoveEvent { get; set; } = new Subresource<EventResource>();  
 
-        public int BackColor { get; set; } = Color.Black.ToArgb();
+        public Color BackColor { get; set; } = Color.Black;
         public bool GridEnabled { get; set; } = false;
 
         public void Render(float x, float y, long t, TileResource[] tiles = null)
         {
-            if (FramesCount <= 0) return;
+            if (FrameCount <= 0) return;
             float ps = PartSize / 16.0f;
 
             if (Texture.Resource == null)
@@ -146,13 +146,13 @@ namespace Resource_Redactor.Resources
 
                 var tr = Texture.Resource;
                 float f = 0;
-                if (FrameDelay > 0) f = ((t / FrameDelay) % FramesCount);
-                else if (FrameDelay < 0) f = ((t / FrameDelay) % FramesCount) + FramesCount - 1;
+                if (FrameDelay > 0) f = ((t / FrameDelay) % FrameCount);
+                else if (FrameDelay < 0) f = ((t / FrameDelay) % FrameCount) + FrameCount - 1;
 
                 float pw = 1.0f * PartSize / tr.Texture.Width;
                 float ph = 1.0f * PartSize / tr.Texture.Height;
                 float ox = 0.5f;
-                float oy = 0.5f / FramesCount + f / FramesCount;
+                float oy = 0.5f / FrameCount + f / FrameCount;
 
                 int rux = react.HasFlag(Reaction.RT) && !react.HasFlag(Reaction.R) && !react.HasFlag(Reaction.T) ? 2 : react.HasFlag(Reaction.R) ? 1 : 0;
                 int ruy = react.HasFlag(Reaction.RT) && !react.HasFlag(Reaction.R) && !react.HasFlag(Reaction.T) ? 2 : react.HasFlag(Reaction.T) ? 1 : 0;
@@ -287,7 +287,7 @@ namespace Resource_Redactor.Resources
 
             if (Layer != t.Layer) return false;
             if (PartSize != t.PartSize) return false;
-            if (FramesCount != t.FramesCount) return false;
+            if (FrameCount != t.FrameCount) return false;
             if (FrameDelay != t.FrameDelay) return false;
 
             if (OffsetX != t.OffsetX) return false;

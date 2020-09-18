@@ -41,7 +41,7 @@ namespace Resource_Redactor.Resources.Redactors
 
             public int Layer;
             public int PartSize;
-            public int FramesCount;
+            public int FrameCount;
             public int FrameDelay;
 
             public int OffsetX;
@@ -54,7 +54,7 @@ namespace Resource_Redactor.Resources.Redactors
             public string RecieveEvent;
             public string RemoveEvent;
 
-            public int BackColor;
+            public Color BackColor;
             public bool GridEnabled;
 
             public State(TileResource r)
@@ -70,7 +70,7 @@ namespace Resource_Redactor.Resources.Redactors
 
                 Layer = r.Layer;
                 PartSize = r.PartSize;
-                FramesCount = r.FramesCount;
+                FrameCount = r.FrameCount;
                 FrameDelay = r.FrameDelay;
 
                 OffsetX = r.OffsetX;
@@ -99,7 +99,7 @@ namespace Resource_Redactor.Resources.Redactors
 
                 r.Layer = Layer;
                 r.PartSize = PartSize;
-                r.FramesCount = FramesCount;
+                r.FrameCount = FrameCount;
                 r.FrameDelay = FrameDelay;
 
                 r.OffsetX = OffsetX;
@@ -129,7 +129,7 @@ namespace Resource_Redactor.Resources.Redactors
                 if (s.Light != Light) return false;
                 if (s.Layer != Layer) return false;
                 if (s.PartSize != PartSize) return false;
-                if (s.FramesCount != FramesCount) return false;
+                if (s.FrameCount != FrameCount) return false;
                 if (s.FrameDelay != FrameDelay) return false;
                 if (s.OffsetX != OffsetX) return false;
                 if (s.OffsetY != OffsetY) return false;
@@ -180,7 +180,7 @@ namespace Resource_Redactor.Resources.Redactors
                 GLSurface.ResortTiles();
             };
             SizeNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.PartSize, v => LoadedResource.PartSize = v);
-            FramesCountNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.FramesCount, v => LoadedResource.FramesCount = v);
+            FramesCountNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.FrameCount, v => LoadedResource.FrameCount = v);
             FrameDelayNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.FrameDelay, v => LoadedResource.FrameDelay = v);
             OffsetXNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.OffsetX, v => LoadedResource.OffsetX = v);
             OffsetYNumeric.ValueChanged += (object sender, EventArgs e) => SyncNumericValue(sender, LoadedResource.OffsetY, v => LoadedResource.OffsetY = v);
@@ -216,7 +216,7 @@ namespace Resource_Redactor.Resources.Redactors
             SolidityNumeric.Value = (decimal)LoadedResource.Solidity;
             LayerNumeric.Value = (decimal)LoadedResource.Layer;
             SizeNumeric.Value = (decimal)LoadedResource.PartSize;
-            FramesCountNumeric.Value = (decimal)LoadedResource.FramesCount;
+            FramesCountNumeric.Value = (decimal)LoadedResource.FrameCount;
             FrameDelayNumeric.Value = (decimal)LoadedResource.FrameDelay;
             OffsetXNumeric.Value = (decimal)LoadedResource.OffsetX;
             OffsetYNumeric.Value = (decimal)LoadedResource.OffsetY;
@@ -246,7 +246,7 @@ namespace Resource_Redactor.Resources.Redactors
             GLSurface.PlaceTile(TileName, ox + 1, oy + 0);
             GLSurface.PlaceTile(TileName, ox + 0, oy - 1);
             GLSurface.PlaceTile(TileName, ox + 0, oy + 1);
-            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
+            GLSurface.BackColor = LoadedResource.BackColor;
             GLSurface.GridEnabled = LoadedResource.GridEnabled;
             GetTab("Toggle grid").Checked = LoadedResource.GridEnabled;
         }
@@ -350,7 +350,7 @@ namespace Resource_Redactor.Resources.Redactors
             SolidityNumeric.Value = (decimal)LoadedResource.Solidity;
             LayerNumeric.Value = (decimal)LoadedResource.Layer;
             SizeNumeric.Value = (decimal)LoadedResource.PartSize;
-            FramesCountNumeric.Value = (decimal)LoadedResource.FramesCount;
+            FramesCountNumeric.Value = (decimal)LoadedResource.FrameCount;
             FrameDelayNumeric.Value = (decimal)LoadedResource.FrameDelay;
             OffsetXNumeric.Value = (decimal)LoadedResource.OffsetX;
             OffsetYNumeric.Value = (decimal)LoadedResource.OffsetY;
@@ -372,7 +372,7 @@ namespace Resource_Redactor.Resources.Redactors
             FAnchorBox.Checked = LoadedResource.Anchors.HasFlag(TileResource.Anchor.F);
             BAnchorBox.Checked = LoadedResource.Anchors.HasFlag(TileResource.Anchor.B);
 
-            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
+            GLSurface.BackColor = LoadedResource.BackColor;
             GLSurface.GridEnabled = LoadedResource.GridEnabled;
 
             MakeUnsaved();
@@ -668,11 +668,11 @@ namespace Resource_Redactor.Resources.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
+                BackgroundColorDialog.Color = LoadedResource.BackColor;
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
+                LoadedResource.BackColor = BackgroundColorDialog.Color;
                 BackupChanges();
             }
             catch (Exception ex)

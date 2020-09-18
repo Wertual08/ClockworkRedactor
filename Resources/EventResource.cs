@@ -54,7 +54,7 @@ namespace Resource_Redactor.Resources
 
         public List<Action> Actions { get; set; } = new List<Action>();
 
-        public int BackColor { get; set; } = Color.Black.ToArgb();
+        public Color BackColor { get; set; } = Color.Black;
         public bool GridEnabled { get; set; } = false;
 
         public EventResource() : base(CurrentType, CurrentVersion)

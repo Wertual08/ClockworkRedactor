@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Resource_Redactor.Resources;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -370,6 +373,8 @@ namespace Resource_Redactor
             var propertyInfo = type.GetProperty(updatedProperty.Name);
 
             if (propertyInfo == null) return;
+            if (!propertyInfo.CanWrite) return;
+            if (Attribute.IsDefined(propertyInfo, typeof(JsonIgnoreAttribute))) return;
 
             Type propertyType = propertyInfo.PropertyType;
             object parsedValue;
@@ -411,9 +416,7 @@ namespace Resource_Redactor
         public override float Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.String)
-            {
                 return float.Parse(reader.GetString());
-            }
             return reader.GetSingle();
         }
         public override void Write(Utf8JsonWriter writer, float value, JsonSerializerOptions options)
@@ -421,6 +424,34 @@ namespace Resource_Redactor
             if (float.IsNaN(value) || float.IsInfinity(value))
                 writer.WriteStringValue(value.ToString());
             else writer.WriteNumberValue(value);
+        }
+    }
+    public class JsonResourceIDConverter : JsonConverter<ResourceID>
+    {
+        public override ResourceID Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.String)
+                return ResourceID.Parse(reader.GetString());
+            reader.Skip(); 
+            return new ResourceID();
+        }
+        public override void Write(Utf8JsonWriter writer, ResourceID value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString());
+        }
+    }
+    public class JsonColorConverter : JsonConverter<Color>
+    {
+        public override Color Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.String)
+                return Color.FromArgb(int.Parse(reader.GetString(), NumberStyles.HexNumber));
+            reader.Skip();
+            return Color.Black;
+        }
+        public override void Write(Utf8JsonWriter writer, Color value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToArgb().ToString("X8").ToString());
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Resource_Redactor.Resources.Redactors
 
         public struct State
         {
-            public int FramesCount;
+            public int FrameCount;
             public int FrameDelay;
             public float ImgboxW;
             public float ImgboxH;
@@ -33,13 +33,13 @@ namespace Resource_Redactor.Resources.Redactors
             public bool VerticalFrames;
             public string TextureLink;
 
-            public int BackColor;
+            public Color BackColor;
             public float PointBoundsX;
             public float PointBoundsY;
 
             public State(SpriteResource r)
             {
-                FramesCount = r.FramesCount;
+                FrameCount = r.FrameCount;
                 FrameDelay = r.FrameDelay;
                 ImgboxW = r.ImgboxW;
                 ImgboxH = r.ImgboxH;
@@ -55,7 +55,7 @@ namespace Resource_Redactor.Resources.Redactors
             }
             public void ToResource(SpriteResource r)
             {
-                r.FramesCount = FramesCount;
+                r.FrameCount = FrameCount;
                 r.FrameDelay = FrameDelay;
                 r.ImgboxW = ImgboxW;
                 r.ImgboxH = ImgboxH;
@@ -99,7 +99,7 @@ namespace Resource_Redactor.Resources.Redactors
 
             LinkTextBox.Subresource = LoadedResource.Texture;
 
-            FramesNumeric.Value = LoadedResource.FramesCount;
+            FramesNumeric.Value = LoadedResource.FrameCount;
             DelayNumeric.Value = (decimal)LoadedResource.FrameDelay;
             ImgboxWNumeric.Value = (decimal)LoadedResource.ImgboxW;
             ImgboxHNumeric.Value = (decimal)LoadedResource.ImgboxH;
@@ -109,7 +109,7 @@ namespace Resource_Redactor.Resources.Redactors
             VFramesCheckBox.Checked = LoadedResource.VerticalFrames;
             LinkTextBox.Text = LoadedResource.Texture.Link;
 
-            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
+            GLSurface.BackColor = LoadedResource.BackColor;
         }
         protected override void Dispose(bool disposing)
         {
@@ -148,8 +148,8 @@ namespace Resource_Redactor.Resources.Redactors
 
                 RepairOffset();
 
-                GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
-                FramesNumeric.Value = LoadedResource.FramesCount;
+                GLSurface.BackColor = LoadedResource.BackColor;
+                FramesNumeric.Value = LoadedResource.FrameCount;
                 DelayNumeric.Value = (decimal)LoadedResource.FrameDelay;
                 ImgboxWNumeric.Value = (decimal)LoadedResource.ImgboxW;
                 ImgboxHNumeric.Value = (decimal)LoadedResource.ImgboxH;
@@ -173,7 +173,7 @@ namespace Resource_Redactor.Resources.Redactors
             {
                 AngleNumeric.Value %= (decimal)Math.PI * 2m;
                 if (AngleNumeric.Value < 0) AngleNumeric.Value += (decimal)Math.PI * 2m;
-                LoadedResource.FramesCount = (int)FramesNumeric.Value;
+                LoadedResource.FrameCount = (int)FramesNumeric.Value;
                 LoadedResource.FrameDelay = (int)DelayNumeric.Value;
                 LoadedResource.ImgboxW = (float)ImgboxWNumeric.Value;
                 LoadedResource.ImgboxH = (float)ImgboxHNumeric.Value;
@@ -427,11 +427,11 @@ namespace Resource_Redactor.Resources.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
+                BackgroundColorDialog.Color = LoadedResource.BackColor;
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
+                LoadedResource.BackColor = BackgroundColorDialog.Color;
                 Story.Item = new State(LoadedResource);
             }
             catch (Exception ex)

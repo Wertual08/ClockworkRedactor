@@ -19,6 +19,7 @@ namespace Resource_Redactor
 {
     public partial class RedactorForm : Form
     {
+        private FramesCounter FPSCounter = new FramesCounter();
         private IResourceControl SelectedRedactor
         {
             get
@@ -720,6 +721,12 @@ namespace Resource_Redactor
         {
             SetSplitContainerPanelsSwapped(!SplitContainerPanelsSwapped);
         }
+        private void FPSToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var tool_strip = sender as ToolStripMenuItem;
+            tool_strip.Checked = !tool_strip.Checked;
+            DebugToolStripTextBox.Visible = tool_strip.Checked;
+        }
 
         private void ExplorerForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -760,6 +767,11 @@ namespace Resource_Redactor
         private void FrameTimer_Tick(object sender, EventArgs e)
         {
             SelectedRedactor?.Render();
+            FPSCounter.DoFrame();
+            DebugToolStripTextBox.Text = "FPS: " + FPSCounter.FPS.ToString("0.00");
+
+            if (FPSCounter.FPS < 60d && FrameTimer.Interval > 1) FrameTimer.Interval--;
+            if (FPSCounter.FPS > 60d) FrameTimer.Interval++;
         }
     }
 }

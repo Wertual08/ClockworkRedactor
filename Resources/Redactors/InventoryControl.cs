@@ -30,15 +30,17 @@ namespace Resource_Redactor.Resources.Redactors
         private SizingCornerType SizingCorner = SizingCornerType.None;
         private static readonly int BorderSize = 2;
         private float OffsetX = 0, OffsetY = 0;
+        private InventoryResource.Container SelectedContainer = null;
+        private IList<InventoryResource.Element> SelectedElements { get => SelectedContainer?.Elements ?? LoadedResource.Elements; }
         private InventoryResource.Element SelectedElement
         {
             get
             {
                 int index = ElementsListBox.SelectedIndex;
-                if (index >= 0 && index < LoadedResource.Count) return LoadedResource[index];
+                if (index >= 0 && index < SelectedElements.Count) return SelectedElements[index];
                 else return null;
             }
-            set => ElementsListBox.SelectedIndex = LoadedResource.Elements.IndexOf(value);
+            set => ElementsListBox.SelectedIndex = SelectedElements.IndexOf(value);
         }
 
         public struct State
@@ -49,10 +51,15 @@ namespace Resource_Redactor.Resources.Redactors
         {
             InitializeComponent();
 
+            var element_names = Enum.GetNames(typeof(InventoryResource.ElementType));
+            var factory_tool_strip_items = new ToolStripItem[element_names.Length - 1];
+            for (int i = 1; i < element_names.Length; i++)
+            {
+                factory_tool_strip_items[i - 1] = new ToolStripMenuItem(element_names[i], null, CreateMenuItem_Click);
+            }
+
             MenuTabs = new ToolStripMenuItem[] {
-                new ToolStripMenuItem("Create", null, new ToolStripItem[] {
-                    new ToolStripMenuItem("Panel", null, CreatePanelMenuItem_Click),
-                }),
+                new ToolStripMenuItem("Create", null, factory_tool_strip_items),
                 new ToolStripMenuItem("Remove", null, BackColorMenuItem_Click, Keys.Control | Keys.D),
                 new ToolStripMenuItem("Background color", null, BackColorMenuItem_Click, Keys.Control | Keys.L),
                 new ToolStripMenuItem("Reset position", null, ResetPositionMenuItem_Click, Keys.Control | Keys.R),
@@ -64,15 +71,16 @@ namespace Resource_Redactor.Resources.Redactors
             Story.ValueChanged += Story_ValueChanged;
 
             ElementsListBox.BeginUpdate();
-            foreach (var element in LoadedResource.Elements)
+            foreach (var element in SelectedElements)
                 ElementsListBox.Items.Add(element.Type.ToString());
             ElementsListBox.EndUpdate();
 
-            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
+            GLSurface.BackColor = LoadedResource.BackColor;
 
             OffsetX = -LoadedResource.Width / 2.0f;
             OffsetY = -LoadedResource.Height / 2.0f;
         }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -101,6 +109,62 @@ namespace Resource_Redactor.Resources.Redactors
             //if (OffsetY + uy < -sh) OffsetY = -sh - uy;
             //if (OffsetY + dy > sh) OffsetY = sh - dy;
         }
+        private void UpdateCursor(PointF l)
+        {
+            float px = l.X;
+            float py = l.Y;
+
+            var cursor = Cursors.Arrow;
+
+            for (int i = SelectedElements.Count - 1; i >= 0; i--)
+            {
+                var element = SelectedElements[i];
+
+                float lx = OffsetX + element.DesignerPositionX;
+                float rx = lx + element.ExtentX;
+                float dy = OffsetY + element.DesignerPositionY;
+                float uy = dy + element.ExtentY;
+
+                if (px >= lx && px <= rx && py >= dy && py <= uy)
+                {
+                    cursor = Cursors.SizeAll;
+                    break;
+                }
+
+                var sizing_corner = SizingCornerType.None;
+
+                if (px >= lx - BorderSize && px <= lx && py >= dy - BorderSize && py <= uy + BorderSize)
+                    sizing_corner |= SizingCornerType.Left;
+
+                if (px >= rx && px <= rx + BorderSize && py >= dy - BorderSize && py <= uy + BorderSize)
+                    sizing_corner |= SizingCornerType.Right;
+
+                if (px >= lx - BorderSize && px <= rx + BorderSize && py >= dy - BorderSize && py <= dy)
+                    sizing_corner |= SizingCornerType.Down;
+
+                if (px >= lx - BorderSize && px <= rx + BorderSize && py >= uy && py <= uy + BorderSize)
+                    sizing_corner |= SizingCornerType.Up;
+
+                if (sizing_corner != SizingCornerType.None)
+                {
+                    if (sizing_corner.HasFlag(SizingCornerType.Left | SizingCornerType.Up))
+                        cursor = Cursors.SizeNWSE;
+                    else if (sizing_corner.HasFlag(SizingCornerType.Right | SizingCornerType.Down))
+                        cursor = Cursors.SizeNWSE;
+                    else if (sizing_corner.HasFlag(SizingCornerType.Left | SizingCornerType.Down))
+                        cursor = Cursors.SizeNESW;
+                    else if (sizing_corner.HasFlag(SizingCornerType.Right | SizingCornerType.Up))
+                        cursor = Cursors.SizeNESW;
+                    else if(sizing_corner.HasFlag(SizingCornerType.Up) || sizing_corner.HasFlag(SizingCornerType.Down))
+                        cursor = Cursors.SizeNS;
+                    else if (sizing_corner.HasFlag(SizingCornerType.Left) || sizing_corner.HasFlag(SizingCornerType.Right))
+                        cursor = Cursors.SizeWE;
+                    break;
+                }
+            }
+
+            Cursor = cursor;
+        }
 
         private void Story_ValueChanged(object sender, EventArgs e)
         {
@@ -110,8 +174,8 @@ namespace Resource_Redactor.Resources.Redactors
                 //
                 //RepairOffset();
                 //
-                //GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
-                //FramesNumeric.Value = LoadedResource.FramesCount;
+                //GLSurface.BackColor = LoadedResource.BackColor;
+                //FramesNumeric.Value = LoadedResource.FrameCount;
                 //DelayNumeric.Value = (decimal)LoadedResource.FrameDelay;
                 //ImgboxWNumeric.Value = (decimal)LoadedResource.ImgboxW;
                 //ImgboxHNumeric.Value = (decimal)LoadedResource.ImgboxH;
@@ -126,7 +190,7 @@ namespace Resource_Redactor.Resources.Redactors
                 int index = ElementsListBox.SelectedIndex;
                 ElementsListBox.BeginUpdate();
                 ElementsListBox.Items.Clear();
-                foreach (var element in LoadedResource.Elements) 
+                foreach (var element in SelectedElements) 
                     ElementsListBox.Items.Add(element.Type.ToString());
                 ElementsListBox.SelectedIndex = Math.Min(ElementsListBox.Items.Count - 1, index);
                 ElementsListBox.EndUpdate();
@@ -138,16 +202,19 @@ namespace Resource_Redactor.Resources.Redactors
             }
         }
 
-        private void CreatePanelMenuItem_Click(object sender, EventArgs e)
+        private void CreateMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                LoadedResource.Elements.Add(new InventoryResource.Panel());
-                ElementsListBox.Items.Add("Panel");
+                var item = sender as ToolStripMenuItem;
+
+                SelectedElements.Add(InventoryResource.Factory(
+                    (InventoryResource.ElementType)Enum.Parse(typeof(InventoryResource.ElementType), item.Text)));
+                ElementsListBox.Items.Add(item.Text);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not create panel.",
+                MessageBox.Show(this, ex.ToString(), "Error: Can not create element.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -165,16 +232,30 @@ namespace Resource_Redactor.Resources.Redactors
 
                 if (SelectedElement != null)
                 {
-                    int ox = (int)OffsetX;
-                    int oy = (int)OffsetY;
+                    int x = (int)OffsetX + SelectedElement.DesignerPositionX;
+                    int y = (int)OffsetY + SelectedElement.DesignerPositionY;
 
                     gl.Disable(GL.TEXTURE_2D);
                     gl.Color4ub(0, 255, 0, 255);
                     gl.Begin(GL.LINE_LOOP);
-                    gl.Vertex2i(ox + SelectedElement.PositionX - BorderSize, oy + SelectedElement.PositionY - BorderSize);
-                    gl.Vertex2i(ox + SelectedElement.PositionX + SelectedElement.Width + BorderSize, oy + SelectedElement.PositionY - BorderSize);
-                    gl.Vertex2i(ox + SelectedElement.PositionX + SelectedElement.Width + BorderSize, oy + SelectedElement.PositionY + SelectedElement.Height + BorderSize);
-                    gl.Vertex2i(ox + SelectedElement.PositionX - BorderSize, oy + SelectedElement.PositionY + SelectedElement.Height + BorderSize);
+                    gl.Vertex2i(x - BorderSize, y - BorderSize);
+                    gl.Vertex2i(x + SelectedElement.ExtentX + BorderSize, y - BorderSize);
+                    gl.Vertex2i(x + SelectedElement.ExtentX + BorderSize, y + SelectedElement.ExtentY + BorderSize);
+                    gl.Vertex2i(x - BorderSize, y + SelectedElement.ExtentY + BorderSize);
+                    gl.End();
+                }
+                if (SelectedContainer != null)
+                {
+                    int x = (int)OffsetX + SelectedContainer.DesignerPositionX;
+                    int y = (int)OffsetY + SelectedContainer.DesignerPositionY;
+
+                    gl.Disable(GL.TEXTURE_2D);
+                    gl.Color4ub(128, 0, 255, 255);
+                    gl.Begin(GL.LINE_LOOP);
+                    gl.Vertex2i(x - BorderSize, y - BorderSize);
+                    gl.Vertex2i(x + SelectedContainer.ExtentX + BorderSize, y - BorderSize);
+                    gl.Vertex2i(x + SelectedContainer.ExtentX + BorderSize, y + SelectedContainer.ExtentY + BorderSize);
+                    gl.Vertex2i(x - BorderSize, y + SelectedContainer.ExtentY + BorderSize);
                     gl.End();
                 }
             }
@@ -204,40 +285,51 @@ namespace Resource_Redactor.Resources.Redactors
         }
         private void GLSurface_GLMouseDown(object sender, GLMouseEventArgs e)
         {
+            GLSurface.Focus();
             try
             {
+                float px = MouseManager.CurrentLocation.X;
+                float py = MouseManager.CurrentLocation.Y;
+
                 if (e.Button.HasFlag(MouseButtons.Left))
                 {
                     MouseManager.BeginDrag(e.Location);
-                    for (int i = LoadedResource.Count - 1; i >= 0; i--)
+
+                    SelectedElement = null;
+                    for (int i = SelectedElements.Count - 1; i >= 0; i--)
                     {
-                        var element = LoadedResource[i];
+                        var element = SelectedElements[i];
 
-                        float lx = OffsetX + element.PositionX;
-                        float rx = lx + element.Width;
-                        float dy = OffsetY + element.PositionY;
-                        float uy = dy + element.Height;
+                        float lx = OffsetX + element.DesignerPositionX;
+                        float rx = lx + element.ExtentX;
+                        float dy = OffsetY + element.DesignerPositionY;
+                        float uy = dy + element.ExtentY;
 
-                        if (e.X >= lx && e.X <= rx && e.Y >= dy && e.Y <= uy)
+                        if (px >= lx && px <= rx && py >= dy && py <= uy)
                         {
                             SelectedElement = CapturedElement = element;
                             break;
                         }
 
-                        if (element == SelectedElement)
+                        if (px >= lx - BorderSize && px <= lx && py >= dy - BorderSize && py <= uy + BorderSize) 
+                            SizingCorner |= SizingCornerType.Left;
+
+                        if (px >= rx && px <= rx + BorderSize && py >= dy - BorderSize && py <= uy + BorderSize) 
+                            SizingCorner |= SizingCornerType.Right;
+
+                        if (px >= lx - BorderSize && px <= rx + BorderSize && py >= dy - BorderSize && py <= dy) 
+                            SizingCorner |= SizingCornerType.Down;
+
+                        if (px >= lx - BorderSize && px <= rx + BorderSize && py >= uy && py <= uy + BorderSize) 
+                            SizingCorner |= SizingCornerType.Up;
+
+                        if (SizingCorner != SizingCornerType.None)
                         {
-                            lx -= BorderSize;
-                            if (e.X >= lx) SizingCorner |= SizingCornerType.Left;
-                            rx += BorderSize;
-                            if (e.X <= rx) SizingCorner |= SizingCornerType.Right;
-                            dy -= BorderSize;
-                            if (e.Y >= dy) SizingCorner |= SizingCornerType.Down;
-                            uy += BorderSize;
-                            if (e.Y <= uy) SizingCorner |= SizingCornerType.Up;
+                            SelectedElement = CapturedElement = element;
+                            break;
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
@@ -260,12 +352,41 @@ namespace Resource_Redactor.Resources.Redactors
                     }
                     else
                     {
-                        CapturedElement.PositionX += (int)MouseManager.CurrentStepDelta.X;
-                        CapturedElement.PositionY += (int)MouseManager.CurrentStepDelta.Y;
+                        if (SizingCorner == SizingCornerType.None)
+                        {
+                            CapturedElement.DesignerPositionX += (int)MouseManager.CurrentStepDelta.X;
+                            CapturedElement.DesignerPositionY += (int)MouseManager.CurrentStepDelta.Y;
+                        }
+                        else
+                        {
+                            int dx = (int)MouseManager.CurrentStepDelta.X;
+                            int dy = (int)MouseManager.CurrentStepDelta.Y;
+
+                            if (SizingCorner.HasFlag(SizingCornerType.Up))
+                            {
+                                SelectedElement.ExtentY += dy;
+                            }
+                            if (SizingCorner.HasFlag(SizingCornerType.Right))
+                            {
+                                SelectedElement.ExtentX += dx;
+                            }
+                            if (SizingCorner.HasFlag(SizingCornerType.Down))
+                            {
+                                SelectedElement.ExtentY -= dy;
+                                SelectedElement.DesignerPositionY += dy;
+                            }
+                            if (SizingCorner.HasFlag(SizingCornerType.Left))
+                            {
+                                SelectedElement.ExtentX -= dx;
+                                SelectedElement.DesignerPositionX += dx;
+                            }
+                        }
                     }
                 }
 
                 RepairOffset();
+
+                UpdateCursor(MouseManager.CurrentLocation);
             }
             catch (Exception ex)
             {
@@ -309,11 +430,11 @@ namespace Resource_Redactor.Resources.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
+                BackgroundColorDialog.Color = LoadedResource.BackColor;
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
+                LoadedResource.BackColor = BackgroundColorDialog.Color;
                 //Story.Item = new State(LoadedResource);
             }
             catch (Exception ex)
@@ -335,6 +456,28 @@ namespace Resource_Redactor.Resources.Redactors
                 MessageBox.Show(this, ex.ToString(), "Error: Can not reset position.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        private void GLSurface_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (SelectedElement != null)
+            {
+                switch (e.KeyCode)
+                {
+                    case Keys.Up: if (e.Shift) SelectedElement.ExtentY++; 
+                        else SelectedElement.DesignerPositionY++; break;
+                    case Keys.Left: if (e.Shift) SelectedElement.ExtentX--; 
+                        else SelectedElement.DesignerPositionX--; break;
+                    case Keys.Down: if (e.Shift) SelectedElement.ExtentY--; 
+                        else SelectedElement.DesignerPositionY--; break;
+                    case Keys.Right: if (e.Shift) SelectedElement.ExtentX++; 
+                        else SelectedElement.DesignerPositionX++; break;
+                }
+                ElementPropertyGrid.SelectedObject = SelectedElement;
+            }
+        }
+        private void GLSurface_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            SelectedContainer = SelectedElement as InventoryResource.Container;
         }
 
         public override void Render()

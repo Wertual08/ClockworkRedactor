@@ -15,16 +15,21 @@ namespace Resource_Redactor
         {
             try
             {
-                string path = null;
-                if (args.Length >= 1 && args[0] != null) path = args[0];
-                for (int i = 1; i < args.Length; i++)
-                {
-
-                }
-
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new RedactorForm(path));
+
+                string path = null;
+                if (args.Length >= 1 && args[0] != null) path = args[0];
+
+                var form = new RedactorForm(path);
+                for (int i = 1; i < args.Length - 1; i++)
+                {
+                    switch (args[i++])
+                    {
+                        case "-maximized": if (args[i] == "true") form.WindowState = FormWindowState.Maximized; break;
+                    }
+                }
+                Application.Run(form);
             }
             catch (Exception ex)
             {

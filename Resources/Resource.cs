@@ -80,16 +80,6 @@ namespace Resource_Redactor.Resources
         private long TimePart;
         private long RandPart;
 
-        public string Value
-        {
-            get { return TimePart.ToString("X16") + RandPart.ToString("X16"); }
-            set 
-            { 
-                TimePart = long.Parse(value.Substring(0, 16), NumberStyles.HexNumber);
-                RandPart = long.Parse(value.Substring(16), NumberStyles.HexNumber);
-            }
-        }
-
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -113,30 +103,22 @@ namespace Resource_Redactor.Resources
             TimePart = DateTimeOffset.Now.ToUnixTimeMilliseconds();
             RandPart = ((long)Generator.Next(int.MinValue, int.MaxValue) << 32) | (long)Generator.Next(int.MinValue, int.MaxValue);
         }
-        public ResourceID(string value)
-        {
-            if (value == "")
-            {
-                TimePart = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                RandPart = ((long)Generator.Next(int.MinValue, int.MaxValue) << 32) | (long)Generator.Next(int.MinValue, int.MaxValue);
-            }
-            var values = value.Split(':');
-            TimePart = Convert.ToInt64(values[0]);
-            RandPart = Convert.ToInt64(values[1]);
-        }
-        public ResourceID(BinaryReader reader)
-        {
-            TimePart = reader.ReadInt64();
-            RandPart = reader.ReadInt64();
-        }
-        public void Write(BinaryWriter writer)
-        {
-            writer.Write(TimePart);
-            writer.Write(RandPart);
-        }
         public override string ToString()
         {
-            return TimePart + ":" + RandPart;
+            return TimePart.ToString("X16") + RandPart.ToString("X16");
+        }
+        public static ResourceID Parse(string value)
+        {
+            var result = new ResourceID();
+            long tp, rp;
+            if (value.Length == 32 && 
+                long.TryParse(value.Substring(0, 16), NumberStyles.HexNumber, null, out tp) && 
+                long.TryParse(value.Substring(16), NumberStyles.HexNumber, null, out rp))
+            {
+                result.TimePart = tp;
+                result.RandPart = rp;
+            }
+            return result;
         }
         public ResourceID Copy()
         {
@@ -160,6 +142,8 @@ namespace Resource_Redactor.Resources
                 options.Converters.Add(new JsonHandleSpecialDoublesAsStrings());
                 options.Converters.Add(new JsonHandleSpecialFloatsAsStrings());
                 options.Converters.Add(new JsonStringEnumConverter());
+                options.Converters.Add(new JsonResourceIDConverter());
+                options.Converters.Add(new JsonColorConverter());
                 return SerializerOptions_ = options;
             }
         }

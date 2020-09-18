@@ -17,7 +17,7 @@ namespace Resource_Redactor.Resources
         public static readonly string CurrentVersion = "0.0.0.0";
 
         // Resource //
-        public int FramesCount { get; set; } = 1;
+        public int FrameCount { get; set; } = 1;
         public int FrameDelay { get; set; } = 0;
         public float ImgboxW { get; set; } = 1f;
         public float ImgboxH { get; set; } = 1f;
@@ -28,7 +28,7 @@ namespace Resource_Redactor.Resources
         public Subresource<TextureResource> Texture { get; set; } = new Subresource<TextureResource>();
 
         // Redactor //
-        public int BackColor { get; set; } = Color.Black.ToArgb();
+        public Color BackColor { get; set; } = Color.Black;
         public float PointBoundsX { get; set; } = 5f;
         public float PointBoundsY { get; set; } = 4f;
         public bool PixelPerfect { get; set; } = true;
@@ -59,11 +59,11 @@ namespace Resource_Redactor.Resources
             if (VerticalFrames)
             {
                 ImgboxW = bmp.Width / 16f;
-                ImgboxH = bmp.Height / 16f / FramesCount;
+                ImgboxH = bmp.Height / 16f / FrameCount;
 
                 for (int x = 1; x < bmp.Width - 1; x++)
                 {
-                    for (int y = 1; y < bmp.Height / FramesCount - 1; y++)
+                    for (int y = 1; y < bmp.Height / FrameCount - 1; y++)
                     {
                         if (bmp.GetPixel(x, y).A < 10 &&
                             bmp.GetPixel(x - 1, y - 1).A > 20 &&
@@ -76,7 +76,7 @@ namespace Resource_Redactor.Resources
                             bmp.GetPixel(x - 1, y).A > 20)
                         {
                             AxisX = (x - bmp.Width / 2f + 0.5f) / 16f;
-                            AxisY = -(y - bmp.Height / FramesCount / 2f + 0.5f) / 16f;
+                            AxisY = -(y - bmp.Height / FrameCount / 2f + 0.5f) / 16f;
                             return;
                         }
                     }
@@ -84,10 +84,10 @@ namespace Resource_Redactor.Resources
             }
             else
             {
-                ImgboxW = bmp.Width / 16f / FramesCount;
+                ImgboxW = bmp.Width / 16f / FrameCount;
                 ImgboxH = bmp.Height / 16f;
 
-                for (int x = 1; x < bmp.Width / FramesCount - 1; x++)
+                for (int x = 1; x < bmp.Width / FrameCount - 1; x++)
                 {
                     for (int y = 1; y < bmp.Height - 1; y++)
                     {
@@ -101,7 +101,7 @@ namespace Resource_Redactor.Resources
                             bmp.GetPixel(x - 1, y + 1).A > 20 &&
                             bmp.GetPixel(x - 1, y).A > 20)
                         {
-                            AxisX = (x - bmp.Width / FramesCount / 2f + 0.5f) / 16f;
+                            AxisX = (x - bmp.Width / FrameCount / 2f + 0.5f) / 16f;
                             AxisY = -(y - bmp.Height / 2f + 0.5f) / 16f;
                             return;
                         }
@@ -146,7 +146,7 @@ namespace Resource_Redactor.Resources
 
         public void Render(float x, float y, float a, long t, float sx = 1f, float sy = 1f, float sa = 1f)
         {
-            if (FramesCount <= 0) return;
+            if (FrameCount <= 0) return;
 
             float ax = AxisX * sx;
             float ay = AxisY * sy;
@@ -165,20 +165,20 @@ namespace Resource_Redactor.Resources
             float yoffsinn = (hh - ay) * cs;
 
             float f = 0;
-            if (FrameDelay > 0) f = ((t / FrameDelay) % FramesCount);
-            else if (FrameDelay < 0) f = ((t / FrameDelay) % FramesCount) + FramesCount - 1;
+            if (FrameDelay > 0) f = ((t / FrameDelay) % FrameCount);
+            else if (FrameDelay < 0) f = ((t / FrameDelay) % FrameCount) + FrameCount - 1;
 
-            float tlx = f / FramesCount;
+            float tlx = f / FrameCount;
             float tdy = 0f;
-            float trx = (f + 1f) / FramesCount;
+            float trx = (f + 1f) / FrameCount;
             float tuy = 1f;
 
             if (VerticalFrames)
             {
                 tlx = 0f;
-                tdy = f / FramesCount;
+                tdy = f / FrameCount;
                 trx = 1f;
-                tuy = (f + 1f) / FramesCount;
+                tuy = (f + 1f) / FrameCount;
             }
 
             if (Texture.Resource == null) gl.Disable(GL.TEXTURE_2D);
@@ -200,7 +200,7 @@ namespace Resource_Redactor.Resources
         }
         public void Render(float x, float y, float a, int f, float sx = 1f, float sy = 1f, float sa = 1f)
         {
-            if (FramesCount <= 0) return;
+            if (FrameCount <= 0) return;
 
             float ax = AxisX * sx;
             float ay = AxisY * sy;
@@ -219,17 +219,17 @@ namespace Resource_Redactor.Resources
             float yoffsinn = (hh - ay) * cs;
 
 
-            float tlx = (float)f / FramesCount;
+            float tlx = (float)f / FrameCount;
             float tdy = 0f;
-            float trx = (f + 1f) / FramesCount;
+            float trx = (f + 1f) / FrameCount;
             float tuy = 1f;
 
             if (VerticalFrames)
             {
                 tlx = 0f;
-                tdy = (float)f / FramesCount;
+                tdy = (float)f / FrameCount;
                 trx = 1f;
-                tuy = (f + 1f) / FramesCount;
+                tuy = (f + 1f) / FrameCount;
             }
 
             if (Texture.Resource == null) gl.Disable(GL.TEXTURE_2D);

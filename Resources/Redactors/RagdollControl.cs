@@ -176,7 +176,7 @@ namespace Resource_Redactor.Resources.Redactors
                 NodesListBox.Items.Add("Node: " + NodesListBox.Items.Count);
             NodesListBox.EndUpdate();
 
-            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
+            GLSurface.BackColor = LoadedResource.BackColor;
         }
         protected override void Dispose(bool disposing)
         {
@@ -1204,12 +1204,12 @@ namespace Resource_Redactor.Resources.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
+                BackgroundColorDialog.Color = LoadedResource.BackColor;
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
-                GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
+                LoadedResource.BackColor = BackgroundColorDialog.Color;
+                GLSurface.BackColor = LoadedResource.BackColor;
                 MakeUnsaved();
             }
             catch (Exception ex)

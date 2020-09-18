@@ -149,7 +149,7 @@ namespace Resource_Redactor.Resources
         public double MoveForceY { get; set; } = 0d;
 
         // Redactor //
-        public int BackColor { get; set; } = Color.Black.ToArgb();
+        public Color BackColor { get; set; } = Color.Black;
         public float PointBoundsX { get; set; } = 5f;
         public float PointBoundsY { get; set; } = 4f;
         public bool GridEnabled { get; set; } = true;

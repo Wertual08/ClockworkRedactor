@@ -696,6 +696,14 @@
   <metadata name="TabsContextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>810, 25</value>
   </metadata>
+  <data name="CloseTabToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAA1
+        1AAANdQBXmXlCAAAAGtJREFUOE+1jAsOgDAIQ7kU9z+ayoZYwmfJ1Jc0xtE++gRmPnai8ym4PndWjF4n
+        eA4R62QCwQrjz+NulUBwRSW8dQIBBxhjJRBwGO6/C3CIMTpBNghvlSAUAXfLBK5QYJ1OsCIX7ETnbyA6
+        Accpk9n7PceQAAAAAElFTkSuQmCC
+</value>
+  </data>
   <metadata name="OpenDescriptionDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>163, 19</value>
   </metadata>
@@ -708,14 +716,6 @@
   <metadata name="ExportFolderBrowserDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>610, 25</value>
   </metadata>
-  <data name="CloseTabToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAA1
-        1AAANdQBXmXlCAAAAGtJREFUOE+1jAsOgDAIQ7kU9z+ayoZYwmfJ1Jc0xtE++gRmPnai8ym4PndWjF4n
-        eA4R62QCwQrjz+NulUBwRSW8dQIBBxhjJRBwGO6/C3CIMTpBNghvlSAUAXfLBK5QYJ1OsCIX7ETnbyA6
-        Accpk9n7PceQAAAAAElFTkSuQmCC
-</value>
-  </data>
   <metadata name="FrameTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>986, 25</value>
   </metadata>

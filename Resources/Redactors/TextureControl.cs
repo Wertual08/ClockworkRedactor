@@ -20,7 +20,7 @@ namespace Resource_Redactor.Resources.Redactors
         public struct State
         {
             public Bitmap Texture;
-            public int BackColor;
+            public Color BackColor;
             public State(TextureResource r)
             {
                 Texture = r.Texture;
@@ -50,7 +50,7 @@ namespace Resource_Redactor.Resources.Redactors
             Story.ValueChanged += Story_ValueChanged;
 
             TextureBitmapBox.Bitmap = LoadedResource.Texture;
-            TextureBitmapBox.BackColor = Color.FromArgb(LoadedResource.BackColor);
+            TextureBitmapBox.BackColor = LoadedResource.BackColor;
         }
         protected override void Dispose(bool disposing)
         {
@@ -71,7 +71,7 @@ namespace Resource_Redactor.Resources.Redactors
                 Story.Item.ToResource(LoadedResource);
 
                 TextureBitmapBox.Bitmap = LoadedResource.Texture;
-                TextureBitmapBox.BackColor = Color.FromArgb(LoadedResource.BackColor);
+                TextureBitmapBox.BackColor = LoadedResource.BackColor;
 
                 MakeUnsaved();
                 UpdateRedactor();
@@ -118,11 +118,11 @@ namespace Resource_Redactor.Resources.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
+                BackgroundColorDialog.Color = LoadedResource.BackColor;
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
+                LoadedResource.BackColor = BackgroundColorDialog.Color;
 
                 Story.Item = new State(LoadedResource);
             }

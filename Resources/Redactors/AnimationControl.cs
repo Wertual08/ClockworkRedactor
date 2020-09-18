@@ -71,7 +71,7 @@ namespace Resource_Redactor.Resources.Redactors
                 FramesListBox.Items.RemoveAt(FramesListBox.Items.Count - 1);
             FramesListBox.EndUpdate();
 
-            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
+            GLSurface.BackColor = LoadedResource.BackColor;
 
             FPURNumeric.Value = (decimal)LoadedResource.FramesPerUnitRatio;
             TypeUpDown.Items.AddRange(Enum.GetNames(typeof(AnimationType)));
@@ -1163,11 +1163,11 @@ namespace Resource_Redactor.Resources.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
+                BackgroundColorDialog.Color = LoadedResource.BackColor;
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
+                LoadedResource.BackColor = BackgroundColorDialog.Color;
                 GLSurface.BackColor = BackgroundColorDialog.Color;
                 MakeUnsaved();
             }

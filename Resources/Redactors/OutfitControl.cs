@@ -57,7 +57,7 @@ namespace Resource_Redactor.Resources.Redactors
                 NodesListBox.Items.RemoveAt(NodesListBox.Items.Count - 1);
             NodesListBox.EndUpdate();
 
-            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
+            GLSurface.BackColor = LoadedResource.BackColor;
 
             ClotheTypeComboBox.Items.AddRange(Enum.GetNames(typeof(OutfitResource.Node.Clothe)));
 
@@ -142,7 +142,7 @@ namespace Resource_Redactor.Resources.Redactors
             private string[] Links;
             private int[] Nodes;
             private int[] Types;
-            private int BackColor;
+            private Color BackColor;
             private float PointBoundsX;
             private float PointBoundsY;
             private bool PixelPerfect;
@@ -484,12 +484,12 @@ namespace Resource_Redactor.Resources.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
+                BackgroundColorDialog.Color = LoadedResource.BackColor;
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
-                GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
+                LoadedResource.BackColor = BackgroundColorDialog.Color;
+                GLSurface.BackColor = LoadedResource.BackColor;
                 MakeUnsaved();
             }
             catch (Exception ex)

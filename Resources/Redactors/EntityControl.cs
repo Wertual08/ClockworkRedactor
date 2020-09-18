@@ -192,7 +192,7 @@ namespace Resource_Redactor.Resources.Redactors
             public double MoveForceX;
             public double MoveForceY;
 
-            public int BackColor;
+            public Color BackColor;
             public float PointBoundsX;
             public float PointBoundsY;
             public bool GridEnabled;
@@ -376,7 +376,7 @@ namespace Resource_Redactor.Resources.Redactors
                 HoldersListBox.Items.Add(LoadedResource.Holders[i].Name);
             HoldersListBox.EndUpdate();
 
-            GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
+            GLSurface.BackColor = LoadedResource.BackColor;
 
             GetTab("Create").Enabled = false;
             GetTab("Toggle grid").Checked = LoadedResource.GridEnabled;
@@ -559,7 +559,7 @@ namespace Resource_Redactor.Resources.Redactors
                 GetTab("Toggle transparency").Checked = LoadedResource.Transparency;
 
                 GLSurface.GridEnabled = LoadedResource.GridEnabled;
-                GLSurface.BackColor = Color.FromArgb(LoadedResource.BackColor);
+                GLSurface.BackColor = LoadedResource.BackColor;
 
                 UpdateRedactor();
                 MakeUnsaved();
@@ -1007,11 +1007,11 @@ namespace Resource_Redactor.Resources.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
+                BackgroundColorDialog.Color = LoadedResource.BackColor;
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
+                LoadedResource.BackColor = BackgroundColorDialog.Color;
                 Story.Item = new Action(LoadedResource);
             }
             catch (Exception ex)

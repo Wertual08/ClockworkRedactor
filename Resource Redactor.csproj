@@ -95,6 +95,7 @@
     <Compile Include="ExtraTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="FramesCounter.cs" />
     <Compile Include="JsonExt.cs" />
     <Compile Include="RedactorProperties.cs" />
     <Compile Include="Resources\AnimationResource.cs" />
@@ -208,6 +209,7 @@
     <Compile Include="RedactorForm.Designer.cs">
       <DependentUpon>RedactorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UISubresourceEditor.cs" />
     <Compile Include="Utilities.cs" />
     <EmbeddedResource Include="Compiler\CompilerForm.resx">
       <DependentUpon>CompilerForm.cs</DependentUpon>

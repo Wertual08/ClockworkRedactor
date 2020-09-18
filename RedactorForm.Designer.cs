@@ -79,16 +79,18 @@
             this.ToggleExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SwitchViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SwapPanelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FPSToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ResourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DebugToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.ExplorerSplitContainer = new System.Windows.Forms.SplitContainer();
             this.ResourceExplorer = new Resource_Redactor.Resources.Redactors.ExplorerControl();
             this.RedactorsTabControl = new Resource_Redactor.ExtraTabControl();
+            this.TabsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.CloseTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenDescriptionDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveDescriptionDialog = new System.Windows.Forms.SaveFileDialog();
             this.ImportFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.ExportFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.TabsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.CloseTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FrameTimer = new System.Windows.Forms.Timer(this.components);
             this.RedactorMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ExplorerSplitContainer)).BeginInit();
@@ -104,7 +106,8 @@
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
             this.viewToolStripMenuItem,
-            this.ResourceToolStripMenuItem});
+            this.ResourceToolStripMenuItem,
+            this.DebugToolStripTextBox});
             this.RedactorMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.RedactorMenuStrip.Name = "RedactorMenuStrip";
             this.RedactorMenuStrip.Size = new System.Drawing.Size(800, 24);
@@ -536,7 +539,8 @@
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToggleExplorerToolStripMenuItem,
             this.SwitchViewToolStripMenuItem,
-            this.SwapPanelsToolStripMenuItem});
+            this.SwapPanelsToolStripMenuItem,
+            this.FPSToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -566,11 +570,26 @@
             this.SwapPanelsToolStripMenuItem.Text = "Swap Panels";
             this.SwapPanelsToolStripMenuItem.Click += new System.EventHandler(this.SwapPanelsToolStripMenuItem_Click);
             // 
+            // FPSToolStripMenuItem
+            // 
+            this.FPSToolStripMenuItem.Name = "FPSToolStripMenuItem";
+            this.FPSToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.FPSToolStripMenuItem.Text = "FPS";
+            this.FPSToolStripMenuItem.Click += new System.EventHandler(this.FPSToolStripMenuItem_Click);
+            // 
             // ResourceToolStripMenuItem
             // 
             this.ResourceToolStripMenuItem.Name = "ResourceToolStripMenuItem";
             this.ResourceToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
             this.ResourceToolStripMenuItem.Text = "Resource";
+            // 
+            // DebugToolStripTextBox
+            // 
+            this.DebugToolStripTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.DebugToolStripTextBox.Name = "DebugToolStripTextBox";
+            this.DebugToolStripTextBox.ReadOnly = true;
+            this.DebugToolStripTextBox.Size = new System.Drawing.Size(100, 23);
+            this.DebugToolStripTextBox.Visible = false;
             // 
             // ExplorerSplitContainer
             // 
@@ -635,7 +654,7 @@
             // FrameTimer
             // 
             this.FrameTimer.Enabled = true;
-            this.FrameTimer.Interval = 1;
+            this.FrameTimer.Interval = 16;
             this.FrameTimer.Tick += new System.EventHandler(this.FrameTimer_Tick);
             // 
             // RedactorForm
@@ -722,6 +741,8 @@
         private System.Windows.Forms.ToolStripMenuItem SwapPanelsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem InventoryToolStripMenuItem;
         private System.Windows.Forms.Timer FrameTimer;
+        private System.Windows.Forms.ToolStripTextBox DebugToolStripTextBox;
+        private System.Windows.Forms.ToolStripMenuItem FPSToolStripMenuItem;
     }
 }
 

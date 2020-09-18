@@ -119,6 +119,8 @@
             this.GLSurface.GLMouseDown += new ExtraForms.GLMouseEventHandler(this.GLSurface_GLMouseDown);
             this.GLSurface.GLMouseMove += new ExtraForms.GLMouseEventHandler(this.GLSurface_GLMouseMove);
             this.GLSurface.GLMouseUp += new ExtraForms.GLMouseEventHandler(this.GLSurface_GLMouseUp);
+            this.GLSurface.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.GLSurface_MouseDoubleClick);
+            this.GLSurface.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.GLSurface_PreviewKeyDown);
             // 
             // InventoryControl
             // 

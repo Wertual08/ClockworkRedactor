@@ -61,7 +61,7 @@ namespace Resource_Redactor.Compiler
 
             public int TextureIndex;
             public int PartSize;
-            public int FramesCount;
+            public int FrameCount;
             public int FrameDelay;
             public int Layer;
         }
@@ -84,7 +84,7 @@ namespace Resource_Redactor.Compiler
         public struct Sprite
         {
             public int TextureIndex;
-            public int FramesCount;
+            public int FrameCount;
             public int FrameDelay;
             public float ImgboxW;
             public float ImgboxH;
@@ -118,7 +118,7 @@ namespace Resource_Redactor.Compiler
                 public float Angle;
             }
             public int FirstNode;
-            public int FramesCount;
+            public int FrameCount;
             public int NodesPerFrame;
             public int Dependency;
             public float FramesPerUnitRatio;

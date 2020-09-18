@@ -153,6 +153,10 @@ namespace Resource_Redactor.Resources
             Reloaded?.Invoke(this, EventArgs.Empty);
             Refreshed?.Invoke(this, EventArgs.Empty);
         }
+        public override string ToString()
+        {
+            return _Link;
+        }
 
         protected bool IsDisposed { get; private set; } = false;
         public void Dispose()

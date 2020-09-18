@@ -26,7 +26,7 @@ namespace Resource_Redactor.Resources
         public List<List<Subresource<SpriteResource>>> Sprites { get; set; } = new List<List<Subresource<SpriteResource>>>();
 
         // Redactor //
-        public int BackColor { get; set; } = Color.Black.ToArgb();
+        public Color BackColor { get; set; } = Color.Black;
         public float PointBoundsX { get; set; } = 5f;
         public float PointBoundsY { get; set; } = 4f;
         public bool PixelPerfect { get; set; } = true;
@@ -52,6 +52,7 @@ namespace Resource_Redactor.Resources
             base.Dispose(disposing);
         }
 
+        [JsonIgnore]
         public int Count { get { return Sprites.Count; } }
         public List<Subresource<SpriteResource>> this[int i]
         {
@@ -72,13 +73,8 @@ namespace Resource_Redactor.Resources
         {
             return DateTimeOffset.Now.ToUnixTimeMilliseconds() - CycleTimerPosition > cycle;
         }
-        public double Progress
-        {
-            get
-            {
-                return 0;
-            }
-        }
+        [JsonIgnore]
+        public double Progress { get => 0; }
 
         public void Render(float x, float y, float a, long time, int cycle, List<int> sel = null, float sx = 1f, float sy = 1f, float sa = 1f)
         {
@@ -98,7 +94,7 @@ namespace Resource_Redactor.Resources
                     cur < variants.Count ? variants[cur] : null;
                 
                 if (i >= 0 && i < SpriteLockedOnCycle.Count ? SpriteLockedOnCycle[i] : false) 
-                    sprite?.Resource?.Render(x, y, a, (int)Math.Min(local_time * sprite.Resource.FramesCount / cycle, sprite.Resource.FramesCount - 1), sx, sy, sa);
+                    sprite?.Resource?.Render(x, y, a, (int)Math.Min(local_time * sprite.Resource.FrameCount / cycle, sprite.Resource.FrameCount - 1), sx, sy, sa);
                 else sprite?.Resource?.Render(x, y, a, time, sx, sy, sa);
             }
         }

@@ -32,7 +32,7 @@ namespace Resource_Redactor.Resources.Redactors
             private bool[] Locked;
             private string[][] Links;
 
-            public int BackColor { get; private set; }
+            public Color BackColor { get; private set; }
             public float PointBoundsX { get; private set; }
             public float PointBoundsY { get; private set; }
             public bool PixelPerfect { get; private set; }
@@ -310,7 +310,7 @@ namespace Resource_Redactor.Resources.Redactors
                 for (int i = 0; i < LoadedResource.SpriteLockedOnCycle.Count; i++)
                     PartsListBox.SetItemChecked(i, LoadedResource.SpriteLockedOnCycle[i]);
 
-                GLSurface.BackColor = Color.FromArgb(item.BackColor);
+                GLSurface.BackColor = item.BackColor;
                 LoadedResource.PointBoundsX = item.PointBoundsX;
                 LoadedResource.PointBoundsY = item.PointBoundsY;
                 GetTab("Pixel perfect").Checked = item.PixelPerfect;
@@ -809,11 +809,11 @@ namespace Resource_Redactor.Resources.Redactors
         {
             try
             {
-                BackgroundColorDialog.Color = Color.FromArgb(LoadedResource.BackColor);
+                BackgroundColorDialog.Color = LoadedResource.BackColor;
                 if (BackgroundColorDialog.ShowDialog(this) != DialogResult.OK) return;
-                if (LoadedResource.BackColor == BackgroundColorDialog.Color.ToArgb()) return;
+                if (LoadedResource.BackColor == BackgroundColorDialog.Color) return;
 
-                LoadedResource.BackColor = BackgroundColorDialog.Color.ToArgb();
+                LoadedResource.BackColor = BackgroundColorDialog.Color;
                 Story.Item = new State(LoadedResource);
             }
             catch (Exception ex)
