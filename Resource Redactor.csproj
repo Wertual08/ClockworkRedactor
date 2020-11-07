@@ -102,7 +102,18 @@
     <Compile Include="Resources\Description.cs" />
     <Compile Include="Resources\EventResource.cs" />
     <Compile Include="Resources\Frame.cs" />
-    <Compile Include="Resources\InventoryResource.cs" />
+    <Compile Include="Resources\Interface\InterfaceSlot.cs" />
+    <Compile Include="Resources\Interface\InterfaceSlotGrid.cs" />
+    <Compile Include="Resources\Interface\InterfaceText.cs" />
+    <Compile Include="Resources\Interface\InterfaceSlider.cs" />
+    <Compile Include="Resources\Interface\InterfaceList.cs" />
+    <Compile Include="Resources\Interface\InterfaceButton.cs" />
+    <Compile Include="Resources\Interface\InterfaceDragger.cs" />
+    <Compile Include="Resources\Interface\InterfaceImage.cs" />
+    <Compile Include="Resources\InterfaceResource.cs" />
+    <Compile Include="Resources\Interface\InterfaceElement.cs" />
+    <Compile Include="Resources\Interface\InterfaceElementsList.cs" />
+    <Compile Include="Resources\Interface\InterfacePanel.cs" />
     <Compile Include="Resources\OutfitResource.cs" />
     <Compile Include="Resources\RagdollResource.cs" />
     <Compile Include="Resources\Redactors\AnimationControl.cs">
@@ -149,11 +160,11 @@
     <Compile Include="Resources\Redactors\ResourceControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Resources\Redactors\InventoryControl.cs">
+    <Compile Include="Resources\Redactors\InterfaceControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Resources\Redactors\InventoryControl.Designer.cs">
-      <DependentUpon>InventoryControl.cs</DependentUpon>
+    <Compile Include="Resources\Redactors\InterfaceControl.Designer.cs">
+      <DependentUpon>InterfaceControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Resources\Redactors\SpriteControl.cs">
       <SubType>UserControl</SubType>
@@ -229,8 +240,8 @@
     <EmbeddedResource Include="Resources\Redactors\RagdollControl.resx">
       <DependentUpon>RagdollControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Redactors\InventoryControl.resx">
-      <DependentUpon>InventoryControl.cs</DependentUpon>
+    <EmbeddedResource Include="Resources\Redactors\InterfaceControl.resx">
+      <DependentUpon>InterfaceControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Redactors\SpriteControl.resx">
       <DependentUpon>SpriteControl.cs</DependentUpon>

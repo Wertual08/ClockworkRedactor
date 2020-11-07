@@ -149,8 +149,8 @@ namespace Resource_Redactor.Resources
                 if (FrameDelay > 0) f = ((t / FrameDelay) % FrameCount);
                 else if (FrameDelay < 0) f = ((t / FrameDelay) % FrameCount) + FrameCount - 1;
 
-                float pw = 1.0f * PartSize / tr.Texture.Width;
-                float ph = 1.0f * PartSize / tr.Texture.Height;
+                float pw = 1.0f * PartSize / tr.Bitmap.Width;
+                float ph = 1.0f * PartSize / tr.Bitmap.Height;
                 float ox = 0.5f;
                 float oy = 0.5f / FrameCount + f / FrameCount;
 

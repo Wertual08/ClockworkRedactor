@@ -18,8 +18,7 @@ namespace Resource_Redactor
             var tab = TabPages[index];
             var args = new TabControlCancelEventArgs(tab, index, false, TabControlAction.Selected);
             TabClosing?.Invoke(this, args);
-            if (!args.Cancel) TabPages.RemoveAt(index);
-            tab.Dispose();
+            if (!args.Cancel) tab.Dispose();
         }
         public void TryCloseTab(TabPage tab)
         {

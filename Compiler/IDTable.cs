@@ -23,6 +23,7 @@ namespace Resource_Redactor.Compiler
                 Valid = valid;
                 Old = old;
             }
+            public void UpdateID(int id) => ID = id;
         }
 
         public List<Item> Items { get; private set; } = new List<Item>();

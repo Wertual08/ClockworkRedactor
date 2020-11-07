@@ -1,6 +1,6 @@
 ﻿namespace Resource_Redactor.Resources.Redactors
 {
-    partial class InventoryControl
+    partial class InterfaceControl
     {
         /// <summary> 
         /// Required designer variable.

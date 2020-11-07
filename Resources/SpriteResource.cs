@@ -53,7 +53,7 @@ namespace Resource_Redactor.Resources
 
         public void AdjustImgbox()
         {
-            var bmp = Texture.Resource?.Texture;
+            var bmp = Texture.Resource?.Bitmap;
             if (bmp == null) return;
 
             if (VerticalFrames)

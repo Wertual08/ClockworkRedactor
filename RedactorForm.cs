@@ -112,7 +112,7 @@ namespace Resource_Redactor
                     case ResourceType.Tile: control = new TileControl(path); break;
                     case ResourceType.Event: control = new EventControl(path); break;
                     case ResourceType.Outfit: control = new OutfitControl(path); break;
-                    case ResourceType.Inventory: control = new InventoryControl(path); break;
+                    case ResourceType.Interface: control = new InterfaceControl(path); break;
 
                     default:
                         MessageBox.Show(this, "Resource [" + type +

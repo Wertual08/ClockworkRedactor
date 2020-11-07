@@ -1,5 +1,6 @@
 ﻿using ExtraSharp;
 using Resource_Redactor.Resources;
+using Resource_Redactor.Resources.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,6 +8,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,6 +30,7 @@ namespace Resource_Redactor.Compiler
         private IDTable EntitiesIDTable = new IDTable();
         private IDTable OutfitsIDTable = new IDTable();
         private IDTable ItemsIDTable = new IDTable();
+        private IDTable InterfacesIDTable = new IDTable();
 
         private void CompileTiles()
         {
@@ -85,12 +88,17 @@ namespace Resource_Redactor.Compiler
                 CompiledTiles[id].Light = res.Light;
                 CompiledTiles[id].Solidity = res.Solidity;
 
-                if (!TileTextureIndexes.ContainsKey(res.Texture.Link))
+                if (!res.Texture.Loaded)
+                {
+                    CompiledTiles[id].TextureIndex = -1;
+                    LogQueue.Put("Warning: No texture for tile [" + t.Path + "].");
+                }
+                else if (!TileTextureIndexes.ContainsKey(res.Texture.Link))
                 {
                     try
                     {
                         int ind = TileTexturePixels.Count;
-                        var tex = res.Texture.Resource.Texture;
+                        var tex = res.Texture.Resource.Bitmap;
                         int tw = tex.Width;
                         int th = tex.Height;
 
@@ -171,8 +179,6 @@ namespace Resource_Redactor.Compiler
         private void CompileEvents()
         {
             LogQueue.Put("Compiling events...");
-            var TileTexturePixels = new List<uint>();
-            var TileTextureIndexes = new Dictionary<string, int>();
 
             int id = 0;
             var CompiledEvents = new Compiled.Event[EventsIDTable.LastID + 1];
@@ -268,7 +274,7 @@ namespace Resource_Redactor.Compiler
                     try
                     {
                         int ind = SpriteTexturePixels.Count;
-                        var tex = res.Texture.Resource.Texture;
+                        var tex = res.Texture.Resource.Bitmap;
                         int tw = tex.Width;
                         int th = tex.Height;
 
@@ -606,6 +612,51 @@ namespace Resource_Redactor.Compiler
                 foreach (var o in CompiledOutfits) w.Write(o);
             }
         }
+        private void CompileInterfaces()
+        {
+            LogQueue.Put("Compiling interfaces...");
+            var elements = new List<object>();
+            var texture = new Compiled.Interface.Texture();
+
+            foreach (var i in InterfacesIDTable.Items)
+            {
+                i.UpdateID(elements.Count);
+
+                LogQueue.Put("Compiling [" + i.Path + "]...");
+                InterfaceResource res = null;
+                try { res = new InterfaceResource(i.Path); }
+                catch
+                {
+                    LogQueue.Put("Interface [" + i.Path + "] was not found.");
+                    continue;
+                }
+
+                elements.AddRange(Compiled.Interface.Compile(res.BaseElement as InterfaceElement, texture));
+            }
+
+            LogQueue.Put("Interfaces compiled.");
+
+            Directory.CreateDirectory("../Compilation");
+            using (var w = new BinaryWriter(File.Create("../Compilation/Interface")))
+            {
+                w.Write(elements.Count);
+                foreach (var e in elements)
+                {
+                    if (e.GetType() == typeof(Compiled.Interface.Element))
+                    {
+                        w.Write((int)Compiled.Interface.Type.Element);
+                        ((Compiled.Interface.Element)e).Write(w);
+                    }
+                    else if (e.GetType() == typeof(Compiled.Interface.Panel))
+                    {
+                        w.Write((int)Compiled.Interface.Type.Panel);
+                        ((Compiled.Interface.Panel)e).Write(w);
+                    }
+                }
+            }
+            using (var w = new BinaryWriter(File.Create("../Compilation/InterfaceTexture")))
+                texture.Write(w);
+        }
 
         public CompilerForm(string table)
         {
@@ -659,7 +710,7 @@ namespace Resource_Redactor.Compiler
                 LogQueue.Put("Entities valid: " + EntitiesIDTable.Items.Count((IDTable.Item i) => { return i.Valid; }));
                 LogQueue.Put("Outfits loaded: " + OutfitsIDTable.Count);
                 LogQueue.Put("Outfits valid: " + OutfitsIDTable.Items.Count((IDTable.Item i) => { return i.Valid; }));
-                LogQueue.Put("items loaded: " + ItemsIDTable.Count);
+                LogQueue.Put("Items loaded: " + ItemsIDTable.Count);
                 LogQueue.Put("Items valid: " + ItemsIDTable.Items.Count((IDTable.Item i) => { return i.Valid; }));
                 LogQueue.Put("Reading ID table done.");
             }
@@ -699,6 +750,7 @@ namespace Resource_Redactor.Compiler
                     case ResourceType.Entity: EntitiesIDTable.Add(path); break;
                     case ResourceType.Outfit: OutfitsIDTable.Add(path); break;
                     case ResourceType.Item: ItemsIDTable.Add(path); break;
+                    case ResourceType.Interface: InterfacesIDTable.Add(path); break;
                 }
             }
             LogQueue.Put("Tiles found: " + TilesIDTable.Count);
@@ -709,6 +761,7 @@ namespace Resource_Redactor.Compiler
             LogQueue.Put("Entities found: " + EntitiesIDTable.Count);
             LogQueue.Put("Outfits found: " + OutfitsIDTable.Count);
             LogQueue.Put("Items found: " + ItemsIDTable.Count);
+            LogQueue.Put("Interfaces found: " + InterfacesIDTable.Count);
             LogQueue.Put("Total resources found: " + (
                 TilesIDTable.Count + 
                 EventsIDTable.Count + 
@@ -717,7 +770,8 @@ namespace Resource_Redactor.Compiler
                 AnimationsIDTable.Count + 
                 EntitiesIDTable.Count + 
                 OutfitsIDTable.Count + 
-                ItemsIDTable.Count));
+                ItemsIDTable.Count +
+                InterfacesIDTable.Count));
             LogQueue.Put("Searching resources done.");
             LogQueue.Put("");
         }
@@ -733,6 +787,7 @@ namespace Resource_Redactor.Compiler
             InitResourcesListBox(EntitiesListBox, EntitiesIDTable);
             InitResourcesListBox(OutfitsListBox, OutfitsIDTable);
             InitResourcesListBox(ItemsListBox, ItemsIDTable);
+            InitResourcesListBox(InterfacesListBox, InterfacesIDTable);
 
             CompilerProgressBar.Value = 0;
             MainSplitContainer.Panel1.Enabled = true;
@@ -753,6 +808,8 @@ namespace Resource_Redactor.Compiler
             CompileEntities();
             LogQueue.Put("");
             CompileOutfits();
+            LogQueue.Put("");
+            CompileInterfaces();
             LogQueue.Put("");
 
             LogQueue.Put("Updating ID table [" + TablePath + "]...");

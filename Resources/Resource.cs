@@ -34,7 +34,7 @@ namespace Resource_Redactor.Resources
         Tool,
         Item,
         Particle,
-        Inventory,
+        Interface,
     }
     public enum ResourceIcon : int
     {
@@ -285,7 +285,7 @@ namespace Resource_Redactor.Resources
                 case ResourceType.Tile: return new TileResource();
                 case ResourceType.Event: return new EventResource();
                 case ResourceType.Outfit: return new OutfitResource();
-                case ResourceType.Inventory: return new InventoryResource();
+                case ResourceType.Interface: return new InterfaceResource();
                 default: return null;
             }
         }
@@ -447,7 +447,7 @@ namespace Resource_Redactor.Resources
                 case ResourceType.Texture:
                     using (var resource = new TextureResource())
                     {
-                        resource.Texture = new Bitmap(src);
+                        resource.Bitmap = new Bitmap(src);
                         resource.Save(path);
                     }
                     break;

@@ -31,12 +31,14 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CompilerForm));
             this.MainSplitContainer = new System.Windows.Forms.SplitContainer();
+            this.CompilerProgressBar = new System.Windows.Forms.ProgressBar();
+            this.ExitButton = new System.Windows.Forms.Button();
             this.CompileButton = new System.Windows.Forms.Button();
             this.ResourcesTabControl = new System.Windows.Forms.TabControl();
-            this.SpritesTabPage = new System.Windows.Forms.TabPage();
-            this.SpritesListBox = new System.Windows.Forms.ListBox();
             this.TilesTabPage = new System.Windows.Forms.TabPage();
             this.TilesListBox = new System.Windows.Forms.ListBox();
+            this.SpritesTabPage = new System.Windows.Forms.TabPage();
+            this.SpritesListBox = new System.Windows.Forms.ListBox();
             this.EventsTabPage = new System.Windows.Forms.TabPage();
             this.EventsListBox = new System.Windows.Forms.ListBox();
             this.EntitiesTabPage = new System.Windows.Forms.TabPage();
@@ -49,19 +51,20 @@
             this.LogTimer = new System.Windows.Forms.Timer(this.components);
             this.CompilerWorker = new System.ComponentModel.BackgroundWorker();
             this.LoaderWorker = new System.ComponentModel.BackgroundWorker();
-            this.ExitButton = new System.Windows.Forms.Button();
-            this.CompilerProgressBar = new System.Windows.Forms.ProgressBar();
+            this.InventoriesTabPage = new System.Windows.Forms.TabPage();
+            this.InterfacesListBox = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitContainer)).BeginInit();
             this.MainSplitContainer.Panel1.SuspendLayout();
             this.MainSplitContainer.Panel2.SuspendLayout();
             this.MainSplitContainer.SuspendLayout();
             this.ResourcesTabControl.SuspendLayout();
-            this.SpritesTabPage.SuspendLayout();
             this.TilesTabPage.SuspendLayout();
+            this.SpritesTabPage.SuspendLayout();
             this.EventsTabPage.SuspendLayout();
             this.EntitiesTabPage.SuspendLayout();
             this.OutfitsTabPage.SuspendLayout();
             this.ItemsTabPage.SuspendLayout();
+            this.InventoriesTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainSplitContainer
@@ -85,6 +88,29 @@
             this.MainSplitContainer.SplitterDistance = 315;
             this.MainSplitContainer.TabIndex = 0;
             // 
+            // CompilerProgressBar
+            // 
+            this.CompilerProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.CompilerProgressBar.ForeColor = System.Drawing.Color.Purple;
+            this.CompilerProgressBar.Location = new System.Drawing.Point(3, 391);
+            this.CompilerProgressBar.Name = "CompilerProgressBar";
+            this.CompilerProgressBar.Size = new System.Drawing.Size(305, 23);
+            this.CompilerProgressBar.Step = 1;
+            this.CompilerProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.CompilerProgressBar.TabIndex = 1;
+            // 
+            // ExitButton
+            // 
+            this.ExitButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ExitButton.Location = new System.Drawing.Point(233, 420);
+            this.ExitButton.Name = "ExitButton";
+            this.ExitButton.Size = new System.Drawing.Size(75, 23);
+            this.ExitButton.TabIndex = 2;
+            this.ExitButton.Text = "Exit";
+            this.ExitButton.UseVisualStyleBackColor = true;
+            this.ExitButton.Click += new System.EventHandler(this.ExitButton_Click);
+            // 
             // CompileButton
             // 
             this.CompileButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -107,31 +133,12 @@
             this.ResourcesTabControl.Controls.Add(this.EntitiesTabPage);
             this.ResourcesTabControl.Controls.Add(this.OutfitsTabPage);
             this.ResourcesTabControl.Controls.Add(this.ItemsTabPage);
+            this.ResourcesTabControl.Controls.Add(this.InventoriesTabPage);
             this.ResourcesTabControl.Location = new System.Drawing.Point(-2, 0);
             this.ResourcesTabControl.Name = "ResourcesTabControl";
             this.ResourcesTabControl.SelectedIndex = 0;
             this.ResourcesTabControl.Size = new System.Drawing.Size(315, 385);
             this.ResourcesTabControl.TabIndex = 0;
-            // 
-            // SpritesTabPage
-            // 
-            this.SpritesTabPage.Controls.Add(this.SpritesListBox);
-            this.SpritesTabPage.Location = new System.Drawing.Point(4, 22);
-            this.SpritesTabPage.Name = "SpritesTabPage";
-            this.SpritesTabPage.Size = new System.Drawing.Size(307, 388);
-            this.SpritesTabPage.TabIndex = 8;
-            this.SpritesTabPage.Text = "Sprites";
-            this.SpritesTabPage.UseVisualStyleBackColor = true;
-            // 
-            // SpritesListBox
-            // 
-            this.SpritesListBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SpritesListBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.SpritesListBox.FormattingEnabled = true;
-            this.SpritesListBox.Location = new System.Drawing.Point(0, 0);
-            this.SpritesListBox.Name = "SpritesListBox";
-            this.SpritesListBox.Size = new System.Drawing.Size(307, 388);
-            this.SpritesListBox.TabIndex = 4;
             // 
             // TilesTabPage
             // 
@@ -153,12 +160,32 @@
             this.TilesListBox.Size = new System.Drawing.Size(307, 359);
             this.TilesListBox.TabIndex = 3;
             // 
+            // SpritesTabPage
+            // 
+            this.SpritesTabPage.Controls.Add(this.SpritesListBox);
+            this.SpritesTabPage.Location = new System.Drawing.Point(4, 22);
+            this.SpritesTabPage.Name = "SpritesTabPage";
+            this.SpritesTabPage.Size = new System.Drawing.Size(307, 359);
+            this.SpritesTabPage.TabIndex = 8;
+            this.SpritesTabPage.Text = "Sprites";
+            this.SpritesTabPage.UseVisualStyleBackColor = true;
+            // 
+            // SpritesListBox
+            // 
+            this.SpritesListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SpritesListBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.SpritesListBox.FormattingEnabled = true;
+            this.SpritesListBox.Location = new System.Drawing.Point(0, 0);
+            this.SpritesListBox.Name = "SpritesListBox";
+            this.SpritesListBox.Size = new System.Drawing.Size(307, 359);
+            this.SpritesListBox.TabIndex = 4;
+            // 
             // EventsTabPage
             // 
             this.EventsTabPage.Controls.Add(this.EventsListBox);
             this.EventsTabPage.Location = new System.Drawing.Point(4, 22);
             this.EventsTabPage.Name = "EventsTabPage";
-            this.EventsTabPage.Size = new System.Drawing.Size(307, 388);
+            this.EventsTabPage.Size = new System.Drawing.Size(307, 359);
             this.EventsTabPage.TabIndex = 6;
             this.EventsTabPage.Text = "Events";
             this.EventsTabPage.UseVisualStyleBackColor = true;
@@ -170,7 +197,7 @@
             this.EventsListBox.FormattingEnabled = true;
             this.EventsListBox.Location = new System.Drawing.Point(0, 0);
             this.EventsListBox.Name = "EventsListBox";
-            this.EventsListBox.Size = new System.Drawing.Size(307, 388);
+            this.EventsListBox.Size = new System.Drawing.Size(307, 359);
             this.EventsListBox.TabIndex = 8;
             // 
             // EntitiesTabPage
@@ -178,7 +205,7 @@
             this.EntitiesTabPage.Controls.Add(this.EntitiesListBox);
             this.EntitiesTabPage.Location = new System.Drawing.Point(4, 22);
             this.EntitiesTabPage.Name = "EntitiesTabPage";
-            this.EntitiesTabPage.Size = new System.Drawing.Size(307, 388);
+            this.EntitiesTabPage.Size = new System.Drawing.Size(307, 359);
             this.EntitiesTabPage.TabIndex = 2;
             this.EntitiesTabPage.Text = "Entities";
             this.EntitiesTabPage.UseVisualStyleBackColor = true;
@@ -190,7 +217,7 @@
             this.EntitiesListBox.FormattingEnabled = true;
             this.EntitiesListBox.Location = new System.Drawing.Point(0, 0);
             this.EntitiesListBox.Name = "EntitiesListBox";
-            this.EntitiesListBox.Size = new System.Drawing.Size(307, 388);
+            this.EntitiesListBox.Size = new System.Drawing.Size(307, 359);
             this.EntitiesListBox.TabIndex = 3;
             // 
             // OutfitsTabPage
@@ -198,7 +225,7 @@
             this.OutfitsTabPage.Controls.Add(this.OutfitsListBox);
             this.OutfitsTabPage.Location = new System.Drawing.Point(4, 22);
             this.OutfitsTabPage.Name = "OutfitsTabPage";
-            this.OutfitsTabPage.Size = new System.Drawing.Size(307, 388);
+            this.OutfitsTabPage.Size = new System.Drawing.Size(307, 359);
             this.OutfitsTabPage.TabIndex = 3;
             this.OutfitsTabPage.Text = "Outfits";
             this.OutfitsTabPage.UseVisualStyleBackColor = true;
@@ -210,7 +237,7 @@
             this.OutfitsListBox.FormattingEnabled = true;
             this.OutfitsListBox.Location = new System.Drawing.Point(0, 0);
             this.OutfitsListBox.Name = "OutfitsListBox";
-            this.OutfitsListBox.Size = new System.Drawing.Size(307, 388);
+            this.OutfitsListBox.Size = new System.Drawing.Size(307, 359);
             this.OutfitsListBox.TabIndex = 2;
             // 
             // ItemsTabPage
@@ -218,7 +245,7 @@
             this.ItemsTabPage.Controls.Add(this.ItemsListBox);
             this.ItemsTabPage.Location = new System.Drawing.Point(4, 22);
             this.ItemsTabPage.Name = "ItemsTabPage";
-            this.ItemsTabPage.Size = new System.Drawing.Size(307, 388);
+            this.ItemsTabPage.Size = new System.Drawing.Size(307, 359);
             this.ItemsTabPage.TabIndex = 4;
             this.ItemsTabPage.Text = "Items";
             this.ItemsTabPage.UseVisualStyleBackColor = true;
@@ -230,7 +257,7 @@
             this.ItemsListBox.FormattingEnabled = true;
             this.ItemsListBox.Location = new System.Drawing.Point(0, 0);
             this.ItemsListBox.Name = "ItemsListBox";
-            this.ItemsListBox.Size = new System.Drawing.Size(307, 388);
+            this.ItemsListBox.Size = new System.Drawing.Size(307, 359);
             this.ItemsListBox.TabIndex = 2;
             // 
             // LogTextBox
@@ -262,28 +289,25 @@
             this.LoaderWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.LoaderWorker_ProgressChanged);
             this.LoaderWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.LoaderWorker_RunWorkerCompleted);
             // 
-            // ExitButton
+            // InventoriesTabPage
             // 
-            this.ExitButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ExitButton.Location = new System.Drawing.Point(233, 420);
-            this.ExitButton.Name = "ExitButton";
-            this.ExitButton.Size = new System.Drawing.Size(75, 23);
-            this.ExitButton.TabIndex = 2;
-            this.ExitButton.Text = "Exit";
-            this.ExitButton.UseVisualStyleBackColor = true;
-            this.ExitButton.Click += new System.EventHandler(this.ExitButton_Click);
+            this.InventoriesTabPage.Controls.Add(this.InterfacesListBox);
+            this.InventoriesTabPage.Location = new System.Drawing.Point(4, 22);
+            this.InventoriesTabPage.Name = "InventoriesTabPage";
+            this.InventoriesTabPage.Size = new System.Drawing.Size(307, 359);
+            this.InventoriesTabPage.TabIndex = 9;
+            this.InventoriesTabPage.Text = "Inventories";
+            this.InventoriesTabPage.UseVisualStyleBackColor = true;
             // 
-            // CompilerProgressBar
+            // InventoriesListBox
             // 
-            this.CompilerProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.CompilerProgressBar.ForeColor = System.Drawing.Color.Purple;
-            this.CompilerProgressBar.Location = new System.Drawing.Point(3, 391);
-            this.CompilerProgressBar.Name = "CompilerProgressBar";
-            this.CompilerProgressBar.Size = new System.Drawing.Size(305, 23);
-            this.CompilerProgressBar.Step = 1;
-            this.CompilerProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.CompilerProgressBar.TabIndex = 1;
+            this.InterfacesListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.InterfacesListBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.InterfacesListBox.FormattingEnabled = true;
+            this.InterfacesListBox.Location = new System.Drawing.Point(0, 0);
+            this.InterfacesListBox.Name = "InventoriesListBox";
+            this.InterfacesListBox.Size = new System.Drawing.Size(307, 359);
+            this.InterfacesListBox.TabIndex = 3;
             // 
             // CompilerForm
             // 
@@ -300,12 +324,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitContainer)).EndInit();
             this.MainSplitContainer.ResumeLayout(false);
             this.ResourcesTabControl.ResumeLayout(false);
-            this.SpritesTabPage.ResumeLayout(false);
             this.TilesTabPage.ResumeLayout(false);
+            this.SpritesTabPage.ResumeLayout(false);
             this.EventsTabPage.ResumeLayout(false);
             this.EntitiesTabPage.ResumeLayout(false);
             this.OutfitsTabPage.ResumeLayout(false);
             this.ItemsTabPage.ResumeLayout(false);
+            this.InventoriesTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -333,5 +358,7 @@
         private System.ComponentModel.BackgroundWorker LoaderWorker;
         private System.Windows.Forms.Button ExitButton;
         private System.Windows.Forms.ProgressBar CompilerProgressBar;
+        private System.Windows.Forms.TabPage InventoriesTabPage;
+        private System.Windows.Forms.ListBox InterfacesListBox;
     }
 }

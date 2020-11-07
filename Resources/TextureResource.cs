@@ -24,7 +24,7 @@ namespace Resource_Redactor.Resources
         public static readonly string CurrentVersion = "0.0.0.0";
 
         private TextureStretch StretchStorage = TextureStretch.Clamp;
-        private Bitmap TextureStorage;
+        private Bitmap BitmapStorage;
         private uint GLTexture = 0;
 
         // Resource //
@@ -42,15 +42,15 @@ namespace Resource_Redactor.Resources
             }
         }
         [JsonIgnore]
-        public Bitmap Texture
+        public Bitmap Bitmap
         {
-            get => TextureStorage; 
-            set { TextureStorage = value; Refresh(); }
+            get => BitmapStorage; 
+            set { BitmapStorage = value; Refresh(); }
         }
         public byte[] TextureData
         {
-            get => Texture.ToBytes();
-            set => Texture = BitmapStreamer.FromBytes(value);
+            get => Bitmap.ToBytes();
+            set => Bitmap = BitmapStreamer.FromBytes(value);
         }
 
         // Redactor //
@@ -68,8 +68,8 @@ namespace Resource_Redactor.Resources
 
             if (disposing)
             {
-                TextureStorage?.Dispose();
-                TextureStorage = null;
+                BitmapStorage?.Dispose();
+                BitmapStorage = null;
             }
 #if DEBUG
             else if (GLTexture != 0) throw new Exception("TextureResource memory leak: TextureResource [" + GLTexture + "] must be explicitly disposed.");
@@ -98,7 +98,7 @@ namespace Resource_Redactor.Resources
                 default: throw new Exception("TextureResource error: Invalid TextureWrap value.");
             }
 
-            GLTexture = fgl.BitmapToGLTexture(TextureStorage, wrap);
+            GLTexture = fgl.BitmapToGLTexture(BitmapStorage, wrap);
         }
         public void Bind()
         {

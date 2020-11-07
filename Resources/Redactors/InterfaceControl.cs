@@ -11,11 +11,12 @@ using ExtraSharp;
 using ExtraForms.OpenGL;
 using ExtraForms;
 using System.IO;
+using Resource_Redactor.Resources.Interface;
 
 namespace Resource_Redactor.Resources.Redactors
 {
     [DefaultEvent("StateChanged")]
-    public partial class InventoryControl : ResourceControl<InventoryResource, StoryItem<InventoryControl.State>>, IResourceControl
+    public partial class InterfaceControl : ResourceControl<InterfaceResource, StoryItem<InterfaceControl.State>>, IResourceControl
     {
         private DragManager MouseManager = new DragManager(1.0f);
         private enum SizingCornerType
@@ -26,19 +27,19 @@ namespace Resource_Redactor.Resources.Redactors
             Down = 0b100,
             Right = 0b1000,
         }
-        private InventoryResource.Element CapturedElement = null;
+        private InterfaceElement CapturedElement = null;
         private SizingCornerType SizingCorner = SizingCornerType.None;
         private static readonly int BorderSize = 2;
         private float OffsetX = 0, OffsetY = 0;
-        private InventoryResource.Container SelectedContainer = null;
-        private IList<InventoryResource.Element> SelectedElements { get => SelectedContainer?.Elements ?? LoadedResource.Elements; }
-        private InventoryResource.Element SelectedElement
+        private InterfaceElement SelectedContainer = null;
+        private IList<InterfaceElementBase> SelectedElements { get => SelectedContainer?.Elements ?? LoadedResource.BaseElement.Elements; }
+        private InterfaceElement SelectedElement
         {
             get
             {
                 int index = ElementsListBox.SelectedIndex;
-                if (index >= 0 && index < SelectedElements.Count) return SelectedElements[index];
-                else return null;
+                if (index >= 0 && index < SelectedElements.Count) return SelectedElements[index] as InterfaceElement;
+                else return LoadedResource.BaseElement as InterfaceElement;
             }
             set => ElementsListBox.SelectedIndex = SelectedElements.IndexOf(value);
         }
@@ -47,11 +48,11 @@ namespace Resource_Redactor.Resources.Redactors
         {
         };
 
-        public InventoryControl(string path)
+        public InterfaceControl(string path)
         {
             InitializeComponent();
 
-            var element_names = Enum.GetNames(typeof(InventoryResource.ElementType));
+            var element_names = Enum.GetNames(typeof(InterfaceElementType));
             var factory_tool_strip_items = new ToolStripItem[element_names.Length - 1];
             for (int i = 1; i < element_names.Length; i++)
             {
@@ -77,8 +78,10 @@ namespace Resource_Redactor.Resources.Redactors
 
             GLSurface.BackColor = LoadedResource.BackColor;
 
-            OffsetX = -LoadedResource.Width / 2.0f;
-            OffsetY = -LoadedResource.Height / 2.0f;
+            OffsetX = -LoadedResource.BaseElement.ExtentX / 2.0f;
+            OffsetY = -LoadedResource.BaseElement.ExtentY / 2.0f;
+
+            ElementPropertyGrid.SelectedObject = SelectedElement;
         }
 
         protected override void Dispose(bool disposing)
@@ -208,8 +211,8 @@ namespace Resource_Redactor.Resources.Redactors
             {
                 var item = sender as ToolStripMenuItem;
 
-                SelectedElements.Add(InventoryResource.Factory(
-                    (InventoryResource.ElementType)Enum.Parse(typeof(InventoryResource.ElementType), item.Text)));
+                SelectedElements.Add(InterfaceElement.Factory(
+                    (InterfaceElementType)Enum.Parse(typeof(InterfaceElementType), item.Text)));
                 ElementsListBox.Items.Add(item.Text);
             }
             catch (Exception ex)
@@ -298,7 +301,7 @@ namespace Resource_Redactor.Resources.Redactors
                     SelectedElement = null;
                     for (int i = SelectedElements.Count - 1; i >= 0; i--)
                     {
-                        var element = SelectedElements[i];
+                        var element = SelectedElements[i] as InterfaceElement;
 
                         float lx = OffsetX + element.DesignerPositionX;
                         float rx = lx + element.ExtentX;
@@ -447,8 +450,8 @@ namespace Resource_Redactor.Resources.Redactors
         {
             try
             {
-                OffsetX = -LoadedResource.Width / 2.0f;
-                OffsetY = -LoadedResource.Height / 2.0f;
+                OffsetX = -LoadedResource.BaseElement.ExtentX / 2.0f;
+                OffsetY = -LoadedResource.BaseElement.ExtentY / 2.0f;
                 GLSurface.Zoom = 1f;
             }
             catch (Exception ex)
@@ -477,7 +480,7 @@ namespace Resource_Redactor.Resources.Redactors
         }
         private void GLSurface_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            SelectedContainer = SelectedElement as InventoryResource.Container;
+            SelectedContainer = SelectedElement;
         }
 
         public override void Render()

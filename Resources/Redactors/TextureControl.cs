@@ -23,12 +23,12 @@ namespace Resource_Redactor.Resources.Redactors
             public Color BackColor;
             public State(TextureResource r)
             {
-                Texture = r.Texture;
+                Texture = r.Bitmap;
                 BackColor = r.BackColor;
             }
             public void ToResource(TextureResource r)
             {
-                r.Texture = Texture;
+                r.Bitmap = Texture;
                 r.BackColor = BackColor;
             }
         }
@@ -49,7 +49,7 @@ namespace Resource_Redactor.Resources.Redactors
             Story = new StoryItem<State>(new State(LoadedResource));
             Story.ValueChanged += Story_ValueChanged;
 
-            TextureBitmapBox.Bitmap = LoadedResource.Texture;
+            TextureBitmapBox.Bitmap = LoadedResource.Bitmap;
             TextureBitmapBox.BackColor = LoadedResource.BackColor;
         }
         protected override void Dispose(bool disposing)
@@ -70,7 +70,7 @@ namespace Resource_Redactor.Resources.Redactors
 
                 Story.Item.ToResource(LoadedResource);
 
-                TextureBitmapBox.Bitmap = LoadedResource.Texture;
+                TextureBitmapBox.Bitmap = LoadedResource.Bitmap;
                 TextureBitmapBox.BackColor = LoadedResource.BackColor;
 
                 MakeUnsaved();
@@ -90,7 +90,7 @@ namespace Resource_Redactor.Resources.Redactors
                 if (ImportFileDialog.ShowDialog() != DialogResult.OK) return;
                 OpenGLSurface.ResetCurrent();
 
-                LoadedResource.Texture = new Bitmap(ImportFileDialog.FileName);
+                LoadedResource.Bitmap = new Bitmap(ImportFileDialog.FileName);
 
                 Story.Item = new State(LoadedResource);
             }
@@ -106,7 +106,7 @@ namespace Resource_Redactor.Resources.Redactors
             {
                 if (ExportFileDialog.ShowDialog() != DialogResult.OK) return;
 
-                LoadedResource.Texture.Save(ExportFileDialog.FileName, ImageFormat.Png);
+                LoadedResource.Bitmap.Save(ExportFileDialog.FileName, ImageFormat.Png);
             }
             catch (Exception ex)
             {
@@ -167,7 +167,7 @@ namespace Resource_Redactor.Resources.Redactors
                         return;
                     }
 
-                    LoadedResource.Texture = new Bitmap(paths[0]);
+                    LoadedResource.Bitmap = new Bitmap(paths[0]);
 
                     Story.Item = new State(LoadedResource);
                 }
