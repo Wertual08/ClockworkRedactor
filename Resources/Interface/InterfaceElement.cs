@@ -13,6 +13,7 @@ namespace Resource_Redactor.Resources.Interface
     {
         Element,
         Panel,
+        Label,
         Dragger,
         Button,
         Indicator,

@@ -102,6 +102,7 @@
     <Compile Include="Resources\Description.cs" />
     <Compile Include="Resources\EventResource.cs" />
     <Compile Include="Resources\Frame.cs" />
+    <Compile Include="Resources\Interface\InterfaceLabel.cs" />
     <Compile Include="Resources\Interface\InterfaceSlot.cs" />
     <Compile Include="Resources\Interface\InterfaceSlotGrid.cs" />
     <Compile Include="Resources\Interface\InterfaceText.cs" />
