@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Resource_Redactor.Resources.Interface
 {
-    class InterfaceLabel : InterfaceElement
+    public class InterfaceLabel : InterfaceElement
     {
-        public override InterfaceElementType Type => InterfaceElementType.Text;
+        public override InterfaceElementType Type => InterfaceElementType.Label;
 
         public string Text { get; set; } = "";
         public Color Color { get; set; } = Color.Black;

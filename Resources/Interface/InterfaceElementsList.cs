@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -97,7 +98,19 @@ namespace Resource_Redactor.Resources.Interface
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return Elements.GetEnumerator();
+        }
+
+        public override string ToString()
+        {
+            string result = "{ ";
+            for (int i = 0; i < Elements.Count - 1; i++)
+                result += Elements[i].Type.ToString() + ", ";
+
+            if (Elements.Count > 0) result += Elements.Last().Type.ToString() + " }";
+            else result += "}";
+
+            return result;
         }
     }
 }

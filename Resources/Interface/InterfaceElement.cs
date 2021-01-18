@@ -1,6 +1,8 @@
 ﻿using ExtraForms.OpenGL;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -19,7 +21,6 @@ namespace Resource_Redactor.Resources.Interface
         Indicator,
         List,
         Slider,
-        Text,
         Slot,
         SlotGrid,
     }
@@ -46,8 +47,11 @@ namespace Resource_Redactor.Resources.Interface
 
             if (reader.TokenType != JsonTokenType.String)
                 throw new Exception("InterfaceElementConverter error: Invalid object format.");
+
+            string str_type = reader.GetString();
             InterfaceElementType type;
-            if (!Enum.TryParse(reader.GetString(), out type)) type = InterfaceElementType.Element;
+            if (!Enum.TryParse(str_type, out type))
+                throw new Exception("Invalid element type [" + str_type + "].");
 
             if (!reader.Read()) throw new Exception("InterfaceElementConverter error: Invalid object format.");
             
@@ -65,7 +69,7 @@ namespace Resource_Redactor.Resources.Interface
         public override void Write(Utf8JsonWriter writer, InterfaceElementBase value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
-            writer.WriteString("ElementType", value.GetType().AssemblyQualifiedName);
+            writer.WriteString("ElementType", value.Type.ToString());
             writer.WritePropertyName("Element");
             JsonSerializer.Serialize(writer, value, value.GetType(), options);
             writer.WriteEndObject();
@@ -73,7 +77,7 @@ namespace Resource_Redactor.Resources.Interface
     }
 
     [JsonConverter(typeof(InterfaceElementConverter))]
-    abstract public class InterfaceElementBase
+    abstract public class InterfaceElementBase : IDisposable
     {
         public static InterfaceElement Factory(InterfaceElementType type)
         {
@@ -81,10 +85,10 @@ namespace Resource_Redactor.Resources.Interface
             {
                 case InterfaceElementType.Element: return new InterfaceElement();
                 case InterfaceElementType.Panel: return new InterfacePanel();
+                case InterfaceElementType.Label: return new InterfaceLabel();
                 case InterfaceElementType.Button: return new InterfaceButton();
                 case InterfaceElementType.List: return new InterfaceList();
                 case InterfaceElementType.Slider: return new InterfaceSlider();
-                case InterfaceElementType.Text: return new InterfaceText();
                 case InterfaceElementType.Slot: return new InterfaceSlot();
                 case InterfaceElementType.SlotGrid: return new InterfaceSlotGrid();
                 default: throw new Exception("InterfaceElement error: Invalid element type for factory.");
@@ -96,10 +100,10 @@ namespace Resource_Redactor.Resources.Interface
             {
                 case InterfaceElementType.Element: return typeof(InterfaceElement);
                 case InterfaceElementType.Panel: return typeof(InterfacePanel);
+                case InterfaceElementType.Label: return typeof(InterfaceLabel);
                 case InterfaceElementType.Button: return typeof(InterfaceButton);
                 case InterfaceElementType.List: return typeof(InterfaceList);
                 case InterfaceElementType.Slider: return typeof(InterfaceSlider);
-                case InterfaceElementType.Text: return typeof(InterfaceText);
                 case InterfaceElementType.Slot: return typeof(InterfaceSlot);
                 case InterfaceElementType.SlotGrid: return typeof(InterfaceSlotGrid);
                 default: throw new Exception("InterfaceElement error: Invalid element type for factory.");
@@ -222,7 +226,7 @@ namespace Resource_Redactor.Resources.Interface
         }
     }
 
-    public class InterfaceElement : InterfaceElementBase, IDisposable
+    public class InterfaceElement : InterfaceElementBase
     {
     }
 }

@@ -105,7 +105,6 @@
     <Compile Include="Resources\Interface\InterfaceLabel.cs" />
     <Compile Include="Resources\Interface\InterfaceSlot.cs" />
     <Compile Include="Resources\Interface\InterfaceSlotGrid.cs" />
-    <Compile Include="Resources\Interface\InterfaceText.cs" />
     <Compile Include="Resources\Interface\InterfaceSlider.cs" />
     <Compile Include="Resources\Interface\InterfaceList.cs" />
     <Compile Include="Resources\Interface\InterfaceButton.cs" />

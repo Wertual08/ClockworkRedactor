@@ -54,7 +54,10 @@ namespace Resource_Redactor.Resources.Redactors
                 n.OffsetY = OffsetY;
                 n.MainNode = MainNode;
                 while (n.Sprites.Count > Links.Count())
+                {
+                    n.Sprites[n.Sprites.Count - 1].Dispose();
                     n.Sprites.RemoveAt(n.Sprites.Count - 1);
+                }
                 while (n.Sprites.Count < Links.Count()) n.Sprites.Add(new Subresource<SpriteResource>());
                 for (int i = 0; i < n.Sprites.Count; i++)
                     if (n.Sprites[i].Link != Links[i])
@@ -255,6 +258,7 @@ namespace Resource_Redactor.Resources.Redactors
 
                     case StoryAction.Removed:
                         {
+                            LoadedResource.Nodes[index].Dispose();
                             LoadedResource.Nodes.RemoveAt(index);
                             LoadedResource.BuildUpdateQueue();
 

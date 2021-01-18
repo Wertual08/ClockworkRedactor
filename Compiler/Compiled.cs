@@ -162,6 +162,7 @@ namespace Resource_Redactor.Compiler
             }
 
             public int RagdollID;
+            public int OutfitID;
             public int FirstTrigger;
             public int TriggersCount;
             public int FirstHolder;
@@ -271,7 +272,8 @@ namespace Resource_Redactor.Compiler
             public enum Type : int
             {
                 Element,
-		        Panel
+		        Panel,
+                Label,
             }
             public enum Anchor : int
             {
@@ -379,6 +381,28 @@ namespace Resource_Redactor.Compiler
                     w.Write(Image);
                 }
             }
+            public struct Label
+            {
+                public Element Base;
+                public uint Color;
+                public string Text;
+
+                public Label(InterfaceLabel elem)
+                {
+                    Base = new Element(elem);
+                    Color = ((uint)elem.Color.R << 24) | ((uint)elem.Color.G << 16) | ((uint)elem.Color.B << 8) | ((uint)elem.Color.A << 0);
+                    Text = elem.Text;
+                }
+
+                public void Write(BinaryWriter w)
+                {
+                    Base.Write(w);
+                    w.Write(Color);
+                    byte[] utf8 = Encoding.UTF8.GetBytes(Text);
+                    w.Write(utf8.Length);
+                    w.Write(utf8);
+                }
+            }
             public struct Button
             {
 
@@ -395,6 +419,10 @@ namespace Resource_Redactor.Compiler
 
                     case InterfaceElementType.Panel:
                         elements.Add(new Panel((elem as InterfacePanel), texture));
+                        break;
+
+                    case InterfaceElementType.Label:
+                        elements.Add(new Label(elem as InterfaceLabel));
                         break;
 
                     default: throw new Exception("Inventory.Compile error: Unsopported element type [" + elem.Type + "].");

@@ -154,6 +154,7 @@ namespace Resource_Redactor.Compiler
 
                 LogQueue.Put("Tile [" + t.Path + "] compiled with id [" + id + "].");
                 id++;
+                res.Dispose();
             }
             LogQueue.Put("Tiles compiled.");
 
@@ -222,6 +223,7 @@ namespace Resource_Redactor.Compiler
 
                 LogQueue.Put("Event [" + e.Path + "] compiled with id [" + id + "].");
                 id++;
+                res.Dispose();
             }
             LogQueue.Put("Events compiled.");
 
@@ -335,6 +337,7 @@ namespace Resource_Redactor.Compiler
 
                 LogQueue.Put("Sprite [" + s.Path + "] compiled with id [" + id + "].");
                 id++;
+                res.Dispose();
             }
             LogQueue.Put("Sprites compiled.");
 
@@ -387,6 +390,7 @@ namespace Resource_Redactor.Compiler
 
                 LogQueue.Put("Ragdoll [" + r.Path + "] compiled with id [" + id + "].");
                 id++;
+                res.Dispose();
             }
             LogQueue.Put("Ragdolls compiled.");
 
@@ -445,6 +449,7 @@ namespace Resource_Redactor.Compiler
 
                 LogQueue.Put("Animations [" + r.Path + "] compiled with id [" + id + "].");
                 id++;
+                res.Dispose();
             }
             LogQueue.Put("Animations compiled.");
 
@@ -485,6 +490,7 @@ namespace Resource_Redactor.Compiler
                 }
 
                 CompiledEntities[id].RagdollID = RagdollsIDTable[res.Ragdoll.Link];
+                CompiledEntities[id].OutfitID = OutfitsIDTable[res.Ragdoll.Link];
                 CompiledEntities[id].FirstTrigger = EntityTriggers.Count;
                 CompiledEntities[id].TriggersCount = res.Triggers.Count;
                 CompiledEntities[id].FirstHolder = EntityHolders.Count;
@@ -546,6 +552,7 @@ namespace Resource_Redactor.Compiler
 
                 LogQueue.Put("Entity [" + e.Path + "] compiled with id [" + id + "].");
                 id++;
+                res.Dispose();
             }
             LogQueue.Put("Entities compiled.");
 
@@ -565,7 +572,7 @@ namespace Resource_Redactor.Compiler
             LogQueue.Put("Compiling outfits...");
 
             int id = 0;
-            var CompiledOutfits = new Compiled.Outfit[EntitiesIDTable.LastID + 1];
+            var CompiledOutfits = new Compiled.Outfit[OutfitsIDTable.LastID + 1];
             var OutfitNodes = new List<Compiled.Outfit.Node>();
             foreach (var e in OutfitsIDTable.Items)
             {
@@ -575,27 +582,64 @@ namespace Resource_Redactor.Compiler
                 if (dist > 0) LogQueue.Put("IDs skipped: " + dist);
 
                 LogQueue.Put("Compiling [" + e.Path + "]...");
-                OutfitResource res = null;
-                try { res = new OutfitResource(e.Path); }
-                catch
+                if (Resource.GetType(e.Path) == ResourceType.Outfit)
                 {
-                    LogQueue.Put("Outfit [" + e.Path + "] was not found. ID skipped.");
-                    CompiledOutfits[id++] = new Compiled.Outfit();
-                    continue;
+                    OutfitResource res = null;
+                    try { res = new OutfitResource(e.Path); }
+                    catch
+                    {
+                        LogQueue.Put("Outfit [" + e.Path + "] was not found. ID skipped.");
+                        CompiledOutfits[id++] = new Compiled.Outfit();
+                        continue;
+                    }
+
+                    CompiledOutfits[id].FirstNode = OutfitNodes.Count;
+                    CompiledOutfits[id].NodesCount = res.Nodes.Count;
+
+                    foreach (var node in res.Nodes)
+                    {
+                        var cnode = new Compiled.Outfit.Node();
+
+                        cnode.SpriteID = SpritesIDTable[node.Sprite.Link];
+                        cnode.RagdollNodeIndex = node.RagdollNode;
+                        cnode.ClotheType = (int)node.ClotheType;
+
+                        OutfitNodes.Add(cnode);
+                    }
+                    res.Dispose();
                 }
-
-                CompiledOutfits[id].FirstNode = OutfitNodes.Count;
-                CompiledOutfits[id].NodesCount = res.Nodes.Count;
-
-                foreach (var node in res.Nodes)
+                else 
                 {
-                    var cnode = new Compiled.Outfit.Node();
+                    RagdollResource res = null;
+                    try { res = new RagdollResource(e.Path); }
+                    catch
+                    {
+                        LogQueue.Put("Outfit [" + e.Path + "] was not found. ID skipped.");
+                        CompiledOutfits[id++] = new Compiled.Outfit();
+                        continue;
+                    }
 
-                    cnode.SpriteID = SpritesIDTable[node.Sprite.Link];
-                    cnode.RagdollNodeIndex = node.RagdollNode;
-                    cnode.ClotheType = (int)node.ClotheType;
+                    CompiledOutfits[id].FirstNode = OutfitNodes.Count;
+                    CompiledOutfits[id].NodesCount = 0;
+                    foreach (var node in res.Nodes)
+                        CompiledOutfits[id].NodesCount += node.Count;
 
-                    OutfitNodes.Add(cnode);
+                    for (int i = 0; i < res.Count; i++)
+                    {
+                        var node = res.Nodes[i];
+
+                        foreach (var sprite in node.Sprites)
+                        {
+                            var cnode = new Compiled.Outfit.Node();
+
+                            cnode.SpriteID = SpritesIDTable[sprite.Link];
+                            cnode.RagdollNodeIndex = i;
+                            cnode.ClotheType = (int)OutfitResource.Node.Clothe.Under;
+
+                            OutfitNodes.Add(cnode);
+                        }
+                    }
+                    res.Dispose();
                 }
 
                 LogQueue.Put("Outfit [" + e.Path + "] compiled with id [" + id + "].");
@@ -632,12 +676,13 @@ namespace Resource_Redactor.Compiler
                 }
 
                 elements.AddRange(Compiled.Interface.Compile(res.BaseElement as InterfaceElement, texture));
+                res.Dispose();
             }
 
             LogQueue.Put("Interfaces compiled.");
 
             Directory.CreateDirectory("../Compilation");
-            using (var w = new BinaryWriter(File.Create("../Compilation/Interface")))
+            using (var w = new BinaryWriter(File.Create("../Compilation/Interface"), new UTF8Encoding()))
             {
                 w.Write(elements.Count);
                 foreach (var e in elements)
@@ -651,6 +696,11 @@ namespace Resource_Redactor.Compiler
                     {
                         w.Write((int)Compiled.Interface.Type.Panel);
                         ((Compiled.Interface.Panel)e).Write(w);
+                    }
+                    else if (e.GetType() == typeof(Compiled.Interface.Label))
+                    {
+                        w.Write((int)Compiled.Interface.Type.Label);
+                        ((Compiled.Interface.Label)e).Write(w);
                     }
                 }
             }
@@ -697,7 +747,8 @@ namespace Resource_Redactor.Compiler
                             case "[Tiles]": TilesIDTable.Read(r, (string path) => { return Resource.GetType(path) == ResourceType.Tile; }); break;
                             case "[Events]": EventsIDTable.Read(r, (string path) => { return Resource.GetType(path) == ResourceType.Event; }); break;
                             case "[Entities]": EntitiesIDTable.Read(r, (string path) => { return Resource.GetType(path) == ResourceType.Entity; }); break;
-                            case "[Outfits]": OutfitsIDTable.Read(r, (string path) => { return Resource.GetType(path) == ResourceType.Outfit; }); break;
+                            case "[Outfits]": OutfitsIDTable.Read(r, (string path) => { return Resource.GetType(path) == ResourceType.Outfit ||
+                                Resource.GetType(path) == ResourceType.Ragdoll; }); break;
                             case "[Items]": ItemsIDTable.Read(r, (string path) => { return Resource.GetType(path) == ResourceType.Item; }); break;
                         }
                     }
@@ -745,7 +796,7 @@ namespace Resource_Redactor.Compiler
                     case ResourceType.Tile: TilesIDTable.Add(path); break;
                     case ResourceType.Event: EventsIDTable.Add(path); break;
                     case ResourceType.Sprite: SpritesIDTable.Add(path); break;
-                    case ResourceType.Ragdoll: RagdollsIDTable.Add(path); break;
+                    case ResourceType.Ragdoll: RagdollsIDTable.Add(path); OutfitsIDTable.Add(path); break;
                     case ResourceType.Animation: AnimationsIDTable.Add(path); break;
                     case ResourceType.Entity: EntitiesIDTable.Add(path); break;
                     case ResourceType.Outfit: OutfitsIDTable.Add(path); break;

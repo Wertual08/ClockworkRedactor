@@ -47,12 +47,12 @@
             this.OutfitsListBox = new System.Windows.Forms.ListBox();
             this.ItemsTabPage = new System.Windows.Forms.TabPage();
             this.ItemsListBox = new System.Windows.Forms.ListBox();
+            this.InterfacesTabPage = new System.Windows.Forms.TabPage();
+            this.InterfacesListBox = new System.Windows.Forms.ListBox();
             this.LogTextBox = new System.Windows.Forms.TextBox();
             this.LogTimer = new System.Windows.Forms.Timer(this.components);
             this.CompilerWorker = new System.ComponentModel.BackgroundWorker();
             this.LoaderWorker = new System.ComponentModel.BackgroundWorker();
-            this.InventoriesTabPage = new System.Windows.Forms.TabPage();
-            this.InterfacesListBox = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.MainSplitContainer)).BeginInit();
             this.MainSplitContainer.Panel1.SuspendLayout();
             this.MainSplitContainer.Panel2.SuspendLayout();
@@ -64,7 +64,7 @@
             this.EntitiesTabPage.SuspendLayout();
             this.OutfitsTabPage.SuspendLayout();
             this.ItemsTabPage.SuspendLayout();
-            this.InventoriesTabPage.SuspendLayout();
+            this.InterfacesTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainSplitContainer
@@ -133,7 +133,7 @@
             this.ResourcesTabControl.Controls.Add(this.EntitiesTabPage);
             this.ResourcesTabControl.Controls.Add(this.OutfitsTabPage);
             this.ResourcesTabControl.Controls.Add(this.ItemsTabPage);
-            this.ResourcesTabControl.Controls.Add(this.InventoriesTabPage);
+            this.ResourcesTabControl.Controls.Add(this.InterfacesTabPage);
             this.ResourcesTabControl.Location = new System.Drawing.Point(-2, 0);
             this.ResourcesTabControl.Name = "ResourcesTabControl";
             this.ResourcesTabControl.SelectedIndex = 0;
@@ -260,6 +260,26 @@
             this.ItemsListBox.Size = new System.Drawing.Size(307, 359);
             this.ItemsListBox.TabIndex = 2;
             // 
+            // InterfacesTabPage
+            // 
+            this.InterfacesTabPage.Controls.Add(this.InterfacesListBox);
+            this.InterfacesTabPage.Location = new System.Drawing.Point(4, 22);
+            this.InterfacesTabPage.Name = "InterfacesTabPage";
+            this.InterfacesTabPage.Size = new System.Drawing.Size(307, 359);
+            this.InterfacesTabPage.TabIndex = 9;
+            this.InterfacesTabPage.Text = "Interfaces";
+            this.InterfacesTabPage.UseVisualStyleBackColor = true;
+            // 
+            // InterfacesListBox
+            // 
+            this.InterfacesListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.InterfacesListBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.InterfacesListBox.FormattingEnabled = true;
+            this.InterfacesListBox.Location = new System.Drawing.Point(0, 0);
+            this.InterfacesListBox.Name = "InterfacesListBox";
+            this.InterfacesListBox.Size = new System.Drawing.Size(307, 359);
+            this.InterfacesListBox.TabIndex = 3;
+            // 
             // LogTextBox
             // 
             this.LogTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -289,26 +309,6 @@
             this.LoaderWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.LoaderWorker_ProgressChanged);
             this.LoaderWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.LoaderWorker_RunWorkerCompleted);
             // 
-            // InventoriesTabPage
-            // 
-            this.InventoriesTabPage.Controls.Add(this.InterfacesListBox);
-            this.InventoriesTabPage.Location = new System.Drawing.Point(4, 22);
-            this.InventoriesTabPage.Name = "InventoriesTabPage";
-            this.InventoriesTabPage.Size = new System.Drawing.Size(307, 359);
-            this.InventoriesTabPage.TabIndex = 9;
-            this.InventoriesTabPage.Text = "Inventories";
-            this.InventoriesTabPage.UseVisualStyleBackColor = true;
-            // 
-            // InventoriesListBox
-            // 
-            this.InterfacesListBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.InterfacesListBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.InterfacesListBox.FormattingEnabled = true;
-            this.InterfacesListBox.Location = new System.Drawing.Point(0, 0);
-            this.InterfacesListBox.Name = "InventoriesListBox";
-            this.InterfacesListBox.Size = new System.Drawing.Size(307, 359);
-            this.InterfacesListBox.TabIndex = 3;
-            // 
             // CompilerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -330,7 +330,7 @@
             this.EntitiesTabPage.ResumeLayout(false);
             this.OutfitsTabPage.ResumeLayout(false);
             this.ItemsTabPage.ResumeLayout(false);
-            this.InventoriesTabPage.ResumeLayout(false);
+            this.InterfacesTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -358,7 +358,7 @@
         private System.ComponentModel.BackgroundWorker LoaderWorker;
         private System.Windows.Forms.Button ExitButton;
         private System.Windows.Forms.ProgressBar CompilerProgressBar;
-        private System.Windows.Forms.TabPage InventoriesTabPage;
+        private System.Windows.Forms.TabPage InterfacesTabPage;
         private System.Windows.Forms.ListBox InterfacesListBox;
     }
 }
