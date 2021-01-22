@@ -26,22 +26,46 @@ namespace Resource_Redactor.Compiler
             public void UpdateID(int id) => ID = id;
         }
 
-        public List<Item> Items { get; private set; } = new List<Item>();
+        public Func<string, string> Delimiter { get; set; } = null;
+        public Func<string, bool> Validator { get; set; } = null;
 
-        public void Read(StreamReader r, Func<string, bool> validator)
+        public Dictionary<string, List<Item>> Categories { get; private set; } = new Dictionary<string, List<Item>>();
+        public int Count 
+        { 
+            get 
+            {
+                int total = 0;
+                foreach (var items in Categories)
+                    total += items.Value.Count;
+                return total;
+            } 
+        }
+
+        public void Read(StreamReader r)
         {
             try
             {
-                while (r.ReadLine() != "{") ;
                 string line;
-                while ((line = r.ReadLine()) != "}")
+                while ((line = r.ReadLine()) != "{" && line != null) ;
+                while ((line = r.ReadLine()) != "}" && line != null)
                 {
                     int index = line.IndexOf(':');
                     string id_str = line.Substring(0, index);
                     string path = line.Substring(index + 1).Trim();
-                    Items.Add(new Item(int.Parse(id_str), path, validator(path), true));
+
+                    bool valid = Validator(path);
+                    string category = Delimiter(path);
+
+                    if (!Categories.ContainsKey(category))
+                        Categories.Add(category, new List<Item>());
+
+                    Categories[category].Add(new Item(int.Parse(id_str), path, valid, true));
                 }
-                Items.Sort((Item lhs, Item rhs) => { return lhs.ID < rhs.ID ? -1 : (lhs.ID > rhs.ID ? 1 : 0); });
+
+                foreach (var items in Categories)
+                    items.Value.Sort((Item lhs, Item rhs) => { 
+                        return lhs.ID < rhs.ID ? -1 : (lhs.ID > rhs.ID ? 1 : 0); 
+                    });
             }
             catch
             {
@@ -49,13 +73,17 @@ namespace Resource_Redactor.Compiler
                         Environment.NewLine + "Invalid table format.");
             }
         }
-        public void Write(StreamWriter w)
+        public void Write(StreamWriter w, string[] categories)
         {
             try
             {
-                Items.Sort((Item lhs, Item rhs) => { return lhs.ID < rhs.ID ? -1 : (lhs.ID > rhs.ID ? 1 : 0); });
                 w.WriteLine("{");
-                foreach (var i in Items) w.WriteLine(i.ID + ": " + i.Path);
+                foreach (var c in categories)
+                {
+                    if (Categories.ContainsKey(c))
+                        foreach (var i in Categories[c])
+                            w.WriteLine(i.ID + ": " + i.Path);
+                }
                 w.WriteLine("}");
             }
             catch
@@ -67,15 +95,52 @@ namespace Resource_Redactor.Compiler
 
         public void Add(string path)
         {
-            if (Items.FindIndex((Item i) => { return i.Path == path; }) >= 0) return;
-            int id = 0, ind = -1, t;
-            while ((t = Items.FindIndex((Item i) => { return i.ID == id; })) >= 0) { ind = t; id++; }
-            Items.Insert(ind + 1, new Item(id, path, true, false));
+            bool valid = Validator(path);
+            string category = Delimiter(path);
+
+            if (!Categories.ContainsKey(category))
+                Categories.Add(category, new List<Item>());
+
+            var items = Categories[category];
+
+            int id = 0;
+            while (id < items.Count && items[id].ID == id) id++;
+
+            items.Insert(id, new Item(id, path, true, false));
+        }
+        
+        public int GetLastID(string category) { return Categories[category].Last().ID; }
+        [IndexerName("MyItems")]
+        public int this[string path] 
+        { 
+            get 
+            { 
+                foreach (var items in Categories)
+                {
+                    var item = items.Value.Find((Item i) => i.Path == path);
+                    if (item != null) return item.ID;
+                }
+                return -1; 
+            }
         }
 
-        public int Count { get { return Items.Count; } }
-        public int LastID { get { return Items[Items.Count - 1].ID; } }
+        private Dictionary<string, Dictionary<string, int>> CustomValues = new Dictionary<string, Dictionary<string, int>>();
         [IndexerName("MyItems")]
-        public int this[string path] { get { return Items.Find((Item i) => i.Path == path && i.Valid)?.ID ?? -1; } }
+        public int this[string sect, string val]
+        {
+            get
+            {
+                if (CustomValues.ContainsKey(sect) && CustomValues[sect].ContainsKey(val))
+                    return CustomValues[sect][val];
+                else
+                {
+                    if (!CustomValues.ContainsKey(sect))
+                        CustomValues.Add(sect, new Dictionary<string, int>());
+                    int res = CustomValues[sect].Count;
+                    CustomValues[sect].Add(val, res);
+                    return res;
+                }
+            }
+        }
     }
 }

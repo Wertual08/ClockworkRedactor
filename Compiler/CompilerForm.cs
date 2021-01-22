@@ -22,690 +22,133 @@ namespace Resource_Redactor.Compiler
         private MessageQueue LogQueue = new MessageQueue();
 
         private string TablePath;
-        private IDTable TilesIDTable = new IDTable();
-        private IDTable EventsIDTable = new IDTable();
-        private IDTable SpritesIDTable = new IDTable();
-        private IDTable RagdollsIDTable = new IDTable();
-        private IDTable AnimationsIDTable = new IDTable();
-        private IDTable EntitiesIDTable = new IDTable();
-        private IDTable OutfitsIDTable = new IDTable();
-        private IDTable ItemsIDTable = new IDTable();
-        private IDTable InterfacesIDTable = new IDTable();
+        private IDTable Table = new IDTable()
+        {
+            Delimiter = (string path) => Resource.GetType(path).ToString(),
+            Validator = (string path) => Resource.GetType(path).Valid(),
+        };
 
         private void CompileTiles()
         {
+            var cat = ResourceType.Tile.ToString();
+            if (!Table.Categories.ContainsKey(cat)) return;
+
             LogQueue.Put("Compiling tiles...");
-            var TileTexturePixels = new List<uint>();
-            var TileTextureIndexes = new Dictionary<string, int>();
-
-            int id = 0;
-            Compiled.Tile[] CompiledTiles = new Compiled.Tile[TilesIDTable.LastID + 1];
-            foreach (var t in TilesIDTable.Items)
-            {
-                int dist = id;
-                while (id < t.ID) CompiledTiles[id++] = new Compiled.Tile();
-                dist = id - dist;
-                if (dist > 0) LogQueue.Put("IDs skipped: " + dist);
-
-                LogQueue.Put("Compiling [" + t.Path + "]...");
-                TileResource res = null;
-                try { res = new TileResource(t.Path); }
-                catch
-                {
-                    LogQueue.Put("Tile [" + t.Path + "] was not found. ID skipped.");
-                    CompiledTiles[id] = new Compiled.Tile();
-                    id++;
-                    continue;
-                }
-
-                CompiledTiles[id].SetupEventID = EventsIDTable[res.SetupEvent.Link];
-                CompiledTiles[id].ReformEventID = EventsIDTable[res.ReformEvent.Link];
-                CompiledTiles[id].TouchEventID = EventsIDTable[res.TouchEvent.Link];
-                CompiledTiles[id].ActivateEventID = EventsIDTable[res.ActivateEvent.Link];
-                CompiledTiles[id].RecieveEventID = EventsIDTable[res.RecieveEvent.Link];
-                CompiledTiles[id].RemoveEventID = EventsIDTable[res.RemoveEvent.Link];
-
-                if (res.SetupEvent.Link.Length > 0 && CompiledTiles[id].SetupEventID < 0)
-                    LogQueue.Put("Warning: Setup event [" + res.SetupEvent.Link + "] was not found.");
-                if (res.ReformEvent.Link.Length > 0 && CompiledTiles[id].ReformEventID < 0)
-                    LogQueue.Put("Warning: Reform event [" + res.ReformEvent.Link + "] was not found.");
-                if (res.TouchEvent.Link.Length > 0 && CompiledTiles[id].TouchEventID < 0)
-                    LogQueue.Put("Warning: Touch event [" + res.TouchEvent.Link + "] was not found.");
-                if (res.ActivateEvent.Link.Length > 0 && CompiledTiles[id].ActivateEventID < 0)
-                    LogQueue.Put("Warning: Activate event [" + res.ActivateEvent.Link + "] was not found.");
-                if (res.RecieveEvent.Link.Length > 0 && CompiledTiles[id].RecieveEventID < 0)
-                    LogQueue.Put("Warning: Recieve event [" + res.RecieveEvent.Link + "] was not found.");
-                if (res.RemoveEvent.Link.Length > 0 && CompiledTiles[id].RemoveEventID < 0)
-                    LogQueue.Put("Warning: Remove event [" + res.RemoveEvent.Link + "] was not found.");
-
-                CompiledTiles[id].OffsetX = res.OffsetX;
-                CompiledTiles[id].OffsetY = res.OffsetY;
-
-                CompiledTiles[id].Properties = (uint)res.Properties;
-                CompiledTiles[id].Form = (uint)res.Form;
-                CompiledTiles[id].Anchors = (uint)res.Anchors;
-                CompiledTiles[id].Reactions = (uint)res.Reactions;
-                CompiledTiles[id].Light = res.Light;
-                CompiledTiles[id].Solidity = res.Solidity;
-
-                if (!res.Texture.Loaded)
-                {
-                    CompiledTiles[id].TextureIndex = -1;
-                    LogQueue.Put("Warning: No texture for tile [" + t.Path + "].");
-                }
-                else if (!TileTextureIndexes.ContainsKey(res.Texture.Link))
-                {
-                    try
-                    {
-                        int ind = TileTexturePixels.Count;
-                        var tex = res.Texture.Resource.Bitmap;
-                        int tw = tex.Width;
-                        int th = tex.Height;
-
-                        int ucw = tw / res.PartSize;
-                        int uch = th / res.FrameCount / res.PartSize;
-
-                        if (tex.Width % res.PartSize != 0 || tex.Height % res.FrameCount != 0 || uch != ucw ||
-                            tex.Height / res.FrameCount % res.PartSize != 0 || ucw % 2 != 0 || uch % 2 != 0)
-                            LogQueue.Put("Warning: Bad tile texture proporions.");
-                        int uc = Math.Min(ucw, uch);
-
-                        if (uc == 2)
-                        {
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 0, 0));
-                        }
-                        else if (uc == 4)
-                        {
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 1, 1));
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 1, 0));
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 0, 1));
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 0, 0));
-                        }
-                        else if (uc == 6)
-                        {
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 2, 2));
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 2, 1));
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 1, 2));
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 1, 1));
-                            TileTexturePixels.AddRange(Compiled.GetTilePartsCompound(tex, res.PartSize, uc, res.FrameCount, 0, 0));
-                        }
-                        else throw new Exception("Tile texture compilation error: Unsupported texture [" + 
-                            res.Texture.Link + "] format.");
-
-                        TileTextureIndexes.Add(res.Texture.Link, ind);
-                        CompiledTiles[id].TextureIndex = TileTextureIndexes[res.Texture.Link];
-                        LogQueue.Put("Loaded texture [" + res.Texture.Link + "] index [" + CompiledTiles[id].TextureIndex + "].");
-                    }
-                    catch
-                    {
-                        CompiledTiles[id].TextureIndex = -1;
-                        LogQueue.Put("Texture [" + res.Texture.Link + "] nod found index [" + CompiledTiles[id].TextureIndex + "].");
-                    }
-                }
-                else
-                {
-                    CompiledTiles[id].TextureIndex = TileTextureIndexes[res.Texture.Link];
-                    LogQueue.Put("Found texture [" + res.Texture.Link + "] index [" + CompiledTiles[id].TextureIndex + "].");
-                }
-                CompiledTiles[id].PartSize = res.PartSize;
-                CompiledTiles[id].FrameCount = res.FrameCount;
-                CompiledTiles[id].FrameDelay = res.FrameDelay;
-                CompiledTiles[id].Layer = res.Layer;
-
-                LogQueue.Put("Tile [" + t.Path + "] compiled with id [" + id + "].");
-                id++;
-                res.Dispose();
-            }
+            var compiler = new TileCompiler(Table, LogQueue);
+            foreach (var t in Table.Categories[cat])
+                compiler.Compile(t.Path, t.ID);
             LogQueue.Put("Tiles compiled.");
 
-            //var bmp = new Bitmap(8, TileTexturePixels.Count / 8);
-            //for (int y = 0; y < TileTexturePixels.Count / 8; y++)
-            //{
-            //    for (int x = 0; x < 8; x++)
-            //    {
-            //        uint p = TileTexturePixels[y * 8 + x];
-            //        bmp.SetPixel(x, y, Color.FromArgb(((int)p >> 8) | ((int)p << 24)));
-            //    }
-            //}
-            //bmp.Save("out.png", System.Drawing.Imaging.ImageFormat.Png);
             Directory.CreateDirectory("../Compilation");
             using (var w = new BinaryWriter(File.Create("../Compilation/Tiles")))
-            {
-                w.Write(TileTexturePixels.Count);
-                foreach (var p in TileTexturePixels) w.Write(p);
-                w.Write(CompiledTiles.Length);
-                foreach (var t in CompiledTiles) w.Write(t);
-            }
+                compiler.Write(w);
         }
         private void CompileEvents()
         {
+            var cat = ResourceType.Event.ToString();
+            if (!Table.Categories.ContainsKey(cat)) return;
+
             LogQueue.Put("Compiling events...");
-
-            int id = 0;
-            var CompiledEvents = new Compiled.Event[EventsIDTable.LastID + 1];
-            var CompiledActions = new List<Compiled.Event.Action>();
-            foreach (var e in EventsIDTable.Items)
-            {
-                int dist = id;
-                while (id < e.ID) CompiledEvents[id++] = new Compiled.Event();
-                dist = id - dist;
-                if (dist > 0) LogQueue.Put("IDs skipped: " + dist);
-
-                LogQueue.Put("Compiling [" + e.Path + "]...");
-                EventResource res = null;
-                try { res = new EventResource(e.Path); }
-                catch
-                {
-                    LogQueue.Put("Event [" + e.Path + "] was not found. ID skipped.");
-                    CompiledEvents[id] = new Compiled.Event();
-                    id++;
-                    continue;
-                }
-
-                CompiledEvents[id].MinDelay = res.MinDelay;
-                CompiledEvents[id].MaxDelay = res.MaxDelay;
-                CompiledEvents[id].FirstAction = CompiledActions.Count;
-                CompiledEvents[id].ActionsCount = res.Actions.Count;
-
-                foreach (var a in res.Actions)
-                {
-                    var ca = new Compiled.Event.Action();
-
-                    ca.LinkID = TilesIDTable[a.Tile.Link];
-                    ca.Type = (int)a.Type;
-                    ca.OffsetX = a.OffsetX;
-                    ca.OffsetY = a.OffsetY;
-
-                    if (ca.LinkID < 0) LogQueue.Put("Warning: Link [" + a.Tile.Link + "] was not found.");
-
-                    CompiledActions.Add(ca);
-                }
-
-                LogQueue.Put("Event [" + e.Path + "] compiled with id [" + id + "].");
-                id++;
-                res.Dispose();
-            }
+            var compiler = new EventCompiler(Table, LogQueue);
+            foreach (var e in Table.Categories[cat])
+                compiler.Compile(e.Path, e.ID);
             LogQueue.Put("Events compiled.");
 
             Directory.CreateDirectory("../Compilation");
             using (var w = new BinaryWriter(File.Create("../Compilation/Events")))
-            {
-                w.Write(CompiledEvents.Length);
-                foreach (var e in CompiledEvents) w.Write(e);
-                w.Write(CompiledActions.Count);
-                foreach (var a in CompiledActions) w.Write(a);
-            }
+                compiler.Write(w);
         }
         private void CompileSprites()
         {
+            var cat = ResourceType.Sprite.ToString();
+            if (!Table.Categories.ContainsKey(cat)) return;
+
             LogQueue.Put("Compiling sprites...");
-            var SpriteTexturePixels = new List<uint>();
-            var SpriteTextureIndexes = new Dictionary<string, int>();
-
-            int id = 0;
-            var CompiledSprites = new Compiled.Sprite[SpritesIDTable.LastID + 1];
-            foreach (var s in SpritesIDTable.Items)
-            {
-                int dist = id;
-                while (id < s.ID) CompiledSprites[id++] = new Compiled.Sprite();
-                dist = id - dist;
-                if (dist > 0) LogQueue.Put("IDs skipped: " + dist);
-
-                LogQueue.Put("Compiling [" + s.Path + "]...");
-                SpriteResource res = null;
-                try { res = new SpriteResource(s.Path); }
-                catch
-                {
-                    LogQueue.Put("Sprite [" + s.Path + "] was not found. ID skipped.");
-                    CompiledSprites[id] = new Compiled.Sprite();
-                    id++;
-                    continue;
-                }
-
-                CompiledSprites[id].TextureIndex = -1;
-                CompiledSprites[id].FrameCount = res.FrameCount;
-                CompiledSprites[id].FrameDelay = res.FrameDelay;
-                CompiledSprites[id].ImgboxW = res.ImgboxW;
-                CompiledSprites[id].ImgboxH = res.ImgboxH;
-                CompiledSprites[id].AxisX = res.AxisX;
-                CompiledSprites[id].AxisY = res.AxisY;
-                CompiledSprites[id].Angle = res.Angle;
-
-                if (!SpriteTextureIndexes.ContainsKey("~:/" + res.FrameCount + res.VerticalFrames + "\\:~" + res.Texture.Link))
-                {
-                    try
-                    {
-                        int ind = SpriteTexturePixels.Count;
-                        var tex = res.Texture.Resource.Bitmap;
-                        int tw = tex.Width;
-                        int th = tex.Height;
-
-                        var pixels = new uint[tw * th];
-                        if (res.VerticalFrames)
-                        {
-                            if (th % res.FrameCount != 0) LogQueue.Put("Warning: Bad texture proporions.");
-                            th /= res.FrameCount;
-
-                            for (int f = 0; f < res.FrameCount; f++)
-                            {
-                                for (int y = 0; y < th; y++)
-                                {
-                                    for (int x = 0; x < tw; x++)
-                                    {
-                                        var p = tex.GetPixel(x, f * th + th - 1 - y);
-                                        pixels[f * tw * th + y * tw + x] = ((uint)p.R << 24) | ((uint)p.G << 16) | ((uint)p.B << 8) | ((uint)p.A << 0);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (tw % res.FrameCount != 0) LogQueue.Put("Warning: Bad texture proporions.");
-                            tw /= res.FrameCount;
-
-                            for (int f = 0; f < res.FrameCount; f++)
-                            {
-                                for (int y = 0; y < th; y++)
-                                {
-                                    for (int x = 0; x < tw; x++)
-                                    {
-                                        var p = tex.GetPixel(f * tw + x, th - 1 - y);
-                                        pixels[f * tw * th + y * tw + x] = ((uint)p.R << 24) | ((uint)p.G << 16) | ((uint)p.B << 8) | ((uint)p.A << 0);
-                                    }
-                                }
-                            }
-                        }
-                        SpriteTexturePixels.Add((uint)tw);
-                        SpriteTexturePixels.Add((uint)th);
-                        SpriteTexturePixels.AddRange(pixels);
-
-                        SpriteTextureIndexes.Add("~:/" + res.FrameCount + res.VerticalFrames + "\\:~" + res.Texture.Link, ind);
-                        CompiledSprites[id].TextureIndex = SpriteTextureIndexes["~:/" + res.FrameCount + res.VerticalFrames + "\\:~" + res.Texture.Link];
-                        LogQueue.Put("Loaded texture [" + res.Texture.Link + "] index [" + CompiledSprites[id].TextureIndex + "].");
-                    }
-                    catch
-                    {
-                        CompiledSprites[id].TextureIndex = -1;
-                        LogQueue.Put("Texture [" + res.Texture.Link + "] nod found index [" + CompiledSprites[id].TextureIndex + "].");
-                    }
-                }
-                else
-                {
-                    CompiledSprites[id].TextureIndex = SpriteTextureIndexes["~:/" + res.FrameCount + res.VerticalFrames + "\\:~" + res.Texture.Link];
-                    LogQueue.Put("Found texture [" + res.Texture.Link + "] index [" + CompiledSprites[id].TextureIndex + "].");
-                }
-
-                LogQueue.Put("Sprite [" + s.Path + "] compiled with id [" + id + "].");
-                id++;
-                res.Dispose();
-            }
+            var compiler = new SpriteCompiler(Table, LogQueue);
+            foreach (var s in Table.Categories[cat])
+                compiler.Compile(s.Path, s.ID);
             LogQueue.Put("Sprites compiled.");
 
             Directory.CreateDirectory("../Compilation");
             using (var w = new BinaryWriter(File.Create("../Compilation/Sprites")))
-            {
-                w.Write(SpriteTexturePixels.Count);
-                foreach (var p in SpriteTexturePixels) w.Write(p);
-                w.Write(CompiledSprites.Length);
-                foreach (var t in CompiledSprites) w.Write(t);
-            }
+                compiler.Write(w);
         }
         private void CompileRagdolls()
         {
+            var cat = ResourceType.Ragdoll.ToString();
+            if (!Table.Categories.ContainsKey(cat)) return;
+
             LogQueue.Put("Compiling ragdolls...");
-
-            int id = 0;
-            var CompiledRagdolls = new Compiled.Ragdoll[RagdollsIDTable.LastID + 1];
-            var RagdollNodes = new List<Compiled.Ragdoll.Node>();
-            foreach (var r in RagdollsIDTable.Items)
-            {
-                int dist = id;
-                while (id < r.ID) CompiledRagdolls[id++] = new Compiled.Ragdoll();
-                dist = id - dist;
-                if (dist > 0) LogQueue.Put("IDs skipped: " + dist);
-
-                LogQueue.Put("Compiling [" + r.Path + "]...");
-                RagdollResource res = null;
-                try { res = new RagdollResource(r.Path); }
-                catch
-                {
-                    LogQueue.Put("Ragdoll [" + r.Path + "] was not found. ID skipped.");
-                    CompiledRagdolls[id++] = new Compiled.Ragdoll();
-                    continue;
-                }
-
-                CompiledRagdolls[id].FirstNode = RagdollNodes.Count;
-                CompiledRagdolls[id].NodesCount = res.Count;
-                CompiledRagdolls[id].HitboxW = res.HitboxW;
-                CompiledRagdolls[id].HitboxH = res.HitboxH;
-
-                foreach (var node in res.Nodes)
-                {
-                    var cnode = new Compiled.Ragdoll.Node();
-                    cnode.MainNode = node.MainNode;
-                    cnode.OffsetX = node.OffsetX;
-                    cnode.OffsetY = node.OffsetY;
-                    RagdollNodes.Add(cnode);
-                }
-
-                LogQueue.Put("Ragdoll [" + r.Path + "] compiled with id [" + id + "].");
-                id++;
-                res.Dispose();
-            }
+            var compiler = new RagdollCompiler(Table, LogQueue);
+            foreach (var r in Table.Categories[cat])
+                compiler.Compile(r.Path, r.ID);
             LogQueue.Put("Ragdolls compiled.");
 
             Directory.CreateDirectory("../Compilation");
             using (var w = new BinaryWriter(File.Create("../Compilation/Ragdolls")))
-            {
-                w.Write(RagdollNodes.Count);
-                foreach (var n in RagdollNodes) w.Write(n);
-                w.Write(CompiledRagdolls.Length);
-                foreach (var r in CompiledRagdolls) w.Write(r);
-            }
+                compiler.Write(w);
         }
         private void CompileAnimations()
         {
+            var cat = ResourceType.Animation.ToString();
+            if (!Table.Categories.ContainsKey(cat)) return;
+
             LogQueue.Put("Compiling animations...");
-
-            int id = 0;
-            var CompiledAnimations = new Compiled.Animation[AnimationsIDTable.LastID + 1];
-            var AnimationNodes = new List<Compiled.Animation.Node>();
-            foreach (var r in AnimationsIDTable.Items)
-            {
-                int dist = id;
-                while (id < r.ID) CompiledAnimations[id++] = new Compiled.Animation();
-                dist = id - dist;
-                if (dist > 0) LogQueue.Put("IDs skipped: " + dist);
-
-                LogQueue.Put("Compiling [" + r.Path + "]...");
-                AnimationResource res = null;
-                try { res = new AnimationResource(r.Path); }
-                catch
-                {
-                    LogQueue.Put("Animation [" + r.Path + "] was not found. ID skipped.");
-                    CompiledAnimations[id++] = new Compiled.Animation();
-                    continue;
-                }
-
-                CompiledAnimations[id].FirstNode = AnimationNodes.Count;
-                CompiledAnimations[id].FrameCount = res.Count;
-                CompiledAnimations[id].NodesPerFrame = res.NodesCount;
-                CompiledAnimations[id].Dependency = (int)res.Dependency;
-                CompiledAnimations[id].FramesPerUnitRatio = res.FramesPerUnitRatio;
-
-                foreach (var frame in res.Frames)
-                {
-                    for (int n = 0; n < frame.Count; n++)
-                    {
-                        var node = frame[n];
-                        var cnode = new Compiled.Animation.Node();
-                        cnode.Properties = (int)node.Properties;
-                        cnode.OffsetX = node.OffsetX;
-                        cnode.OffsetY = node.OffsetY;
-                        cnode.Angle = node.Angle;
-                        AnimationNodes.Add(cnode);
-                    }
-                }
-
-                LogQueue.Put("Animations [" + r.Path + "] compiled with id [" + id + "].");
-                id++;
-                res.Dispose();
-            }
+            var compiler = new AnimationCompiler(Table, LogQueue);
+            foreach (var r in Table.Categories[cat])
+                compiler.Compile(r.Path, r.ID);
             LogQueue.Put("Animations compiled.");
 
             Directory.CreateDirectory("../Compilation");
             using (var w = new BinaryWriter(File.Create("../Compilation/Animations")))
-            {
-                w.Write(AnimationNodes.Count);
-                foreach (var n in AnimationNodes) w.Write(n);
-                w.Write(CompiledAnimations.Length);
-                foreach (var a in CompiledAnimations) w.Write(a);
-            }
+                compiler.Write(w);
         }
         private void CompileEntities()
         {
+            var cat = ResourceType.Entity.ToString();
+            if (!Table.Categories.ContainsKey(cat)) return;
+
             LogQueue.Put("Compiling entities...");
-
-            int id = 0;
-            var CompiledEntities = new Compiled.Entity[EntitiesIDTable.LastID + 1];
-            var EntityTriggers = new List<Compiled.Entity.Trigger>();
-            var EntityHolders = new List<Compiled.Entity.Holder>();
-            var TriggerActionsSet = new Dictionary<string, int>();
-            var HolderActionsSet = new Dictionary<string, int>();
-            foreach (var e in EntitiesIDTable.Items)
-            {
-                int dist = id;
-                while (id < e.ID) CompiledEntities[id++] = new Compiled.Entity();
-                dist = id - dist;
-                if (dist > 0) LogQueue.Put("IDs skipped: " + dist);
-
-                LogQueue.Put("Compiling [" + e.Path + "]...");
-                EntityResource res = null;
-                try { res = new EntityResource(e.Path); }
-                catch
-                {
-                    LogQueue.Put("Entity [" + e.Path + "] was not found. ID skipped.");
-                    CompiledEntities[id++] = new Compiled.Entity();
-                    continue;
-                }
-
-                CompiledEntities[id].RagdollID = RagdollsIDTable[res.Ragdoll.Link];
-                CompiledEntities[id].OutfitID = OutfitsIDTable[res.Ragdoll.Link];
-                CompiledEntities[id].FirstTrigger = EntityTriggers.Count;
-                CompiledEntities[id].TriggersCount = res.Triggers.Count;
-                CompiledEntities[id].FirstHolder = EntityHolders.Count;
-                CompiledEntities[id].HoldersCount = res.Holders.Count;
-
-                CompiledEntities[id].MaxHealth = res.MaxHealth;
-                CompiledEntities[id].MaxEnergy = res.MaxEnergy;
-                CompiledEntities[id].Mass = res.Mass;
-                CompiledEntities[id].GravityAcceleration = res.GravityAcceleration;
-                CompiledEntities[id].JumpVelocity = res.JumpVelocity;
-                CompiledEntities[id].DragX = res.DragX;
-                CompiledEntities[id].DragY = res.DragY;
-                CompiledEntities[id].SqrDragX = res.SqrDragX;
-                CompiledEntities[id].SqrDragY = res.SqrDragY;
-                CompiledEntities[id].MoveForceX = res.MoveForceX;
-                CompiledEntities[id].MoveForceY = res.MoveForceY;
-
-                foreach (var trigger in res.Triggers)
-                {
-                    var ctrigger = new Compiled.Entity.Trigger();
-
-                    if (TriggerActionsSet.ContainsKey(trigger.Action)) ctrigger.ActionID = TriggerActionsSet[trigger.Action];
-                    else TriggerActionsSet.Add(trigger.Action, ctrigger.ActionID = TriggerActionsSet.Count);
-
-                    ctrigger.VelocityXLowBound = trigger.VelocityXLowBound;
-                    ctrigger.VelocityYLowBound = trigger.VelocityYLowBound;
-
-                    ctrigger.VelocityXHighBound = trigger.VelocityXHighBound;
-                    ctrigger.VelocityYHighBound = trigger.VelocityYHighBound;
-
-                    ctrigger.AccelerationXLowBound = trigger.AccelerationXLowBound;
-                    ctrigger.AccelerationYLowBound = trigger.AccelerationYLowBound;
-
-                    ctrigger.AccelerationXHighBound = trigger.AccelerationXHighBound;
-                    ctrigger.AccelerationYHighBound = trigger.AccelerationYHighBound;
-
-                    ctrigger.OnGround = trigger.OnGround;
-                    ctrigger.OnRoof = trigger.OnRoof;
-                    ctrigger.OnWall = trigger.OnWall;
-                    ctrigger.Direction = trigger.Direction;
-
-                    ctrigger.AnimationID = AnimationsIDTable[trigger.Animation.Link];
-
-                    EntityTriggers.Add(ctrigger);
-                }
-                foreach (var holder in res.Holders)
-                {
-                    var cholder = new Compiled.Entity.Holder();
-
-                    if (HolderActionsSet.ContainsKey(holder.Action)) cholder.ActionID = HolderActionsSet[holder.Action];
-                    else HolderActionsSet.Add(holder.Action, cholder.ActionID = HolderActionsSet.Count);
-
-                    cholder.HolderPoint = holder.HolderPoint;
-
-                    cholder.AnimationID = AnimationsIDTable[holder.Animation.Link];
-
-                    EntityHolders.Add(cholder);
-                }
-
-                LogQueue.Put("Entity [" + e.Path + "] compiled with id [" + id + "].");
-                id++;
-                res.Dispose();
-            }
+            var compiler = new EntityCompiler(Table, LogQueue);
+            foreach (var e in Table.Categories[cat])
+                compiler.Compile(e.Path, e.ID);
             LogQueue.Put("Entities compiled.");
 
             Directory.CreateDirectory("../Compilation");
             using (var w = new BinaryWriter(File.Create("../Compilation/Entities")))
-            {
-                w.Write(EntityTriggers.Count);
-                foreach (var t in EntityTriggers) w.Write(t);
-                w.Write(EntityHolders.Count);
-                foreach (var h in EntityHolders) w.Write(h);
-                w.Write(CompiledEntities.Length);
-                foreach (var e in CompiledEntities) w.Write(e);
-            }
+                compiler.Write(w);
         }
         private void CompileOutfits()
         {
+            var cat = ResourceType.Outfit.ToString();
+            if (!Table.Categories.ContainsKey(cat)) return;
+
             LogQueue.Put("Compiling outfits...");
-
-            int id = 0;
-            var CompiledOutfits = new Compiled.Outfit[OutfitsIDTable.LastID + 1];
-            var OutfitNodes = new List<Compiled.Outfit.Node>();
-            foreach (var e in OutfitsIDTable.Items)
-            {
-                int dist = id;
-                while (id < e.ID) CompiledOutfits[id++] = new Compiled.Outfit();
-                dist = id - dist;
-                if (dist > 0) LogQueue.Put("IDs skipped: " + dist);
-
-                LogQueue.Put("Compiling [" + e.Path + "]...");
-                if (Resource.GetType(e.Path) == ResourceType.Outfit)
-                {
-                    OutfitResource res = null;
-                    try { res = new OutfitResource(e.Path); }
-                    catch
-                    {
-                        LogQueue.Put("Outfit [" + e.Path + "] was not found. ID skipped.");
-                        CompiledOutfits[id++] = new Compiled.Outfit();
-                        continue;
-                    }
-
-                    CompiledOutfits[id].FirstNode = OutfitNodes.Count;
-                    CompiledOutfits[id].NodesCount = res.Nodes.Count;
-
-                    foreach (var node in res.Nodes)
-                    {
-                        var cnode = new Compiled.Outfit.Node();
-
-                        cnode.SpriteID = SpritesIDTable[node.Sprite.Link];
-                        cnode.RagdollNodeIndex = node.RagdollNode;
-                        cnode.ClotheType = (int)node.ClotheType;
-
-                        OutfitNodes.Add(cnode);
-                    }
-                    res.Dispose();
-                }
-                else 
-                {
-                    RagdollResource res = null;
-                    try { res = new RagdollResource(e.Path); }
-                    catch
-                    {
-                        LogQueue.Put("Outfit [" + e.Path + "] was not found. ID skipped.");
-                        CompiledOutfits[id++] = new Compiled.Outfit();
-                        continue;
-                    }
-
-                    CompiledOutfits[id].FirstNode = OutfitNodes.Count;
-                    CompiledOutfits[id].NodesCount = 0;
-                    foreach (var node in res.Nodes)
-                        CompiledOutfits[id].NodesCount += node.Count;
-
-                    for (int i = 0; i < res.Count; i++)
-                    {
-                        var node = res.Nodes[i];
-
-                        foreach (var sprite in node.Sprites)
-                        {
-                            var cnode = new Compiled.Outfit.Node();
-
-                            cnode.SpriteID = SpritesIDTable[sprite.Link];
-                            cnode.RagdollNodeIndex = i;
-                            cnode.ClotheType = (int)OutfitResource.Node.Clothe.Under;
-
-                            OutfitNodes.Add(cnode);
-                        }
-                    }
-                    res.Dispose();
-                }
-
-                LogQueue.Put("Outfit [" + e.Path + "] compiled with id [" + id + "].");
-                id++;
-            }
+            var compiler = new OutfitCompiler(Table, LogQueue);
+            foreach (var e in Table.Categories[cat])
+                compiler.Compile(e.Path, e.ID);
             LogQueue.Put("Outfits compiled.");
 
             Directory.CreateDirectory("../Compilation");
             using (var w = new BinaryWriter(File.Create("../Compilation/Outfits")))
-            {
-                w.Write(OutfitNodes.Count);
-                foreach (var n in OutfitNodes) w.Write(n);
-                w.Write(CompiledOutfits.Length);
-                foreach (var o in CompiledOutfits) w.Write(o);
-            }
+                compiler.Write(w);
         }
         private void CompileInterfaces()
         {
+            var cat = ResourceType.Interface.ToString();
+            if (!Table.Categories.ContainsKey(cat)) return;
+
             LogQueue.Put("Compiling interfaces...");
-            var elements = new List<object>();
-            var texture = new Compiled.Interface.Texture();
-
-            foreach (var i in InterfacesIDTable.Items)
-            {
-                i.UpdateID(elements.Count);
-
-                LogQueue.Put("Compiling [" + i.Path + "]...");
-                InterfaceResource res = null;
-                try { res = new InterfaceResource(i.Path); }
-                catch
-                {
-                    LogQueue.Put("Interface [" + i.Path + "] was not found.");
-                    continue;
-                }
-
-                elements.AddRange(Compiled.Interface.Compile(res.BaseElement as InterfaceElement, texture));
-                res.Dispose();
-            }
-
+            var compiler = new InterfaceCompiler(Table, LogQueue);
+            foreach (var i in Table.Categories[cat])
+                compiler.Compile(i.Path, i.ID);
             LogQueue.Put("Interfaces compiled.");
 
             Directory.CreateDirectory("../Compilation");
             using (var w = new BinaryWriter(File.Create("../Compilation/Interface"), new UTF8Encoding()))
-            {
-                w.Write(elements.Count);
-                foreach (var e in elements)
-                {
-                    if (e.GetType() == typeof(Compiled.Interface.Element))
-                    {
-                        w.Write((int)Compiled.Interface.Type.Element);
-                        ((Compiled.Interface.Element)e).Write(w);
-                    }
-                    else if (e.GetType() == typeof(Compiled.Interface.Panel))
-                    {
-                        w.Write((int)Compiled.Interface.Type.Panel);
-                        ((Compiled.Interface.Panel)e).Write(w);
-                    }
-                    else if (e.GetType() == typeof(Compiled.Interface.Label))
-                    {
-                        w.Write((int)Compiled.Interface.Type.Label);
-                        ((Compiled.Interface.Label)e).Write(w);
-                    }
-                }
-            }
+                compiler.Write(w);
             using (var w = new BinaryWriter(File.Create("../Compilation/InterfaceTexture")))
-                texture.Write(w);
+                compiler.WriteTexture(w);
         }
 
         public CompilerForm(string table)
@@ -718,18 +161,6 @@ namespace Resource_Redactor.Compiler
             LoaderWorker.RunWorkerAsync();
         }
 
-        private static void InitResourcesListBox(ListBox list, IDTable table)
-        {
-            int id = 0;
-            list.BeginUpdate();
-            list.Items.Clear();
-            foreach (var i in table.Items)
-            {
-                while (id < i.ID - 1) list.Items.Add("[" + id++ + "]<:EMPTY:>");
-                list.Items.Add("[" + (id = i.ID) + "][" + (i.Valid ? "V" : "I") + "][" + (i.Old ? "old" : "new") + "]" + i.Path);
-            }
-            list.EndUpdate();
-        }
         private void LoaderWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             LoaderWorker.ReportProgress(0);
@@ -737,32 +168,17 @@ namespace Resource_Redactor.Compiler
             if (File.Exists(TablePath))
             {
                 LogQueue.Put("Reading ID table...");
-                using (var r = File.OpenText(TablePath))
+                using (var file = File.OpenText(TablePath))
+                    Table.Read(file);
+
+                foreach (var items in Table.Categories)
                 {
-                    while (!r.EndOfStream)
-                    {
-                        var line = r.ReadLine();
-                        switch (line)
-                        {
-                            case "[Tiles]": TilesIDTable.Read(r, (string path) => { return Resource.GetType(path) == ResourceType.Tile; }); break;
-                            case "[Events]": EventsIDTable.Read(r, (string path) => { return Resource.GetType(path) == ResourceType.Event; }); break;
-                            case "[Entities]": EntitiesIDTable.Read(r, (string path) => { return Resource.GetType(path) == ResourceType.Entity; }); break;
-                            case "[Outfits]": OutfitsIDTable.Read(r, (string path) => { return Resource.GetType(path) == ResourceType.Outfit ||
-                                Resource.GetType(path) == ResourceType.Ragdoll; }); break;
-                            case "[Items]": ItemsIDTable.Read(r, (string path) => { return Resource.GetType(path) == ResourceType.Item; }); break;
-                        }
-                    }
+                    string name = items.Key;
+                    int loaded = items.Value.Count;
+                    int valid = items.Value.Count((IDTable.Item i) => { return i.Valid; });
+                    LogQueue.Put($"{name} loaded: {loaded}");
+                    LogQueue.Put($"{name} valid: {valid}");
                 }
-                LogQueue.Put("Tiles loaded: " + TilesIDTable.Count);
-                LogQueue.Put("Tiles valid: " + TilesIDTable.Items.Count((IDTable.Item i) => { return i.Valid; }));
-                LogQueue.Put("Events loaded: " + EventsIDTable.Count);
-                LogQueue.Put("Events valid: " + EventsIDTable.Items.Count((IDTable.Item i) => { return i.Valid; }));
-                LogQueue.Put("Entities loaded: " + EntitiesIDTable.Count);
-                LogQueue.Put("Entities valid: " + EntitiesIDTable.Items.Count((IDTable.Item i) => { return i.Valid; }));
-                LogQueue.Put("Outfits loaded: " + OutfitsIDTable.Count);
-                LogQueue.Put("Outfits valid: " + OutfitsIDTable.Items.Count((IDTable.Item i) => { return i.Valid; }));
-                LogQueue.Put("Items loaded: " + ItemsIDTable.Count);
-                LogQueue.Put("Items valid: " + ItemsIDTable.Items.Count((IDTable.Item i) => { return i.Valid; }));
                 LogQueue.Put("Reading ID table done.");
             }
             else LogQueue.Put("ID table not found.");
@@ -791,38 +207,15 @@ namespace Resource_Redactor.Compiler
                 }    
 
                 var path = paths[i];
-                switch (Resource.GetType(path))
-                {
-                    case ResourceType.Tile: TilesIDTable.Add(path); break;
-                    case ResourceType.Event: EventsIDTable.Add(path); break;
-                    case ResourceType.Sprite: SpritesIDTable.Add(path); break;
-                    case ResourceType.Ragdoll: RagdollsIDTable.Add(path); OutfitsIDTable.Add(path); break;
-                    case ResourceType.Animation: AnimationsIDTable.Add(path); break;
-                    case ResourceType.Entity: EntitiesIDTable.Add(path); break;
-                    case ResourceType.Outfit: OutfitsIDTable.Add(path); break;
-                    case ResourceType.Item: ItemsIDTable.Add(path); break;
-                    case ResourceType.Interface: InterfacesIDTable.Add(path); break;
-                }
+                Table.Add(path);
             }
-            LogQueue.Put("Tiles found: " + TilesIDTable.Count);
-            LogQueue.Put("Events found: " + EventsIDTable.Count);
-            LogQueue.Put("Sprites found: " + SpritesIDTable.Count);
-            LogQueue.Put("Ragdolls found: " + RagdollsIDTable.Count);
-            LogQueue.Put("Animations found: " + AnimationsIDTable.Count);
-            LogQueue.Put("Entities found: " + EntitiesIDTable.Count);
-            LogQueue.Put("Outfits found: " + OutfitsIDTable.Count);
-            LogQueue.Put("Items found: " + ItemsIDTable.Count);
-            LogQueue.Put("Interfaces found: " + InterfacesIDTable.Count);
-            LogQueue.Put("Total resources found: " + (
-                TilesIDTable.Count + 
-                EventsIDTable.Count + 
-                SpritesIDTable.Count +
-                RagdollsIDTable.Count + 
-                AnimationsIDTable.Count + 
-                EntitiesIDTable.Count + 
-                OutfitsIDTable.Count + 
-                ItemsIDTable.Count +
-                InterfacesIDTable.Count));
+            foreach (var items in Table.Categories)
+            {
+                string name = items.Key;
+                int found = items.Value.Count;
+                LogQueue.Put($"{name} found: {found}");
+            }
+            LogQueue.Put($"Total resources found: {Table.Count}");
             LogQueue.Put("Searching resources done.");
             LogQueue.Put("");
         }
@@ -832,13 +225,20 @@ namespace Resource_Redactor.Compiler
         }
         private void LoaderWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            InitResourcesListBox(TilesListBox, TilesIDTable);
-            InitResourcesListBox(EventsListBox, EventsIDTable);
-            InitResourcesListBox(SpritesListBox, SpritesIDTable);
-            InitResourcesListBox(EntitiesListBox, EntitiesIDTable);
-            InitResourcesListBox(OutfitsListBox, OutfitsIDTable);
-            InitResourcesListBox(ItemsListBox, ItemsIDTable);
-            InitResourcesListBox(InterfacesListBox, InterfacesIDTable);
+
+            int id = 0;
+            ResourcesListBox.BeginUpdate();
+            ResourcesListBox.Items.Clear();
+            foreach (var cat in Table.Categories)
+            {
+                foreach (var i in cat.Value)
+                {
+                    while (id < i.ID - 1) ResourcesListBox.Items.Add($"[{cat.Key}][{(id++)}]<:EMPTY:>");
+                    id = i.ID;
+                    ResourcesListBox.Items.Add($"[{cat.Key}][{id}][{(i.Valid ? "V" : "I")}][{(i.Old ? "old" : "new")}]{i.Path}");
+                }
+            }
+            ResourcesListBox.EndUpdate();
 
             CompilerProgressBar.Value = 0;
             MainSplitContainer.Panel1.Enabled = true;
@@ -866,16 +266,8 @@ namespace Resource_Redactor.Compiler
             LogQueue.Put("Updating ID table [" + TablePath + "]...");
             using (var file = File.CreateText(TablePath))
             {
-                file.WriteLine("[Tiles]"); 
-                TilesIDTable.Write(file);
-                file.WriteLine("[Events]");
-                EventsIDTable.Write(file);
-                file.WriteLine("[Entities]"); 
-                EntitiesIDTable.Write(file);
-                file.WriteLine("[Outfits]");
-                OutfitsIDTable.Write(file);
-                file.WriteLine("[Items]"); 
-                ItemsIDTable.Write(file);
+                var cats = new string[] { "Tile", "Event", "Entity", "Outfit", "Item" };
+                Table.Write(file, cats);
             }
             LogQueue.Put("ID table updated.");
         }
@@ -903,7 +295,8 @@ namespace Resource_Redactor.Compiler
         private void LogTimer_Tick(object sender, EventArgs e)
         {
             string message;
-            while ((message = LogQueue.Get()) != null) LogTextBox.AppendText(message + Environment.NewLine);
+            while ((message = LogQueue.Get()) != null) 
+                LogTextBox.AppendText(message + Environment.NewLine);
         }
     }
 }

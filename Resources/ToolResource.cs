@@ -46,7 +46,8 @@ namespace Resource_Redactor.Resources
 
             if (disposing)
             {
-                Sprites.ForEach((List<Subresource<SpriteResource>> l) => l.ForEach((Subresource<SpriteResource> s) => s.Dispose()));
+                Sprites.ForEach((List<Subresource<SpriteResource>> l) => 
+                    l.ForEach((Subresource<SpriteResource> s) => s.Dispose()));
             }
 
             base.Dispose(disposing);

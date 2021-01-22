@@ -400,7 +400,7 @@ namespace Resource_Redactor.Resources
                             {
                                 var node = src_resource.Nodes[j];
                                 foreach (var sprite in node.Sprites)
-                                    resource.Nodes.Add(new OutfitResource.Node(sprite.Link, j));
+                                    resource.Nodes.Add(new OutfitResource.Node(sprite.Link, j, OutfitResource.Node.Clothe.Under));
                             }
                         }
 

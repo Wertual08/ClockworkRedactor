@@ -176,6 +176,7 @@ namespace Resource_Redactor.Resources.Redactors
                 }
             }
             public string Ragdoll;
+            public string Outfit;
             public Trigger[] Triggers;
             public Holder[] Holders;
 
@@ -201,6 +202,7 @@ namespace Resource_Redactor.Resources.Redactors
             public Action(EntityResource e)
             {
                 Ragdoll = e.Ragdoll.Link;
+                Outfit = e.Outfit.Link;
                 Triggers = new Trigger[e.Triggers.Count];
                 Holders = new Holder[e.Holders.Count];
 
@@ -230,7 +232,8 @@ namespace Resource_Redactor.Resources.Redactors
             public void ToResource(EntityResource e)
             {
                 e.Ragdoll.Link = Ragdoll;
-                
+                e.Outfit.Link = Outfit;
+
                 for (int i = 0; i < Triggers.Length; i++)
                 {
                     if (i >= e.Triggers.Count) e.Triggers.Add(new EntityResource.Trigger());
@@ -286,6 +289,7 @@ namespace Resource_Redactor.Resources.Redactors
                 if (MoveForceX != a.MoveForceX) return false;
                 if (MoveForceY != a.MoveForceY) return false;
                 if (Ragdoll != a.Ragdoll) return false;
+                if (Outfit != a.Outfit) return false;
 
                 if (BackColor != a.BackColor) return false;
                 if (PointBoundsX != a.PointBoundsX) return false;
@@ -356,7 +360,6 @@ namespace Resource_Redactor.Resources.Redactors
 
             GLSurface.MakeCurrent();
             Open(path);
-            RagdollLinkTextBox.Text = LoadedResource.Ragdoll.Link;
             Story = new StoryItem<Action>(new Action(LoadedResource));
             Story.ValueChanged += Story_ValueChanged;
 
@@ -390,8 +393,19 @@ namespace Resource_Redactor.Resources.Redactors
 
             ToolLinkTextBox.Subresource = EntityController.Tool;
             RagdollLinkTextBox.Subresource = LoadedResource.Ragdoll;
+            OutfitLinkTextBox.Subresource = LoadedResource.Outfit;
             AnimationLinkTextBox.Subresource = SelectedAnimation?.Animation;
             HolderAnimationLinkTextBox.Subresource = SelectedHolder?.Animation;
+
+            LoadedResource.Ragdoll.Refreshed += (object sender, EventArgs e) => Story.Item = new Action(LoadedResource);
+            LoadedResource.Outfit.Refreshed += (object sender, EventArgs e) => Story.Item = new Action(LoadedResource);
+            LoadedResource.Ragdoll.Refreshed += LoadedResource.UpdateOutfit;
+            LoadedResource.Outfit.Refreshed += LoadedResource.UpdateOutfit;
+
+            foreach (var holder in LoadedResource.Holders)
+                holder.Animation.Refreshed += (object sender, EventArgs e) => Story.Item = new Action(LoadedResource);
+            foreach (var trigger in LoadedResource.Triggers)
+                trigger.Animation.Refreshed += (object sender, EventArgs e) => Story.Item = new Action(LoadedResource);
         }
         protected override void Dispose(bool disposing)
         {
@@ -536,7 +550,7 @@ namespace Resource_Redactor.Resources.Redactors
                 for (int i = 0; i < LoadedResource.Triggers.Count; i++)
                 {
                     AnimationsListBox.Items.Add(LoadedResource.Triggers[i].Name);
-                    LoadedResource.Triggers[i].Animation.Updated += Animation_Reloaded;
+                    LoadedResource.Triggers[i].Animation.Updated += (object s, EventArgs a) => Story.Item = new Action(LoadedResource);
                 }
                 AnimationsListBox.EndUpdate();
                 AnimationsListBox.SelectedIndex = Math.Min(AnimationsListBox.Items.Count - 1, aind);
@@ -547,7 +561,7 @@ namespace Resource_Redactor.Resources.Redactors
                 for (int i = 0; i < LoadedResource.Holders.Count; i++)
                 {
                     HoldersListBox.Items.Add(LoadedResource.Holders[i].Name);
-                    LoadedResource.Holders[i].Animation.Updated += Holder_Reloaded;
+                    LoadedResource.Holders[i].Animation.Updated += (object s, EventArgs a) => Story.Item = new Action(LoadedResource);
                 }
                 HoldersListBox.EndUpdate();
                 HoldersListBox.SelectedIndex = Math.Min(HoldersListBox.Items.Count - 1, hind);
@@ -1035,22 +1049,6 @@ namespace Resource_Redactor.Resources.Redactors
             }
         }
 
-        private void RagdollLinkTextBox_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                GLSurface.MakeCurrent();
-                var link = LoadedResource.Ragdoll.Link;
-                LoadedResource.Ragdoll.Link = RagdollLinkTextBox.Text;
-                if (link != LoadedResource.Ragdoll.Link) Story.Item = new Action(LoadedResource);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not link ragdoll.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         private void AnimationsListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -1412,19 +1410,6 @@ namespace Resource_Redactor.Resources.Redactors
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void Animation_Reloaded(object sender, EventArgs e)
-        {
-            try
-            {
-                GLSurface.MakeCurrent();
-                Story.Item = new Action(LoadedResource);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not reload animation.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
 
         private void HoldersListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1534,19 +1519,6 @@ namespace Resource_Redactor.Resources.Redactors
             catch (Exception ex)
             {
                 MessageBox.Show(this, ex.ToString(), "Error: Can not link animation.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void Holder_Reloaded(object sender, EventArgs e)
-        {
-            try
-            {
-                GLSurface.MakeCurrent();
-                Story.Item = new Action(LoadedResource);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.ToString(), "Error: Can not reload holder.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

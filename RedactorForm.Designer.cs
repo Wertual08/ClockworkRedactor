@@ -110,7 +110,7 @@
             this.DebugToolStripTextBox});
             this.RedactorMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.RedactorMenuStrip.Name = "RedactorMenuStrip";
-            this.RedactorMenuStrip.Size = new System.Drawing.Size(800, 27);
+            this.RedactorMenuStrip.Size = new System.Drawing.Size(800, 24);
             this.RedactorMenuStrip.TabIndex = 2;
             this.RedactorMenuStrip.Text = "RedactorMenuStrip";
             // 
@@ -132,7 +132,7 @@
             this.CompilerToolStripMenuItem,
             this.ExitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 23);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // CreateToolStripMenuItem
@@ -482,7 +482,7 @@
             this.CloseAllToolStripMenuItem,
             this.CloseOthersToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 23);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
             // 
             // UndoToolStripMenuItem
@@ -542,7 +542,7 @@
             this.SwapPanelsToolStripMenuItem,
             this.FPSToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 23);
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // ToggleExplorerToolStripMenuItem
@@ -580,11 +580,12 @@
             // ResourceToolStripMenuItem
             // 
             this.ResourceToolStripMenuItem.Name = "ResourceToolStripMenuItem";
-            this.ResourceToolStripMenuItem.Size = new System.Drawing.Size(67, 23);
+            this.ResourceToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
             this.ResourceToolStripMenuItem.Text = "Resource";
             // 
             // DebugToolStripTextBox
             // 
+            this.DebugToolStripTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.DebugToolStripTextBox.Name = "DebugToolStripTextBox";
             this.DebugToolStripTextBox.ReadOnly = true;
             this.DebugToolStripTextBox.Size = new System.Drawing.Size(100, 23);
@@ -595,7 +596,7 @@
             this.ExplorerSplitContainer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.ExplorerSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ExplorerSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.ExplorerSplitContainer.Location = new System.Drawing.Point(0, 27);
+            this.ExplorerSplitContainer.Location = new System.Drawing.Point(0, 24);
             this.ExplorerSplitContainer.Name = "ExplorerSplitContainer";
             // 
             // ExplorerSplitContainer.Panel1
@@ -605,7 +606,7 @@
             // ExplorerSplitContainer.Panel2
             // 
             this.ExplorerSplitContainer.Panel2.Controls.Add(this.RedactorsTabControl);
-            this.ExplorerSplitContainer.Size = new System.Drawing.Size(800, 423);
+            this.ExplorerSplitContainer.Size = new System.Drawing.Size(800, 426);
             this.ExplorerSplitContainer.SplitterDistance = 251;
             this.ExplorerSplitContainer.TabIndex = 3;
             // 
@@ -615,7 +616,7 @@
             this.ResourceExplorer.Location = new System.Drawing.Point(0, 0);
             this.ResourceExplorer.MultiSelect = true;
             this.ResourceExplorer.Name = "ResourceExplorer";
-            this.ResourceExplorer.Size = new System.Drawing.Size(247, 419);
+            this.ResourceExplorer.Size = new System.Drawing.Size(247, 422);
             this.ResourceExplorer.TabIndex = 0;
             this.ResourceExplorer.ViewMode = Resource_Redactor.Resources.Redactors.ListViewMode.MediumIcon;
             this.ResourceExplorer.ItemLoaded += new Resource_Redactor.Resources.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
@@ -629,7 +630,7 @@
             this.RedactorsTabControl.Name = "RedactorsTabControl";
             this.RedactorsTabControl.Padding = new System.Drawing.Point(3, 3);
             this.RedactorsTabControl.SelectedIndex = 0;
-            this.RedactorsTabControl.Size = new System.Drawing.Size(541, 419);
+            this.RedactorsTabControl.Size = new System.Drawing.Size(541, 422);
             this.RedactorsTabControl.TabIndex = 0;
             this.RedactorsTabControl.TabsContextMenuStrip = this.TabsContextMenuStrip;
             this.RedactorsTabControl.TabClosing += new System.Windows.Forms.TabControlCancelEventHandler(this.RedactorsTabControl_TabClosing);

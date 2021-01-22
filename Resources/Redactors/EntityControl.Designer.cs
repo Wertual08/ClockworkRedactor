@@ -20,6 +20,8 @@
             this.ControlsSplitContainer = new System.Windows.Forms.SplitContainer();
             this.ParamsTabControl = new System.Windows.Forms.TabControl();
             this.PropertiesTabPage = new System.Windows.Forms.TabPage();
+            this.label12 = new System.Windows.Forms.Label();
+            this.OutfitLinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.EntityParametersListBox = new System.Windows.Forms.ListBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -101,6 +103,8 @@
             // 
             // PropertiesTabPage
             // 
+            this.PropertiesTabPage.Controls.Add(this.label12);
+            this.PropertiesTabPage.Controls.Add(this.OutfitLinkTextBox);
             this.PropertiesTabPage.Controls.Add(this.label11);
             this.PropertiesTabPage.Controls.Add(this.EntityParametersListBox);
             this.PropertiesTabPage.Controls.Add(this.label10);
@@ -114,10 +118,31 @@
             this.PropertiesTabPage.Text = "Properties";
             this.PropertiesTabPage.UseVisualStyleBackColor = true;
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(3, 42);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(55, 13);
+            this.label12.TabIndex = 5;
+            this.label12.Text = "Outfit Link";
+            // 
+            // OutfitLinkTextBox
+            // 
+            this.OutfitLinkTextBox.AllowDrop = true;
+            this.OutfitLinkTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.OutfitLinkTextBox.BackColor = System.Drawing.Color.Red;
+            this.OutfitLinkTextBox.Location = new System.Drawing.Point(6, 58);
+            this.OutfitLinkTextBox.Name = "OutfitLinkTextBox";
+            this.OutfitLinkTextBox.Size = new System.Drawing.Size(268, 20);
+            this.OutfitLinkTextBox.Subresource = null;
+            this.OutfitLinkTextBox.TabIndex = 6;
+            // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(3, 42);
+            this.label11.Location = new System.Drawing.Point(3, 81);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(60, 13);
             this.label11.TabIndex = 4;
@@ -130,9 +155,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.EntityParametersListBox.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.EntityParametersListBox.FormattingEnabled = true;
-            this.EntityParametersListBox.Location = new System.Drawing.Point(6, 58);
+            this.EntityParametersListBox.Location = new System.Drawing.Point(6, 97);
             this.EntityParametersListBox.Name = "EntityParametersListBox";
-            this.EntityParametersListBox.Size = new System.Drawing.Size(268, 303);
+            this.EntityParametersListBox.Size = new System.Drawing.Size(268, 264);
             this.EntityParametersListBox.TabIndex = 3;
             this.EntityParametersListBox.SelectedIndexChanged += new System.EventHandler(this.EntityParametersListBox_SelectedIndexChanged);
             // 
@@ -156,7 +181,6 @@
             this.RagdollLinkTextBox.Size = new System.Drawing.Size(268, 20);
             this.RagdollLinkTextBox.Subresource = null;
             this.RagdollLinkTextBox.TabIndex = 2;
-            this.RagdollLinkTextBox.TextChanged += new System.EventHandler(this.RagdollLinkTextBox_TextChanged);
             // 
             // EntityParameterNumeric
             // 
@@ -624,5 +648,7 @@
         private System.Windows.Forms.CheckBox ToolCheckBox;
         private Resource_Redactor.Resources.Redactors.SubresourceTextBox ToolLinkTextBox;
         private System.Windows.Forms.NumericUpDown ToolDelayNumeric;
+        private System.Windows.Forms.Label label12;
+        private SubresourceTextBox OutfitLinkTextBox;
     }
 }

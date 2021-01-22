@@ -218,6 +218,7 @@ namespace Resource_Redactor.Resources
 
         public void Clothe(OutfitResource outfit)
         {
+            if (outfit == null) return;
             foreach (var node in outfit.Nodes)
             {
                 if (node.RagdollNode < 0 || node.RagdollNode >= Count) continue;
@@ -240,6 +241,7 @@ namespace Resource_Redactor.Resources
         }
         public void Unclothe(OutfitResource outfit)
         {
+            if (outfit == null) return;
             foreach (var node in outfit.Nodes)
             {
                 if (node.RagdollNode < 0 || node.RagdollNode >= Count) continue;

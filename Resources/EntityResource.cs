@@ -132,6 +132,7 @@ namespace Resource_Redactor.Resources
 
         // Resource //
         public Subresource<RagdollResource> Ragdoll { get; set; } = new Subresource<RagdollResource>();
+        public Subresource<OutfitResource> Outfit { get; set; } = new Subresource<OutfitResource>();
         public List<Holder> Holders { get; set; } = new List<Holder>();
         public List<Trigger> Triggers { get; set; } = new List<Trigger>();
 
@@ -155,12 +156,22 @@ namespace Resource_Redactor.Resources
         public bool GridEnabled { get; set; } = true;
         public bool Transparency { get; set; } = false;
 
+        private OutfitResource LastOutfit;
+        public void UpdateOutfit(object sender, EventArgs e)
+        {
+            Ragdoll.Resource?.Unclothe(LastOutfit);
+            LastOutfit = Outfit.Resource;
+            Ragdoll.Resource?.Clothe(LastOutfit);
+        }
         public EntityResource() : base(CurrentType, CurrentVersion)
         {
+            Ragdoll.Refreshed += UpdateOutfit;
+            Outfit.Refreshed += UpdateOutfit;
         }
         public EntityResource(string path) : base(path)
         {
-
+            Ragdoll.Refreshed += UpdateOutfit;
+            Outfit.Refreshed += UpdateOutfit;
         }
 
         public void Render(float x, float y, float a, long time, int cycle, int[] sel = null, float sx = 1f, float sy = 1f)
@@ -175,6 +186,7 @@ namespace Resource_Redactor.Resources
             if (disposing)
             {
                 Ragdoll.Dispose();
+                Outfit.Dispose();
                 Holders.ForEach((Holder h) => h.Dispose());
                 Triggers.ForEach((Trigger t) => t.Dispose());
             }

@@ -83,15 +83,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compiler\Compiled.cs" />
+    <Compile Include="Compiler\AnimationCompiler.cs" />
     <Compile Include="Compiler\CompilerForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Compiler\CompilerForm.Designer.cs">
       <DependentUpon>CompilerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Compiler\EntityCompiler.cs" />
+    <Compile Include="Compiler\EventCompiler.cs" />
     <Compile Include="Compiler\IDTable.cs" />
+    <Compile Include="Compiler\InterfaceCompiler.cs" />
     <Compile Include="Compiler\MessageQueue.cs" />
+    <Compile Include="Compiler\OutfitCompiler.cs" />
+    <Compile Include="Compiler\RagdollCompiler.cs" />
+    <Compile Include="Compiler\SpriteCompiler.cs" />
+    <Compile Include="Compiler\TextureCompiler.cs" />
+    <Compile Include="Compiler\TileCompiler.cs" />
     <Compile Include="ExtraTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -102,6 +110,7 @@
     <Compile Include="Resources\Description.cs" />
     <Compile Include="Resources\EventResource.cs" />
     <Compile Include="Resources\Frame.cs" />
+    <Compile Include="Resources\Interface\InterfaceItem.cs" />
     <Compile Include="Resources\Interface\InterfaceLabel.cs" />
     <Compile Include="Resources\Interface\InterfaceSlot.cs" />
     <Compile Include="Resources\Interface\InterfaceSlotGrid.cs" />
@@ -114,6 +123,7 @@
     <Compile Include="Resources\Interface\InterfaceElement.cs" />
     <Compile Include="Resources\Interface\InterfaceElementsList.cs" />
     <Compile Include="Resources\Interface\InterfacePanel.cs" />
+    <Compile Include="Resources\ItemResource.cs" />
     <Compile Include="Resources\OutfitResource.cs" />
     <Compile Include="Resources\RagdollResource.cs" />
     <Compile Include="Resources\Redactors\AnimationControl.cs">

@@ -17,6 +17,7 @@ namespace Resource_Redactor.Resources.Interface
         Panel,
         Label,
         Dragger,
+        Item,
         Button,
         Indicator,
         List,
