@@ -1,4 +1,4 @@
-﻿using Resource_Redactor.Resources.Redactors;
+﻿using ResrouceRedactor.Resources.Redactors;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Resource_Redactor
+namespace ResrouceRedactor
 {
 
     public class RedactorProperties

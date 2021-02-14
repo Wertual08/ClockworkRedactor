@@ -1,4 +1,4 @@
-﻿namespace Resource_Redactor.Resources.Redactors
+﻿namespace ResrouceRedactor.Resources.Redactors
 {
     partial class AnimationControl
     {
@@ -22,7 +22,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.NodesListBox = new System.Windows.Forms.CheckedListBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.LinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
+            this.LinkTextBox = new ResrouceRedactor.Resources.Redactors.SubresourceTextBox();
             this.OLICheckBox = new ExtraForms.SafeCheckBox();
             this.ALICheckBox = new ExtraForms.SafeCheckBox();
             this.TypeUpDown = new System.Windows.Forms.DomainUpDown();
@@ -403,7 +403,7 @@
         private ExtraForms.OpenGLSurface GLSurface;
         private System.Windows.Forms.ListBox FramesListBox;
         private System.Windows.Forms.Label label6;
-        private Resource_Redactor.Resources.Redactors.SubresourceTextBox LinkTextBox;
+        private ResrouceRedactor.Resources.Redactors.SubresourceTextBox LinkTextBox;
         private ExtraForms.SafeCheckBox OLICheckBox;
         private ExtraForms.SafeCheckBox ALICheckBox;
         private System.Windows.Forms.DomainUpDown TypeUpDown;

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Resource_Redactor.Resources.Redactors
+namespace ResrouceRedactor.Resources.Redactors
 {
     public delegate void StateChangedEventHandler(object sender, EventArgs e);
 

@@ -1,5 +1,5 @@
 ﻿using ExtraForms.OpenGL;
-using Resource_Redactor.Resources.Interface;
+using ResrouceRedactor.Resources.Interface;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Resource_Redactor.Resources
+namespace ResrouceRedactor.Resources
 {
     public class InterfaceResource : Resource
     {

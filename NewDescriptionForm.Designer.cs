@@ -1,4 +1,4 @@
-﻿namespace Resource_Redactor
+﻿namespace ResrouceRedactor
 {
     partial class NewDescriptionForm
     {

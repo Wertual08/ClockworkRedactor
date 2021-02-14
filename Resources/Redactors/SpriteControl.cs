@@ -12,7 +12,7 @@ using ExtraForms.OpenGL;
 using ExtraForms;
 using System.IO;
 
-namespace Resource_Redactor.Resources.Redactors
+namespace ResrouceRedactor.Resources.Redactors
 {
     [DefaultEvent("StateChanged")]
     public partial class SpriteControl : ResourceControl<SpriteResource, StoryItem<SpriteControl.State>>, IResourceControl

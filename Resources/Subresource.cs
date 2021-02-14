@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 
 
-namespace Resource_Redactor.Resources
+namespace ResrouceRedactor.Resources
 {
     public interface ISubresource
     {

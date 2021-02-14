@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Resource_Redactor.Resources
+namespace ResrouceRedactor.Resources
 {
     class ItemResource : Resource
     {
@@ -12,12 +12,12 @@ namespace Resource_Redactor.Resources
         public static readonly string CurrentVersion = "0.0.0.0";
 
         // Resource //
-        public Subresource<InterfaceResource> Interface { get; set; } = new Subresource<InterfaceResource>();
-        public Subresource<ToolResource> Tool { get; set; } = new Subresource<ToolResource>();
         public string Name { get; set; } = "";
         public string Description { get; set; } = "";
         public int Stack { get; set; } = 1;
-        public int Durability { get; set; } = 0;
+        public int TotalDurability { get; set; } = 0;
+        public Subresource<InterfaceResource> Interface { get; set; } = new Subresource<InterfaceResource>();
+        public Subresource<ToolResource> Tool { get; set; } = new Subresource<ToolResource>();
 
         // Redactor //
 

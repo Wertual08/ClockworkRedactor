@@ -1,5 +1,5 @@
-﻿using Resource_Redactor.Resources;
-using Resource_Redactor.Resources.Redactors;
+﻿using ResrouceRedactor.Resources;
+using ResrouceRedactor.Resources.Redactors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.Design;
 
-namespace Resource_Redactor
+namespace ResrouceRedactor
 {
     class UISubresourceEditor : UITypeEditor
     {

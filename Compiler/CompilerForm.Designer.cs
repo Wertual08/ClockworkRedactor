@@ -1,4 +1,4 @@
-﻿namespace Resource_Redactor.Compiler
+﻿namespace ResrouceRedactor.Compiler
 {
     partial class CompilerForm
     {

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Resource_Redactor.Resources.Interface
+namespace ResrouceRedactor.Resources.Interface
 {
     public enum InterfaceTextureStretchType
     {

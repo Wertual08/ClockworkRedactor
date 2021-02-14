@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using ExtraForms.OpenGL;
 using System.Text.Json.Serialization;
 
-namespace Resource_Redactor.Resources
+namespace ResrouceRedactor.Resources
 {
     public enum TextureStretch
     {

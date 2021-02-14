@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ExtraSharp;
 using ExtraForms;
-using Resource_Redactor.Resources;
-using Resource_Redactor.Resources.Redactors;
+using ResrouceRedactor.Resources;
+using ResrouceRedactor.Resources.Redactors;
 using System.Collections.Specialized;
-using Resource_Redactor.Compiler;
+using ResrouceRedactor.Compiler;
 
-namespace Resource_Redactor
+namespace ResrouceRedactor
 {
     public partial class RedactorForm : Form
     {

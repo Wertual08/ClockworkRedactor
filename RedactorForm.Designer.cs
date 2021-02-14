@@ -1,4 +1,4 @@
-﻿namespace Resource_Redactor
+﻿namespace ResrouceRedactor
 {
     partial class RedactorForm
     {
@@ -83,8 +83,8 @@
             this.ResourceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DebugToolStripTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.ExplorerSplitContainer = new System.Windows.Forms.SplitContainer();
-            this.ResourceExplorer = new Resource_Redactor.Resources.Redactors.ExplorerControl();
-            this.RedactorsTabControl = new Resource_Redactor.ExtraTabControl();
+            this.ResourceExplorer = new ResrouceRedactor.Resources.Redactors.ExplorerControl();
+            this.RedactorsTabControl = new ResrouceRedactor.ExtraTabControl();
             this.TabsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.CloseTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenDescriptionDialog = new System.Windows.Forms.OpenFileDialog();
@@ -618,8 +618,8 @@
             this.ResourceExplorer.Name = "ResourceExplorer";
             this.ResourceExplorer.Size = new System.Drawing.Size(247, 422);
             this.ResourceExplorer.TabIndex = 0;
-            this.ResourceExplorer.ViewMode = Resource_Redactor.Resources.Redactors.ListViewMode.MediumIcon;
-            this.ResourceExplorer.ItemLoaded += new Resource_Redactor.Resources.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
+            this.ResourceExplorer.ViewMode = ResrouceRedactor.Resources.Redactors.ListViewMode.MediumIcon;
+            this.ResourceExplorer.ItemLoaded += new ResrouceRedactor.Resources.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
             // 
             // RedactorsTabControl
             // 
@@ -690,7 +690,7 @@
         private System.Windows.Forms.SplitContainer ExplorerSplitContainer;
         private System.Windows.Forms.OpenFileDialog OpenDescriptionDialog;
         private System.Windows.Forms.SaveFileDialog SaveDescriptionDialog;
-        private Resource_Redactor.ExtraTabControl RedactorsTabControl;
+        private ResrouceRedactor.ExtraTabControl RedactorsTabControl;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ResourceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem UndoToolStripMenuItem;

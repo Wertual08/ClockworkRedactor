@@ -1,4 +1,4 @@
-﻿namespace Resource_Redactor.Resources.Redactors
+﻿namespace ResrouceRedactor.Resources.Redactors
 {
     partial class OutfitControl
     {
@@ -23,9 +23,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.RagdollNodeNumeric = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
-            this.SpriteLinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
+            this.SpriteLinkTextBox = new ResrouceRedactor.Resources.Redactors.SubresourceTextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.RagdollLinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
+            this.RagdollLinkTextBox = new ResrouceRedactor.Resources.Redactors.SubresourceTextBox();
             this.NodesListBox = new System.Windows.Forms.ListBox();
             this.GLSurface = new ExtraForms.OpenGLSurface();
             ((System.ComponentModel.ISupportInitialize)(this.ControlsSplitContainer)).BeginInit();
@@ -216,7 +216,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ListBox NodesListBox;
         private ExtraForms.OpenGLSurface GLSurface;
-        private Resource_Redactor.Resources.Redactors.SubresourceTextBox SpriteLinkTextBox;
-        private Resource_Redactor.Resources.Redactors.SubresourceTextBox RagdollLinkTextBox;
+        private ResrouceRedactor.Resources.Redactors.SubresourceTextBox SpriteLinkTextBox;
+        private ResrouceRedactor.Resources.Redactors.SubresourceTextBox RagdollLinkTextBox;
     }
 }

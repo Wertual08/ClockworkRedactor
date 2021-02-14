@@ -13,7 +13,7 @@ using System.IO;
 using ExtraForms.OpenGL;
 using System.Diagnostics;
 
-namespace Resource_Redactor.Resources.Redactors
+namespace ResrouceRedactor.Resources.Redactors
 {
     public partial class AnimationControl : ResourceControl<AnimationResource, StoryList<Frame>>, IResourceControl
     {

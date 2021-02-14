@@ -1,4 +1,4 @@
-﻿namespace Resource_Redactor.Resources.Redactors
+﻿namespace ResrouceRedactor.Resources.Redactors
 {
     partial class EntityControl
     {
@@ -21,11 +21,11 @@
             this.ParamsTabControl = new System.Windows.Forms.TabControl();
             this.PropertiesTabPage = new System.Windows.Forms.TabPage();
             this.label12 = new System.Windows.Forms.Label();
-            this.OutfitLinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
+            this.OutfitLinkTextBox = new ResrouceRedactor.Resources.Redactors.SubresourceTextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.EntityParametersListBox = new System.Windows.Forms.ListBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.RagdollLinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
+            this.RagdollLinkTextBox = new ResrouceRedactor.Resources.Redactors.SubresourceTextBox();
             this.EntityParameterNumeric = new System.Windows.Forms.NumericUpDown();
             this.AnimationsTabPage = new System.Windows.Forms.TabPage();
             this.AnimationParameterDomain = new System.Windows.Forms.DomainUpDown();
@@ -37,23 +37,23 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.AnimationActionTextBox = new System.Windows.Forms.TextBox();
-            this.AnimationLinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
+            this.AnimationLinkTextBox = new ResrouceRedactor.Resources.Redactors.SubresourceTextBox();
             this.AnimationParametersListBox = new System.Windows.Forms.CheckedListBox();
             this.HoldersTabPage = new System.Windows.Forms.TabPage();
             this.ToolDelayNumeric = new System.Windows.Forms.NumericUpDown();
             this.ToolCheckBox = new System.Windows.Forms.CheckBox();
-            this.ToolLinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
+            this.ToolLinkTextBox = new ResrouceRedactor.Resources.Redactors.SubresourceTextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.HolderNodeNumeric = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.HolderActionTextBox = new System.Windows.Forms.TextBox();
-            this.HolderAnimationLinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
+            this.HolderAnimationLinkTextBox = new ResrouceRedactor.Resources.Redactors.SubresourceTextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.HolderNameTextBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.HoldersListBox = new System.Windows.Forms.ListBox();
-            this.GLSurface = new Resource_Redactor.Resources.Redactors.PreviewSurface();
+            this.GLSurface = new ResrouceRedactor.Resources.Redactors.PreviewSurface();
             ((System.ComponentModel.ISupportInitialize)(this.ControlsSplitContainer)).BeginInit();
             this.ControlsSplitContainer.Panel1.SuspendLayout();
             this.ControlsSplitContainer.Panel2.SuspendLayout();
@@ -613,7 +613,7 @@
 
         #endregion
         private System.Windows.Forms.ColorDialog BackgroundColorDialog;
-        private Resource_Redactor.Resources.Redactors.PreviewSurface GLSurface;
+        private ResrouceRedactor.Resources.Redactors.PreviewSurface GLSurface;
         private System.Windows.Forms.SplitContainer ControlsSplitContainer;
         private System.Windows.Forms.TabControl ParamsTabControl;
         private System.Windows.Forms.TabPage PropertiesTabPage;
@@ -627,13 +627,13 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox AnimationActionTextBox;
-        private Resource_Redactor.Resources.Redactors.SubresourceTextBox AnimationLinkTextBox;
+        private ResrouceRedactor.Resources.Redactors.SubresourceTextBox AnimationLinkTextBox;
         private System.Windows.Forms.CheckedListBox AnimationParametersListBox;
         private System.Windows.Forms.NumericUpDown HolderNodeNumeric;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox HolderActionTextBox;
-        private Resource_Redactor.Resources.Redactors.SubresourceTextBox HolderAnimationLinkTextBox;
+        private ResrouceRedactor.Resources.Redactors.SubresourceTextBox HolderAnimationLinkTextBox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox HolderNameTextBox;
         private System.Windows.Forms.Label label6;
@@ -643,10 +643,10 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.ListBox EntityParametersListBox;
         private System.Windows.Forms.Label label10;
-        private Resource_Redactor.Resources.Redactors.SubresourceTextBox RagdollLinkTextBox;
+        private ResrouceRedactor.Resources.Redactors.SubresourceTextBox RagdollLinkTextBox;
         private System.Windows.Forms.DomainUpDown AnimationParameterDomain;
         private System.Windows.Forms.CheckBox ToolCheckBox;
-        private Resource_Redactor.Resources.Redactors.SubresourceTextBox ToolLinkTextBox;
+        private ResrouceRedactor.Resources.Redactors.SubresourceTextBox ToolLinkTextBox;
         private System.Windows.Forms.NumericUpDown ToolDelayNumeric;
         private System.Windows.Forms.Label label12;
         private SubresourceTextBox OutfitLinkTextBox;

@@ -1,4 +1,4 @@
-﻿namespace Resource_Redactor.Resources.Redactors
+﻿namespace ResrouceRedactor.Resources.Redactors
 {
     partial class TileControl
     {
@@ -18,7 +18,7 @@
             this.components = new System.ComponentModel.Container();
             this.ControlsSplitContainer = new System.Windows.Forms.SplitContainer();
             this.LightTextBox = new System.Windows.Forms.RichTextBox();
-            this.EventLinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
+            this.EventLinkTextBox = new ResrouceRedactor.Resources.Redactors.SubresourceTextBox();
             this.EventsComboBox = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.FAnchorBox = new System.Windows.Forms.CheckBox();
@@ -51,7 +51,7 @@
             this.FramesCountNumeric = new ExtraForms.SafeNumericUpDown();
             this.PropertiesListBox = new System.Windows.Forms.CheckedListBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.TextureLinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
+            this.TextureLinkTextBox = new ResrouceRedactor.Resources.Redactors.SubresourceTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.FrameDelayNumeric = new ExtraForms.SafeNumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
@@ -59,7 +59,7 @@
             this.OffsetYNumeric = new ExtraForms.SafeNumericUpDown();
             this.OffsetXNumeric = new ExtraForms.SafeNumericUpDown();
             this.TileComboBox = new System.Windows.Forms.ComboBox();
-            this.GLSurface = new Resource_Redactor.Resources.Redactors.PreviewSurface();
+            this.GLSurface = new ResrouceRedactor.Resources.Redactors.PreviewSurface();
             this.BackgroundColorDialog = new System.Windows.Forms.ColorDialog();
             ((System.ComponentModel.ISupportInitialize)(this.ControlsSplitContainer)).BeginInit();
             this.ControlsSplitContainer.Panel1.SuspendLayout();
@@ -701,14 +701,14 @@
         private System.Windows.Forms.SplitContainer ControlsSplitContainer;
         private ExtraForms.SafeNumericUpDown FramesCountNumeric;
         private System.Windows.Forms.Label label6;
-        private Resource_Redactor.Resources.Redactors.SubresourceTextBox TextureLinkTextBox;
+        private ResrouceRedactor.Resources.Redactors.SubresourceTextBox TextureLinkTextBox;
         private System.Windows.Forms.Label label1;
         private ExtraForms.SafeNumericUpDown FrameDelayNumeric;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private ExtraForms.SafeNumericUpDown OffsetYNumeric;
         private ExtraForms.SafeNumericUpDown OffsetXNumeric;
-        private Resource_Redactor.Resources.Redactors.PreviewSurface GLSurface;
+        private ResrouceRedactor.Resources.Redactors.PreviewSurface GLSurface;
         private System.Windows.Forms.CheckedListBox PropertiesListBox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label9;
@@ -739,7 +739,7 @@
         private System.Windows.Forms.CheckBox LAnchorBox;
         private System.Windows.Forms.CheckBox BAnchorBox;
         private System.Windows.Forms.CheckBox TAnchorBox;
-        private Resource_Redactor.Resources.Redactors.SubresourceTextBox EventLinkTextBox;
+        private ResrouceRedactor.Resources.Redactors.SubresourceTextBox EventLinkTextBox;
         private System.Windows.Forms.ComboBox EventsComboBox;
         private System.Windows.Forms.RichTextBox LightTextBox;
         private System.Windows.Forms.ComboBox TileComboBox;

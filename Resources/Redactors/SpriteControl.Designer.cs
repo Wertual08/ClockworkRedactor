@@ -1,4 +1,4 @@
-﻿namespace Resource_Redactor.Resources.Redactors
+﻿namespace ResrouceRedactor.Resources.Redactors
 {
     partial class SpriteControl
     {
@@ -24,7 +24,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.LinkTextBox = new Resource_Redactor.Resources.Redactors.SubresourceTextBox();
+            this.LinkTextBox = new ResrouceRedactor.Resources.Redactors.SubresourceTextBox();
             this.ControlsSplitContainer = new System.Windows.Forms.SplitContainer();
             this.VFramesCheckBox = new System.Windows.Forms.CheckBox();
             this.AngleNumeric = new ExtraForms.SafeNumericUpDown();
@@ -447,7 +447,7 @@
         private ExtraForms.SafeNumericUpDown AxisYNumeric;
         private ExtraForms.SafeNumericUpDown AngleNumeric;
         private System.Windows.Forms.Label label8;
-        private Resource_Redactor.Resources.Redactors.SubresourceTextBox LinkTextBox;
+        private ResrouceRedactor.Resources.Redactors.SubresourceTextBox LinkTextBox;
         private System.Windows.Forms.SplitContainer ControlsSplitContainer;
         private System.Windows.Forms.ColorDialog BackgroundColorDialog;
         private ExtraForms.OpenGLSurface GLSurface;

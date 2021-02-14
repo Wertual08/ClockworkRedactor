@@ -11,9 +11,9 @@ using ExtraSharp;
 using ExtraForms.OpenGL;
 using ExtraForms;
 using System.IO;
-using Resource_Redactor.Resources.Interface;
+using ResrouceRedactor.Resources.Interface;
 
-namespace Resource_Redactor.Resources.Redactors
+namespace ResrouceRedactor.Resources.Redactors
 {
     [DefaultEvent("StateChanged")]
     public partial class InterfaceControl : ResourceControl<InterfaceResource, StoryItem<InterfaceControl.State>>, IResourceControl

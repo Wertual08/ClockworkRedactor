@@ -1,6 +1,6 @@
 ﻿using ExtraSharp;
-using Resource_Redactor.Resources;
-using Resource_Redactor.Resources.Interface;
+using ResrouceRedactor.Resources;
+using ResrouceRedactor.Resources.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Resource_Redactor.Compiler
+namespace ResrouceRedactor.Compiler
 {
     public partial class CompilerForm : Form
     {

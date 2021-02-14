@@ -12,7 +12,7 @@ using ExtraForms;
 using System.IO;
 using System.Diagnostics;
 
-namespace Resource_Redactor.Resources.Redactors
+namespace ResrouceRedactor.Resources.Redactors
 {
     public partial class EntityControl : ResourceControl<EntityResource, StoryItem<EntityControl.Action>>, IResourceControl
     {

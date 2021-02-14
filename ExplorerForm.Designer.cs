@@ -1,4 +1,4 @@
-﻿namespace Resource_Redactor
+﻿namespace ResrouceRedactor
 {
     partial class ExplorerForm
     {
@@ -31,7 +31,7 @@
             this.ControlsPanel = new System.Windows.Forms.Panel();
             this.RejectButton = new System.Windows.Forms.Button();
             this.SelectButton = new System.Windows.Forms.Button();
-            this.ResourceExplorer = new Resource_Redactor.Resources.Redactors.ExplorerControl();
+            this.ResourceExplorer = new ResrouceRedactor.Resources.Redactors.ExplorerControl();
             this.ControlsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -77,7 +77,7 @@
             this.ResourceExplorer.Name = "ResourceExplorer";
             this.ResourceExplorer.Size = new System.Drawing.Size(800, 421);
             this.ResourceExplorer.TabIndex = 1;
-            this.ResourceExplorer.ItemLoaded += new Resource_Redactor.Resources.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
+            this.ResourceExplorer.ItemLoaded += new ResrouceRedactor.Resources.Redactors.ExplorerControl.ItemLoadedEventHandler(this.ResourceExplorer_ItemLoaded);
             // 
             // ExplorerForm
             // 

@@ -12,7 +12,7 @@ using System.IO;
 using ExtraForms;
 using ExtraForms.OpenGL;
 
-namespace Resource_Redactor.Resources.Redactors
+namespace ResrouceRedactor.Resources.Redactors
 {
     public partial class OutfitControl : ResourceControl<OutfitResource, StoryItem<OutfitControl.StoryState>>, IResourceControl
     {

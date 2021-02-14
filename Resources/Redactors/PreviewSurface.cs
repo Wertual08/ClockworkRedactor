@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using ExtraForms;
 using ExtraForms.OpenGL;
 
-namespace Resource_Redactor.Resources.Redactors
+namespace ResrouceRedactor.Resources.Redactors
 {
     class PreviewSurface : OpenGLSurface
     {

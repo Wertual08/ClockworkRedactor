@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Resource_Redactor.Resources
+namespace ResrouceRedactor.Resources
 {
     public class Description
     {
@@ -30,7 +30,7 @@ namespace Resource_Redactor.Resources
             return true;
         }
 
-        public static readonly string RedactorVersion = "0.1.0.2";
+        public static readonly string RedactorVersion = "0.1.0.3";
         public static readonly string CurrentVersion = "0.0.0.1";
         public static readonly string Extension = "cedp";
 

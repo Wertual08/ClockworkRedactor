@@ -1,4 +1,4 @@
-﻿using Resource_Redactor.Resources;
+﻿using ResrouceRedactor.Resources;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,7 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Resource_Redactor
+namespace ResrouceRedactor
 {
     public static class JsonElementExt
     {

@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ExtraForms.OpenGL;
 
-namespace Resource_Redactor.Resources
+namespace ResrouceRedactor.Resources
 {
     public class TileResource : Resource
     {

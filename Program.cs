@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Resource_Redactor
+namespace ResrouceRedactor
 {
     static class Program
     {

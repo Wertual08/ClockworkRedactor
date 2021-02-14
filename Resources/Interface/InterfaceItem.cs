@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Resource_Redactor.Resources.Interface
+namespace ResrouceRedactor.Resources.Interface
 {
     class InterfaceItem : InterfaceElement
     {

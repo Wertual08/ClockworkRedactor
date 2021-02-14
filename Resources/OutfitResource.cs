@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Resource_Redactor.Resources
+namespace ResrouceRedactor.Resources
 {
     public class OutfitResource : Resource
     {

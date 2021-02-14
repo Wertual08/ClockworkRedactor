@@ -12,7 +12,7 @@ using ExtraForms.OpenGL;
 using ExtraForms;
 using System.IO;
 
-namespace Resource_Redactor.Resources.Redactors
+namespace ResrouceRedactor.Resources.Redactors
 {
     public partial class RagdollControl : ResourceControl<RagdollResource, StoryList<RagdollControl.Node>>, IResourceControl
     {

@@ -12,7 +12,7 @@ using System.Drawing.Imaging;
 using ExtraSharp;
 using ExtraForms;
 
-namespace Resource_Redactor.Resources.Redactors
+namespace ResrouceRedactor.Resources.Redactors
 {
     [DefaultEvent("StateChanged")]
     public partial class TextureControl : ResourceControl<TextureResource, StoryItem<TextureControl.State>>, IResourceControl

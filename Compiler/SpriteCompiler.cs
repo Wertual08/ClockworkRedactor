@@ -1,5 +1,5 @@
 ﻿using ExtraSharp;
-using Resource_Redactor.Resources;
+using ResrouceRedactor.Resources;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Resource_Redactor.Compiler
+namespace ResrouceRedactor.Compiler
 {
     class SpriteCompiler
     {

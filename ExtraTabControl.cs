@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Resource_Redactor
+namespace ResrouceRedactor
 {
     class ExtraTabControl : TabControl
     {

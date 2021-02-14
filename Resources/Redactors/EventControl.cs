@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using ExtraSharp;
 using System.IO;
 
-namespace Resource_Redactor.Resources.Redactors
+namespace ResrouceRedactor.Resources.Redactors
 {
     public partial class EventControl : ResourceControl<EventResource, StoryItem<EventControl.State>>, IResourceControl
     {

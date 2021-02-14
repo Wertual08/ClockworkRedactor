@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Resource_Redactor.Resources.Redactors
+namespace ResrouceRedactor.Resources.Redactors
 {
     public class ResourceControl<TResource, TStory> : UserControl where TResource : Resource, new() where TStory : class, IStory
     {

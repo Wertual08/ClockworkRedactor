@@ -12,7 +12,7 @@ using ExtraForms;
 using ExtraSharp;
 using ExtraForms.OpenGL;
 
-namespace Resource_Redactor.Resources.Redactors
+namespace ResrouceRedactor.Resources.Redactors
 {
     public partial class ToolControl : ResourceControl<ToolResource, StoryItem<ToolControl.State>>, IResourceControl
     {

@@ -13,7 +13,7 @@ using System.Globalization;
 
 
 
-namespace Resource_Redactor.Resources
+namespace ResrouceRedactor.Resources
 {
     public enum ResourceType : int
     { 
@@ -76,7 +76,7 @@ namespace Resource_Redactor.Resources
     
     public class ResourceID : IComparable
     {
-        private static Random Generator = new Random();
+        private static readonly Random Generator = new Random();
         private long TimePart;
         private long RandPart;
 
@@ -138,7 +138,7 @@ namespace Resource_Redactor.Resources
                 if (SerializerOptions_ != null) return SerializerOptions_;
                 var options = new JsonSerializerOptions();
                 options.IgnoreReadOnlyProperties = false;
-                options.WriteIndented = false;
+                options.WriteIndented = true; // false
                 options.Converters.Add(new JsonHandleSpecialDoublesAsStrings());
                 options.Converters.Add(new JsonHandleSpecialFloatsAsStrings());
                 options.Converters.Add(new JsonStringEnumConverter());

@@ -1,11 +1,11 @@
-﻿using Resource_Redactor.Resources.Interface;
+﻿using ResrouceRedactor.Resources.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Resource_Redactor.Resources.Interface
+namespace ResrouceRedactor.Resources.Interface
 {
     public enum InterfaceDragActionType : int
     {

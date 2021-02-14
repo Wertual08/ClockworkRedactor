@@ -13,7 +13,7 @@ using System.IO;
 using System.Globalization;
 using ExtraForms.OpenGL;
 
-namespace Resource_Redactor.Resources.Redactors
+namespace ResrouceRedactor.Resources.Redactors
 {
     public partial class TileControl : ResourceControl<TileResource, StoryItem<TileControl.State>>, IResourceControl
     {
